@@ -393,7 +393,6 @@ class MWsystems:
         """
         writes MWsystems dictionary to a pickle file, easy to read later 
         Inputs: name,string: name of file to be written
-                saveto,string: name of directory to save file to 
         """
         script_dir = os.path.dirname(__file__)
         results_dir = os.path.join(script_dir, 'systems/')
@@ -402,7 +401,7 @@ class MWsystems:
         if not os.path.isdir(results_dir):
              os.makedirs(results_dir)
 
-        path_of_file = results_dir + name + '.pickle'
+        path_of_file = results_dir + name_to_save + '.pickle'
 
         path = Path(path_of_file)
 
