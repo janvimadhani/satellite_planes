@@ -2,12 +2,14 @@ import numpy as np
 import fortran_reader as fr
 import analysis_tools as analyze
 import time as time
+import sys
 #from analysis_tools import MWsystems as MWS
 
 t0 = time.time()
 
 #CHANGE THIS TO BE THE SNAPSHOT YOU ARE ANALYZING -- 970 IS THE ONE I'VE WORKED WITH MOST
-snapshot = 970
+#when you run this file, run it as python3 find_systems.py 970 
+snapshot = sys.argv[1]
 
 filepath_haloes = '/home/madhani/satellite_planes/catalogs/Halos/TREE_DM/tree_bricks'+str(snapshot)
 #filepath_haloes = '/Users/JanviMadhani/Desktop/Satellite Galaxies/Analysis/New_Horizon/tree_bricks970'
