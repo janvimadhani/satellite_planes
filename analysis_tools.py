@@ -83,7 +83,7 @@ class MWsystems:
 
 
 
-    def find_MWsystems(self,haloes_dict,galaxies_dict,mw_halo_mass=10**11.5,mw_mass=8e10,rvir_search_thresh=1):
+    def find_MWsystems(self,haloes_dict,galaxies_dict,mw_halo_mass=10**11.5,mw_mass=10**10.5,rvir_search_thresh=1):
         """
         Input:  haloes_dict,dict: dictionary of halo catalog
                 galaxies_dict,dict: dictionary of galaxy catalog
@@ -141,7 +141,7 @@ class MWsystems:
         halo_masses = [self.haloes['haloes'][i]['mass'] for i in range(nhaloes)]
         halo_masses = np.asarray(halo_masses)*10e10
         halo_masses = np.squeeze(halo_masses)   
-        MW_type_haloes = np.where(mw_halo_mass < halo_masses ) 
+        MW_type_haloes = np.where(halo_masses > mw_halo_mass) 
 
         halo_px = [self.haloes['haloes'][i]['px'] for i in range(nhaloes)]
         halo_py = [self.haloes['haloes'][i]['py'] for i in range(nhaloes)]
