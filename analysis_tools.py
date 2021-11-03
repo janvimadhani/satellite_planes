@@ -397,7 +397,7 @@ class MWsystems:
         """
         script_dir = os.path.dirname(__file__)
         #results_dir = os.path.join(script_dir, 'systems/')
-        results_dir = '/data78/welker/madhani'
+        results_dir = '/data78/welker/madhani/systems'
     
 
         if not os.path.isdir(results_dir):
