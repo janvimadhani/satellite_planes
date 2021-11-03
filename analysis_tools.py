@@ -396,7 +396,8 @@ class MWsystems:
         Inputs: name,string: name of file to be written
         """
         script_dir = os.path.dirname(__file__)
-        results_dir = os.path.join(script_dir, 'systems/')
+        #results_dir = os.path.join(script_dir, 'systems/')
+        results_dir = '/data78/welker/madhani'
     
 
         if not os.path.isdir(results_dir):
