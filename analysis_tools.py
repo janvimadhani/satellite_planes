@@ -141,7 +141,7 @@ class MWsystems:
         halo_masses = [self.haloes['haloes'][i]['mass'] for i in range(nhaloes)]
         halo_masses = np.asarray(halo_masses)*10e10
         halo_masses = np.squeeze(halo_masses)   
-        MW_type_haloes = np.where(halo_masses > mw_halo_mass) 
+        MW_type_haloes = np.where(mw_halo_mass < halo_masses ) 
 
         halo_px = [self.haloes['haloes'][i]['px'] for i in range(nhaloes)]
         halo_py = [self.haloes['haloes'][i]['py'] for i in range(nhaloes)]
