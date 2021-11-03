@@ -282,7 +282,7 @@ def get_plane(u1,u2,u3,systems,system,mock=False):
     
     return z,xx,yy,unit_n
 
-def save_3Dplot(name_of_plot,systems,syst,xx,yy,z_best):
+def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best):
     ## Figure for presentation
 
     fig = plt.figure(figsize=[8,6])
@@ -333,7 +333,7 @@ def save_3Dplot(name_of_plot,systems,syst,xx,yy,z_best):
     #check if directory exists
 
     script_dir = os.path.dirname(__file__)
-    results_dir = os.path.join(script_dir, '3Dplots/')
+    results_dir = os.path.join(script_dir, '3Dplots/'+str(snapshot) +'/')
     
 
     if not os.path.isdir(results_dir):
