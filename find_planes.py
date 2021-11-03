@@ -1,6 +1,7 @@
 import numpy as np
 import time as time
 import plane_finding_tools as pf 
+import sys
 
 snapshot = sys.argv[1]
 
