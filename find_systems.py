@@ -5,8 +5,15 @@ import time as time
 #from analysis_tools import MWsystems as MWS
 
 t0 = time.time()
-filepath_haloes = '/Users/JanviMadhani/Desktop/Satellite Galaxies/Analysis/New_Horizon/tree_bricks970'
-filepath_galaxies = '/Users/JanviMadhani/Desktop/Satellite Galaxies/Analysis/New_Horizon/tree_bricks970_stars_NH'
+
+#CHANGE THIS TO BE THE SNAPSHOT YOU ARE ANALYZING -- 970 IS THE ONE I'VE WORKED WITH MOST
+snapshot = 970
+
+filepath_haloes = '/home/madhani/satellite_planes/catalogs/Halos/TREE_DM/tree_bricks'+str(snapshot)
+#filepath_haloes = '/Users/JanviMadhani/Desktop/Satellite Galaxies/Analysis/New_Horizon/tree_bricks970'
+filepath_galaxies = '/home/madhani/satellite_planes/catalogs/Stars/TREE_STARS_HOP_dp_SCnew_gross/tree_brick_'+str(snapshot)
+#filepath_galaxies = '/Users/JanviMadhani/Desktop/Satellite Galaxies/Analysis/New_Horizon/tree_bricks970_stars_NH'
+
 haloes = fr.ReadTreebrick_lowp(filepath_haloes)
 galaxies = fr.GalaxyCatalog(filepath_galaxies)
 
@@ -20,7 +27,7 @@ MWsystems = systs.find_MWsystems(haloes_dict,galaxies_dict) #then identify MW ty
 
 #write file 
 print('Writing MW Systems to file...')
-systs.write_to_pickle('MWsystems','systems',rewrite=True)
+systs.write_to_pickle('systems_'+str(snapshot),rewrite=True)
 t1 = time.time()
 
 
