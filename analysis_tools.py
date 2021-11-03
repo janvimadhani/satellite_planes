@@ -138,10 +138,6 @@ class MWsystems:
         #HALOES
         nhaloes = self.haloes['nhaloes']
 
-        halo_masses = [self.haloes['haloes'][i]['mass'] for i in range(nhaloes)]
-        halo_masses = np.asarray(halo_masses)*10e10
-        halo_masses = np.squeeze(halo_masses)   
-        MW_type_haloes = np.where(halo_masses > mw_halo_mass) 
 
         halo_px = [self.haloes['haloes'][i]['px'] for i in range(nhaloes)]
         halo_py = [self.haloes['haloes'][i]['py'] for i in range(nhaloes)]
@@ -151,8 +147,22 @@ class MWsystems:
         halo_py = np.asarray(halo_py)
         halo_pz = np.asarray(halo_pz)
 
+        #then, constrain to 'zoom portion', which is radius of 20 Mpc
+        r = 10
+        halo_zoom = np.where(((-r < halo_px) & (halo_px < r )) & ((-r < halo_py) & (halo_py < r )) &
+                      ((-r < halo_pz) & (halo_pz < r )))
+
+
+
         halo_rvir = [self.haloes['haloes'][i]['rvir'] for i in range(nhaloes)]
         halo_rvir = np.asarray(halo_rvir)
+
+
+        #apply zoom masks
+        halo_px = halo_px[halo_zoom]
+        halo_py = halo_py[halo_zoom]
+        halo_pz = halo_pz[halo_zoom]
+        halo_rvir = halo_rvir[halo_zoom]
 
         halo_lx = [self.haloes['haloes'][i]['Lx'] for i in range(nhaloes)]
         halo_ly = [self.haloes['haloes'][i]['Ly'] for i in range(nhaloes)]
@@ -162,9 +172,19 @@ class MWsystems:
         halo_ly = np.asarray(halo_ly)
         halo_lz = np.asarray(halo_lz)
 
+        halo_lx = halo_lx[halo_zoom]
+        halo_ly = halo_ly[halo_zoom]
+        halo_lz = halo_lz[halo_zoom]    
+
         halo_level = [self.haloes['haloes'][i]['level'] for i in range(nhaloes)]
         halo_level = np.asarray(halo_level)
+        halo_level = halo_level[halo_zoom]
   
+        halo_masses = [self.haloes['haloes'][i]['mass'] for i in range(nhaloes)]
+        halo_masses = np.asarray(halo_masses)*10e10
+        halo_masses = np.squeeze(halo_masses)   
+        halo_masses = halo_masses[halo_zoom]
+        MW_type_haloes = np.where(mw_halo_mass < halo_masses ) 
 
 
         

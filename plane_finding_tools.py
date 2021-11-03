@@ -332,8 +332,10 @@ def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best):
     # Save plot
     #check if directory exists
 
-    script_dir = os.path.dirname(__file__)
-    results_dir = os.path.join(script_dir, '3Dplots/'+str(snapshot) +'/')
+    #script_dir = os.path.dirname(__file__)
+    
+    #results_dir = os.path.join(script_dir, '3Dplots/'+str(snapshot) +'/')
+    results_dir = '/data78/welker/madhani/3Dplots/' + str(snapshot) + '/'
     
 
     if not os.path.isdir(results_dir):
@@ -532,8 +534,10 @@ def save_hist(name_of_plot,best_rms,mean_rms,histbins=70):
     # Save plot
     #check if directory exists
 
-    script_dir = os.path.dirname(__file__)
-    results_dir = os.path.join(script_dir, 'iso_histograms/')
+    #script_dir = os.path.dirname(__file__)
+    #results_dir = os.path.join(script_dir, 'iso_histograms/')
+
+    results_dir = '/data78/welker/madhani/iso_histograms/' + str(snapshot) + '/'
     
 
     if not os.path.isdir(results_dir):
