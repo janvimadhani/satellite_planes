@@ -139,7 +139,7 @@ class MWsystems:
         nhaloes = self.haloes['nhaloes']
 
         halo_masses = [self.haloes['haloes'][i]['mass'] for i in range(nhaloes)]
-        halo_masses = np.asarray(halo_masses)*10e11
+        halo_masses = np.asarray(halo_masses)*10e10
         halo_masses = np.squeeze(halo_masses)   
         MW_type_haloes = np.where(mw_halo_mass < halo_masses) 
 
@@ -174,7 +174,7 @@ class MWsystems:
         ngalaxies = self.galaxies['nmax']
 
         gal_mvir = [self.galaxies['galaxies'][i]['mvir'] for i in range(ngalaxies)]
-        gal_mvir = np.asarray(gal_mvir)*10e11
+        gal_mvir = np.asarray(gal_mvir)*10e10 
         gal_mvir = np.squeeze(gal_mvir)
         MW_type_gals = np.where((gal_mvir > mw_mass))
 
