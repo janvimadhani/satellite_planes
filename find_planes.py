@@ -6,7 +6,7 @@ import sys
 snapshot = sys.argv[1]
 
 
-systems_file='/home/madhani/satellite_planes/systems/systems_' + str(snapshot) + '.pickle'
+systems_file='data78/welker/madhani/systems/systems_' + str(snapshot) + '.pickle'
 #systems_file = '/Users/JanviMadhani/satellite_planes/systems/MWsystems.pickle'
 
 systems = pf.read_systems(systems_file)
