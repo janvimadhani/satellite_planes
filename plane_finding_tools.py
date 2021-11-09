@@ -133,7 +133,7 @@ def evolutionary_plane_finder(systems,system,n_iter,n_start,n_erase,n_avg_mutant
         #eliminate n_erase
         #first sort list of rms to be from min to max so you can eliminate n_erase
         
-        sorted_pop_rms = argsort(plane_finder['rms_dist'])
+        sorted_pop_rms = np.argsort(plane_finder['rms_dist'])
         #print(f'Index {i}, sorted rms {sorted_pop_rms}')
         to_erase = []
         for e in range(n_erase):
