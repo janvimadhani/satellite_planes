@@ -250,7 +250,7 @@ def evolutionary_plane_finder(systems,system,n_iter,n_start,n_erase,n_avg_mutant
         print(f'u1 = {u1_a[best_plane]}; u2 = {u2_a[best_plane]}')
         print(f'Best rms = {best_rms}')
     
-    return u1_a[best_plane],u2_a[best_plane],u3_a[best_plane]
+    return u1_a[best_plane],u2_a[best_plane],u3_a[best_plane],best_rms
 
 ##### ARCHIVED PLANE FINDER -- USES BRUTE FORCE
 """
@@ -713,7 +713,7 @@ def check_isotropy(systems,syst,n=2000):
 
     for rand_syst in range(n):
         
-        best_u1,best_u2,best_u3,nx,ny,nz,rms,rand_rms,delta_s,best_rand_cos_theta = best_plane(systems=systems,system=rand_systems['systems'][rand_syst],n=n,rand=True)
+        best_u1,best_u2,best_u3,rand_rms = best_plane(systems=systems,system=rand_systems['systems'][rand_syst],n=n,rand=True)
         mean_rms.append(rand_rms)
 
     t1 = time.time()
