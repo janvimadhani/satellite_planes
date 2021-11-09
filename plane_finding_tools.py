@@ -19,7 +19,7 @@ def read_systems(systems_file):
 
     Returns: systems,dict: dictionary object of MW type systems
     """
-    print('Reading file from:' systems_file)
+    print('Reading file from:', systems_file)
 
     with open(systems_file, 'rb') as handle:
         systems = pickle.loads(handle.read())
