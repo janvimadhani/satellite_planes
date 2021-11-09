@@ -54,9 +54,14 @@ def evolutionary_plane_finder(systems,system,n_iter,n_start,n_erase,n_avg_mutant
     """
     
     def fitness(system,level,unit_n):
-        x0 = systems[system]['MW_px'][0]
-        y0 = systems[system]['MW_py'][0]
-        z0 = systems[system]['MW_pz'][0]
+        if rand:
+            x0 = system['MW_px']
+            y0 = system['MW_py']
+            z0 = system['MW_pz']
+        else:
+            x0 = systems[system]['MW_px'][0]
+            y0 = systems[system]['MW_py'][0]
+            z0 = systems[system]['MW_pz'][0]
 
         gal_center = np.array([x0,y0,z0])
 
