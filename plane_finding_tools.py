@@ -43,7 +43,7 @@ def dist(x,y,z,normal_vect,d):
 
 ### Write evolutionary algorithm
 
-def evolutionary_plane_finder(systems,system,n_iter,n_start,n_erase,n_avg_mutants,level=1,verbose=False):
+def evolutionary_plane_finder(systems,system,n_iter,n_start,n_erase,n_avg_mutants,level=1,rand=False,verbose=False):
     """
     Input: systems,dict: all MW systems
            specifiy level = 1 for all true satellites
@@ -63,13 +63,19 @@ def evolutionary_plane_finder(systems,system,n_iter,n_start,n_erase,n_avg_mutant
         d = np.dot(-gal_center,unit_n)
         
         distances = []
-
-        level_sats = np.where(systems[system]['sat_levels'] == level)
-        nsats = len(level_sats[0]) 
-        for k in range(nsats):
-            x,y,z = systems[system]['sat_pxs'][level_sats][k],systems[system]['sat_pys'][level_sats][k],systems[system]['sat_pzs'][level_sats][k]
-            s = dist(x,y,z,unit_n,d)
-            distances.append(s)
+        if rand:
+            nsats = len(system['sat_px'])
+            for k in range(len(system['sat_px'])):
+                x,y,z = system['sat_px'][k],system['sat_py'][k],system['sat_pz'][k]
+                s = dist(x,y,z,unit_n,d)
+                distances.append(s)
+        else:
+            level_sats = np.where(systems[system]['sat_levels'] == level)
+            nsats = len(level_sats[0]) 
+            for k in range(nsats):
+                x,y,z = systems[system]['sat_pxs'][level_sats][k],systems[system]['sat_pys'][level_sats][k],systems[system]['sat_pzs'][level_sats][k]
+                s = dist(x,y,z,unit_n,d)
+                distances.append(s)
             
         distances = np.asarray(distances)
 
@@ -86,8 +92,8 @@ def evolutionary_plane_finder(systems,system,n_iter,n_start,n_erase,n_avg_mutant
     plane_finder['u2'] = []
     plane_finder['u3'] = []
     
-    level_sats = np.where(systems[system]['sat_levels'] == level)
-    nsats = len(level_sats[0]) 
+    #level_sats = np.where(systems[system]['sat_levels'] == level)
+    #nsats = len(level_sats[0]) 
     #start with creating an initial population 
     for k in range(n_start):
 
@@ -713,7 +719,7 @@ def check_isotropy(systems,syst,n=2000):
 
     for rand_syst in range(n):
         
-        best_u1,best_u2,best_u3,rand_rms = evolutionary_plane_finder(systems=systems,system=rand_systems['systems'][rand_syst],n_iter = 200,n_start=25,n_erase=10,n_avg_mutants=5,level=1,verbose=True)
+        best_u1,best_u2,best_u3,rand_rms = evolutionary_plane_finder(systems=systems,system=rand_systems['systems'][rand_syst],n_iter = 200,n_start=25,n_erase=10,n_avg_mutants=5,level=1,rand=True,verbose=True)
         mean_rms.append(rand_rms)
 
     t1 = time.time()
