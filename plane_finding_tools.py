@@ -713,7 +713,7 @@ def check_isotropy(systems,syst,n=2000):
 
     for rand_syst in range(n):
         
-        best_u1,best_u2,best_u3,rand_rms = best_plane(systems=systems,system=rand_systems['systems'][rand_syst],n=n,rand=True)
+        best_u1,best_u2,best_u3,rand_rms = evolutionary_plane_finder(systems=systems,system=rand_systems['systems'][rand_syst],n_iter = 200,n_start=25,n_erase=10,n_avg_mutants=5,level=1,verbose=True)
         mean_rms.append(rand_rms)
 
     t1 = time.time()
