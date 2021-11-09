@@ -741,7 +741,7 @@ def check_isotropy(systems,syst,n=2000):
 
     return mean_rms
 
-def save_hist(name_of_plot,best_rms,mean_rms,histbins=70):
+def save_hist(name_of_plot,best_rms,mean_rms,snapshot,histbins=70):
     n = len(mean_rms)
 
     fig, ax = plt.subplots(1, 1,

@@ -31,5 +31,5 @@ for syst in range(len(systems)):
 
 
     name_of_hist = 'system_' + str(syst) +'_hist.png'
-    pf.save_hist(name_of_hist,best_rms,iso_systs_rms)
+    pf.save_hist(name_of_hist,best_rms,iso_systs_rms,snapshot=snapshot)
 
