@@ -53,8 +53,8 @@ def evolutionary_plane_finder(systems,system,n_iter,n_start,n_erase,n_avg_mutant
     Returns: best_u1,best_u2,best_u3,
     """
     
-    def fitness(system,level,unit_n):
-        if rand:
+    def fitness(system,level,unit_n,random=rand):
+        if random:
             x0 = system['MW_px']
             y0 = system['MW_py']
             z0 = system['MW_pz']
@@ -68,7 +68,7 @@ def evolutionary_plane_finder(systems,system,n_iter,n_start,n_erase,n_avg_mutant
         d = np.dot(-gal_center,unit_n)
         
         distances = []
-        if rand:
+        if random:
             nsats = len(system['sat_px'])
             for k in range(len(system['sat_px'])):
                 x,y,z = system['sat_px'][k],system['sat_py'][k],system['sat_pz'][k]
@@ -132,7 +132,7 @@ def evolutionary_plane_finder(systems,system,n_iter,n_start,n_erase,n_avg_mutant
         plane_finder['ny'].append(unit_n[1])
         plane_finder['nz'].append(unit_n[2])
         
-        rms = fitness(system,level,unit_n)
+        rms = fitness(system,level,unit_n,rand)
         #plane_finder['delta_s'].append(distances)
         plane_finder['rms_dist'].append(rms)
         
@@ -188,7 +188,7 @@ def evolutionary_plane_finder(systems,system,n_iter,n_start,n_erase,n_avg_mutant
 
 
             #add the avg to the population
-            avg_rms = fitness(system,level,unit_n_avg)
+            avg_rms = fitness(system,level,unit_n_avg,rand)
             plane_finder['rms_dist'].append(avg_rms)
             plane_finder['u1'].append(avg_u1)
             plane_finder['u2'].append(avg_u2)
@@ -223,7 +223,7 @@ def evolutionary_plane_finder(systems,system,n_iter,n_start,n_erase,n_avg_mutant
 
 
             #find the distance/rms of these new guys and add them to the rms list
-            mut_rms = fitness(system,level,unit_n)
+            mut_rms = fitness(system,level,unit_n,rand)
 
             #add them all to the existing population
             plane_finder['rms_dist'].append(mut_rms)
