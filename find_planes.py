@@ -17,7 +17,7 @@ systems = pf.read_systems(systems_file)
 for i in range(len(systems)):
     syst = i 
 
-    best_u1,best_u2,best_u3,nx,ny,nz,rms,best_rms,delta_s,best_cos_theta = pf.best_plane(systems=systems,system=syst,level=1,n=5000,verbose=True)
+    best_u1,best_u2,best_u3= pf.evolutionary_plane_finder(systems=systems,system=syst,n_iter = 200,n_start=25,n_erase=10,n_avg_mutants=5,level=1,verbose=True)
     z_best,xx,yy,unit_n = pf.get_plane(u1=best_u1,u2=best_u2,u3=best_u3,systems=systems,system=syst)
 
     name_of_3dplot = 'system_' + str(syst) +'.png'

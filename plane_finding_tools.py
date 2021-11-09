@@ -41,15 +41,227 @@ def dist(x,y,z,normal_vect,d):
     
     return dist
 
+### Write evolutionary algorithm
 
-def best_plane(systems,system,level=1,n=10,mock=False,rand=False,verbose=False):
+def evolutionary_plane_finder(systems,system,n_iter,n_start,n_erase,n_avg_mutants,level=1,verbose=False):
     """
-    Input: systems,dict: all MW sytems
+    Input: systems,dict: all MW systems
            specifiy level = 1 for all true satellites
                     level = 2 for galactic plane
                     level = 0 *dummy 
            n,int: number of iterations
-    Returns: best_u1,best_u2,best_u3,nx,ny,nz,rms,best_rms,delta_s,best_cos_theta
+    Returns: best_u1,best_u2,best_u3,
+    """
+    
+    def fitness(system,level,unit_n):
+        x0 = systems[system]['MW_px'][0]
+        y0 = systems[system]['MW_py'][0]
+        z0 = systems[system]['MW_pz'][0]
+
+        gal_center = np.array([x0,y0,z0])
+
+        d = np.dot(-gal_center,unit_n)
+        
+        distances = []
+
+        level_sats = np.where(systems[system]['sat_levels'] == level)
+        nsats = len(level_sats[0]) 
+        for k in range(nsats):
+            x,y,z = systems[system]['sat_pxs'][level_sats][k],systems[system]['sat_pys'][level_sats][k],systems[system]['sat_pzs'][level_sats][k]
+            s = dist(x,y,z,unit_n,d)
+            distances.append(s)
+            
+        distances = np.asarray(distances)
+
+        rms = np.sqrt(np.mean(distances**2))
+        return rms
+        
+    
+    plane_finder = {}
+    plane_finder['rms_dist'] = []
+    plane_finder['nx'] = []
+    plane_finder['ny'] = []
+    plane_finder['nz'] = []
+    plane_finder['u1'] = []
+    plane_finder['u2'] = []
+    plane_finder['u3'] = []
+    
+    level_sats = np.where(systems[system]['sat_levels'] == level)
+    nsats = len(level_sats[0]) 
+    #start with creating an initial population 
+    for k in range(n_start):
+
+        u1 = random.uniform(0,1) #[0,1]  
+        u2 = random.uniform(0,1) #[0,1]
+
+        u3 = random.uniform(0,1) #sign
+        plane_finder['u1'].append(u1)
+        plane_finder['u2'].append(u2)
+        plane_finder['u3'].append(u3)
+
+        cos_theta = 2*u1 - 1   #makes sure cos_theta is bw -1,1
+
+        sin_theta = np.sqrt(1-cos_theta**2)
+        #randomly select sign of arccos 
+
+        if u3 <= 0.5:
+            sin_theta = -1*sin_theta
+
+
+        phi = 2*np.pi*u2  #[0,2*pi] 
+
+        nx = np.cos(phi)*sin_theta
+        ny = np.sin(phi)*sin_theta
+        nz = cos_theta
+        n = np.array([nx,ny,nz])
+        mag_n = np.linalg.norm(n)
+        unit_n = n/mag_n
+        
+        plane_finder['nx'].append(unit_n[0])
+        plane_finder['ny'].append(unit_n[1])
+        plane_finder['nz'].append(unit_n[2])
+        
+        rms = fitness(system,level,unit_n)
+        #plane_finder['delta_s'].append(distances)
+        plane_finder['rms_dist'].append(rms)
+        
+    #now, evolve n_iter times
+    i = 0 
+    n_mutants = n_erase - n_avg_mutants
+    while i <= n_iter:
+        
+        #eliminate n_erase
+        #first sort list of rms to be from min to max so you can eliminate n_erase
+        
+        sorted_pop_rms = argsort(plane_finder['rms_dist'])
+        #print(f'Index {i}, sorted rms {sorted_pop_rms}')
+        to_erase = []
+        for e in range(n_erase):
+            i_to_erase = sorted_pop_rms[-(e+1)]
+            to_erase.append(i_to_erase)
+
+        for m in range(n_avg_mutants):
+
+            #add the average of all the erased
+            avg_u1 = np.mean([plane_finder['u1'][k] for i,k in enumerate(to_erase)])
+            avg_u2 = np.mean([plane_finder['u2'][k] for i,k in enumerate(to_erase)])
+            avg_u3 = np.mean([plane_finder['u3'][k] for i,k in enumerate(to_erase)])
+
+
+            cos_theta_avg = 2*avg_u1 - 1   #makes sure cos_theta is bw -1,1
+
+            sin_theta_avg = np.sqrt(1-cos_theta_avg**2)
+            #randomly select sign of arccos 
+
+            if avg_u3 <= 0.5:
+                sin_theta_avg = -1*sin_theta_avg
+
+
+            phi_avg = 2*np.pi*avg_u2  #[0,2*pi] 
+
+            nx_avg = np.cos(phi_avg)*sin_theta_avg
+            ny_avg = np.sin(phi_avg)*sin_theta_avg
+            nz_avg = cos_theta_avg
+            n_avg = np.array([nx_avg,ny_avg,nz_avg])
+            mag_n_avg = np.linalg.norm(n_avg)
+            unit_n_avg = n_avg/mag_n_avg
+
+            #now that you're done using to be erased data, erase it
+            plane_finder['rms_dist'].pop(i_to_erase)
+            plane_finder['u1'].pop(i_to_erase)
+            plane_finder['u2'].pop(i_to_erase)
+            plane_finder['u3'].pop(i_to_erase)
+            plane_finder['nx'].pop(i_to_erase)
+            plane_finder['ny'].pop(i_to_erase)
+            plane_finder['nz'].pop(i_to_erase)
+
+
+            #add the avg to the population
+            avg_rms = fitness(system,level,unit_n_avg)
+            plane_finder['rms_dist'].append(avg_rms)
+            plane_finder['u1'].append(avg_u1)
+            plane_finder['u2'].append(avg_u2)
+            plane_finder['u3'].append(avg_u3)
+            plane_finder['nx'].append(nx_avg)
+            plane_finder['ny'].append(ny_avg)
+            plane_finder['nz'].append(nz_avg)
+
+
+        #add true mutants to the population
+        for t in range(n_mutants):
+            u1 = random.uniform(0,1) #[0,1]  
+            u2 = random.uniform(0,1) #[0,1]
+            u3 = random.uniform(0,1) #sign
+
+            cos_theta = 2*u1 - 1   #makes sure cos_theta is bw -1,1
+            sin_theta = np.sqrt(1-cos_theta**2)
+
+            #randomly select sign of arccos 
+            if u3 <= 0.5:
+                sin_theta = -1*sin_theta
+
+
+            phi = 2*np.pi*u2  #[0,2*pi] 
+
+            nx = np.cos(phi)*sin_theta
+            ny = np.sin(phi)*sin_theta
+            nz = cos_theta
+            n = np.array([nx,ny,nz])
+            mag_n = np.linalg.norm(n)
+            unit_n = n/mag_n
+
+
+            #find the distance/rms of these new guys and add them to the rms list
+            mut_rms = fitness(system,level,unit_n)
+
+            #add them all to the existing population
+            plane_finder['rms_dist'].append(mut_rms)
+            plane_finder['u1'].append(u1)
+            plane_finder['u2'].append(u2)
+            plane_finder['u3'].append(u3)
+            plane_finder['nx'].append(nx)
+            plane_finder['ny'].append(ny)
+            plane_finder['nz'].append(nz)
+
+
+
+
+
+
+        i+=1
+
+    #return the best plane
+    
+    u1_a = np.asarray(plane_finder['u1'])
+    u2_a = np.asarray(plane_finder['u2'])
+    u3_a = np.asarray(plane_finder['u3'])
+    rms_a = plane_finder['rms_dist']
+
+    
+    best_plane = np.argmin(rms_a)
+    best_rms = plane_finder['rms_dist'][best_plane]
+    
+    if verbose:
+        print(f'Fitting to {nsats} satellites...')  
+        print('best plane index:',best_plane)
+        print('Best plane has:')
+        print('Cos(theta):', 2*u1_a[best_plane] - 1 )
+        print('Phi',2*np.pi*u2)
+        print(f'u1 = {u1_a[best_plane]}; u2 = {u2_a[best_plane]}')
+        print(f'Best rms = {best_rms}')
+    
+    return u1_a[best_plane],u2_a[best_plane],u3_a[best_plane]
+
+##### ARCHIVED PLANE FINDER -- USES BRUTE FORCE
+"""
+def best_plane(systems,system,level=1,n=10,mock=False,rand=False,verbose=False):
+    """
+    #Input: systems,dict: all MW sytems
+           #specifiy level = 1 for all true satellites
+                    #level = 2 for galactic plane
+                    #level = 0 *dummy 
+           #n,int: number of iterations
+    #Returns: best_u1,best_u2,best_u3,nx,ny,nz,rms,best_rms,delta_s,best_cos_theta
     """
     if verbose:
         if not mock:
@@ -223,7 +435,7 @@ def best_plane(systems,system,level=1,n=10,mock=False,rand=False,verbose=False):
         print(f'Best rms = {best_rms}')
     
     return u1_a[best_plane],u2_a[best_plane],u3_a[best_plane],plane_finder['nx'],plane_finder['ny'],plane_finder['nz'],plane_finder['rms_dist'],best_rms,plane_finder['delta_s'],cos_theta_a[best_plane]
-        
+"""      
 
 
 def get_plane(u1,u2,u3,systems,system,mock=False):
