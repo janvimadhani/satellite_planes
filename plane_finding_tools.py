@@ -52,6 +52,12 @@ def evolutionary_plane_finder(systems,system,n_iter,n_start,n_erase,n_avg_mutant
            n,int: number of iterations
     Returns: best_u1,best_u2,best_u3,
     """
+
+    if rand:
+        nsats = len(system['sat_px'])
+    else:
+        level_sats = np.where(systems[system]['sat_levels'] == level)
+        nsats = len(level_sats[0])
     
     def fitness(system,level,unit_n,random=rand):
         if random:
