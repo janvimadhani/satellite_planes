@@ -14,8 +14,9 @@ systems = pf.read_systems(systems_file)
 
 # JUST CHECK WITH ONE RIGHT NOW
 #syst = 46
-for i in range(len(systems)):
-    syst = i 
+for syst in range(len(systems)):
+ 
+    print('System with Halo ID:', systems[syst]['halo_ID'])
 
     best_u1,best_u2,best_u3,best_rms = pf.evolutionary_plane_finder(systems=systems,system=syst,n_iter=200,n_start=25,n_erase=10,n_avg_mutants=5,level=1,rand=False,verbose=True)
     z_best,xx,yy,unit_n = pf.get_plane(u1=best_u1,u2=best_u2,u3=best_u3,systems=systems,system=syst)
