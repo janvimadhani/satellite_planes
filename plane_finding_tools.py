@@ -255,14 +255,14 @@ def evolutionary_plane_finder(systems,system,n_iter,n_start,n_erase,n_avg_mutant
 ##### ARCHIVED PLANE FINDER -- USES BRUTE FORCE
 """
 def best_plane(systems,system,level=1,n=10,mock=False,rand=False,verbose=False):
-    """
-    #Input: systems,dict: all MW sytems
-           #specifiy level = 1 for all true satellites
-                    #level = 2 for galactic plane
-                    #level = 0 *dummy 
-           #n,int: number of iterations
-    #Returns: best_u1,best_u2,best_u3,nx,ny,nz,rms,best_rms,delta_s,best_cos_theta
-    """
+    
+    Input: systems,dict: all MW sytems
+           specifiy level = 1 for all true satellites
+                    level = 2 for galactic plane
+                    level = 0 *dummy 
+           n,int: number of iterations
+    Returns: best_u1,best_u2,best_u3,nx,ny,nz,rms,best_rms,delta_s,best_cos_theta
+    
     if verbose:
         if not mock:
             print(f'Fitting plane to level {level} satellites... ')
