@@ -147,6 +147,14 @@ class MWsystems:
         halo_py = np.asarray(halo_py)
         halo_pz = np.asarray(halo_pz)
 
+        halo_a = [self.haloes['haloes'][i]['a'] for i in range(nhaloes)]
+        halo_b = [self.haloes['haloes'][i]['b'] for i in range(nhaloes)]
+        halo_c = [self.haloes['haloes'][i]['c'] for i in range(nhaloes)]
+
+        halo_a = np.asarray(halo_a)
+        halo_b = np.asarray(halo_b)
+        halo_c = np.asarray(halo_c)
+
         #get IDs
         halo_ID = [self.haloes['haloes'][i]['my_number'] for i in range(nhaloes)]
         halo_ID = np.asarray(halo_ID)
@@ -168,6 +176,9 @@ class MWsystems:
         halo_px = halo_px[halo_zoom]
         halo_py = halo_py[halo_zoom]
         halo_pz = halo_pz[halo_zoom]
+        halo_a = halo_a[halo_zoom]
+        halo_b = halo_b[halo_zoom]
+        halo_c = halo_c[halo_zoom]
         halo_rvir = halo_rvir[halo_zoom]
         halo_ID = halo_ID[halo_zoom]   
 
@@ -275,6 +286,9 @@ class MWsystems:
                 h_lz = halo_lz[host_halo_mask]
                 h_lev = halo_level[host_halo_mask]
                 h_id = halo_ID[host_halo_mask]
+                h_a = halo_a[host_halo_mask]
+                h_b = halo_b[host_halo_mask]
+                h_c = halo_c[host_halo_mask]
                 
                 h_angmom = np.sqrt(h_lz**2 + h_ly**2 + h_lx**2)
                 h_iz = np.degrees(np.arccos(h_lz/h_angmom))
@@ -287,6 +301,9 @@ class MWsystems:
                 system['halo_px'] = h_px
                 system['halo_py'] = h_py
                 system['halo_pz'] = h_pz
+                system['halo_a'] = h_a
+                system['halo_b'] = h_b
+                system['halo_c'] = h_c
                 system['halo_rvir'] = hrvir
                 system['halo_mass'] = host_halo_mass
                 system['halo_level'] = h_lev
