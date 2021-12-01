@@ -633,7 +633,7 @@ def rand_spherical_dist(systems,system,level=1):
 
     #redistribute satellites, preserving their separation vector, but new angles
 
-    level_sats = np.where(syst['sat_levels'] == level)
+    level_sats = np.where(system['sat_levels'] == level)
     nsats = len(level_sats[0]) 
 
     for k in range(nsats):
