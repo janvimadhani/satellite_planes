@@ -512,7 +512,7 @@ def get_plane(u1,u2,u3,systems,system,mock=False):
     
     return z,xx,yy,unit_n
 
-def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best):
+def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best,inertia=None):
     ## Figure for presentation
 
     fig = plt.figure(figsize=[8,6])
@@ -542,9 +542,23 @@ def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best):
 
     #plot the plane
     plane = ax.plot_surface((xx-MW_x)*M_to_k,(yy-MW_y)*M_to_k, (z_best-MW_z)*M_to_k,color='k' ,alpha=0.4)
+    plane_extent = np.max((xx-MW_x)*M_to_k) - np.min((xx-MW_x)*M_to_k)
+    plane_extent = round(plane_extent,5)
 
 
-    ax.set_title(r'MW type Satellite System, $N_{nsats}$ =' + f'{nsats}',y=1.15)
+    if inertia:
+        v1,v2,v3,c_to_a = inertia[0],inertia[1],inertia[2],inertia[3]
+        vec1 = ax.quiver((systems[syst]['MW_px']-MW_x)*M_to_k,(systems[syst]['MW_py']-MW_y)*M_to_k,(systems[syst]['MW_pz']-MW_z)*M_to_k,
+                 v1[0],v1[1],v1[2],color='black', length= 200, normalize=True,label='Axes of Rotation')
+        vec2 = ax.quiver((systems[syst]['MW_px']-MW_x)*M_to_k,(systems[syst]['MW_py']-MW_y)*M_to_k,(systems[syst]['MW_pz']-MW_z)*M_to_k,
+                 v2[0],v2[1],v2[2],color='black', length= 200, normalize=True)
+        vec3 = ax.quiver((systems[syst]['MW_px']-MW_x)*M_to_k,(systems[syst]['MW_py']-MW_y)*M_to_k,(systems[syst]['MW_pz']-MW_z)*M_to_k,
+                 v3[0],v3[1],v3[2],color='black', length= 200, normalize=True)
+
+        c_to_a = round(c_to_a,5)
+        ax.set_title(r'MW type Satellite System, $N_{nsats}$ =' + f'{nsats}\n Physical extent: {plane_extent}, Inertial extent:{c_to_a}',y=1.15)
+    else:
+        ax.set_title(r'MW type Satellite System, $N_{nsats}$ =' + f'{nsats}',y=1.15)
     plt.colorbar(imsats,label=r'Velocity of Satellites [km/s]')
     ax.autoscale('False')
     ax.set_xlabel('X [kpc]')
@@ -619,80 +633,23 @@ def rand_spherical_dist(systems,system,level=1):
 
     #redistribute satellites, preserving their separation vector, but new angles
 
-    if level == 1:
-        level_one_sats = np.where(systems[system]['sat_levels'] == 1)
-        nsats = len(level_one_sats[0]) 
-        for k in range(nsats):
-            x,y,z = systems[system]['sat_pxs'][level_one_sats][k],systems[system]['sat_pys'][level_one_sats][k],systems[system]['sat_pzs'][level_one_sats][k]
-            rx,ry,rz = x-x0,y-y0,z-z0
-            r = np.sqrt(rx**2 + ry**2 + rz**2)
-            
-            cos_theta,sin_theta, phi = rand_angle()
-            
-            xp = r*np.cos(phi)*sin_theta + x0
-            yp = r*np.sin(phi)*sin_theta + y0
-            zp = r*cos_theta + z0
+    level_sats = np.where(syst['sat_levels'] == level)
+    nsats = len(level_sats[0]) 
 
-            spherical_isotropy['sat_x'].append(xp)
-            spherical_isotropy['sat_y'].append(yp)
-            spherical_isotropy['sat_z'].append(zp)
+    for k in range(nsats):
+        x,y,z = systems[system]['sat_pxs'][level_sats][k],systems[system]['sat_pys'][level_sats][k],systems[system]['sat_pzs'][level_sats][k]
+        rx,ry,rz = x-x0,y-y0,z-z0
+        r = np.sqrt(rx**2 + ry**2 + rz**2)
+        
+        cos_theta,sin_theta, phi = rand_angle()
+        
+        xp = r*np.cos(phi)*sin_theta + x0
+        yp = r*np.sin(phi)*sin_theta + y0
+        zp = r*cos_theta + z0
 
-
-    elif level == 2:
-        level_two_sats = np.where(systems[system]['sat_levels'] == 2)
-        nsats = len(level_two_sats[0])
-
-        for k in range(nsats):
-            x,y,z = systems[system]['sat_pxs'][level_two_sats][k],systems[system]['sat_pys'][level_two_sats][k],systems[system]['sat_pzs'][level_two_sats][k]
-            rx,ry,rz = x-x0,y-y0,z-z0
-            r = np.sqrt(rx**2 + ry**2 + rz**2)
-            
-            cos_theta,sin_theta, phi = rand_angle()
-            
-            xp = rx*np.cos(phi)*sin_theta + x0
-            yp = ry*np.sin(phi)*sin_theta + y0 
-            zp = rz*cos_theta + z0
-
-            spherical_isotropy['sat_x'].append(xp)
-            spherical_isotropy['sat_y'].append(yp)
-            spherical_isotropy['sat_z'].append(zp)
-
-
-    elif level == 3:
-        level_three_sats = np.where(systems[system]['sat_levels'] == 3)
-        nsats = len(level_three_sats[0])
-
-        for k in range(nsats):
-            x,y,z = systems[system]['sat_pxs'][level_three_sats][k],systems[system]['sat_pys'][level_three_sats][k],systems[system]['sat_pzs'][level_three_sats][k]
-            rx,ry,rz = x-x0,y-y0,z-z0
-            r = np.sqrt(rx**2 + ry**2 + rz**2)
-            
-            cos_theta,sin_theta, phi = rand_angle()
-            
-            xp = rx*np.cos(phi)*sin_theta + x0
-            yp = ry*np.sin(phi)*sin_theta + y0
-            zp = rz*cos_theta + z0
-
-            spherical_isotropy['sat_x'].append(xp)
-            spherical_isotropy['sat_y'].append(yp)
-            spherical_isotropy['sat_z'].append(zp)
-
-    else:
-
-        for k in range(len(systems[system]['sat_pxs'])):
-            x,y,z = systems[system]['sat_pxs'][k],systems[system]['sat_pys'][k],systems[system]['sat_pzs'][k]
-            rx,ry,rz = x-x0,y-y0,z-z0
-            r = np.sqrt(rx**2 + ry**2 + rz**2)
-            
-            cos_theta,sin_theta, phi = rand_angle()
-            
-            xp = rx*np.cos(phi)*sin_theta + x0 
-            yp = ry*np.sin(phi)*sin_theta + y0 
-            zp = rz*cos_theta + z0
-
-            spherical_isotropy['sat_x'].append(xp)
-            spherical_isotropy['sat_y'].append(yp)
-            spherical_isotropy['sat_z'].append(zp)
+        spherical_isotropy['sat_x'].append(xp)
+        spherical_isotropy['sat_y'].append(yp)
+        spherical_isotropy['sat_z'].append(zp)
 
 
     return spherical_isotropy['sat_x'],spherical_isotropy['sat_y'],spherical_isotropy['sat_z']
@@ -775,6 +732,56 @@ def save_hist(name_of_plot,best_rms,mean_rms,snapshot,histbins=70):
 
     print(f'Saving histogram to:  {results_dir + name_of_plot}')
     plt.savefig(results_dir + name_of_plot)
+
+
+
+######################################
+# Line of Sight Analysis
+######################################
+
+
+def find_inertia_tensor(syst,level=1):
+    """
+    Input: dictionary, syst
+           integer, level: what level sats you're looking at the inertia tensor of
+    Returns: 3x3 array, inertia tensor 
+    """
+    level_sats = np.where(syst['sat_levels'] == level)
+    nsats = len(level_sats[0]) 
+    sat_ms = syst['sat_mvirs'][level_sats]
+    sat_ms /= 10e8
+    sat_xs = syst['sat_pxs'][level_sats]
+    sat_ys = syst['sat_pys'][level_sats]
+    sat_zs = syst['sat_pzs'][level_sats]
+
+    Ixx = np.sum([(sat_ys[i]**2 + sat_zs[i]**2) * sat_ms[i] for i in range(nsats)])
+    Iyy = np.sum([(sat_xs[i]**2 + sat_zs[i]**2) * sat_ms[i] for i in range(nsats)])
+    Izz = np.sum([(sat_xs[i]**2 + sat_ys[i]**2) * sat_ms[i] for i in range(nsats)])
+    Ixy = np.sum([(sat_xs[i] * sat_ys[i]) * sat_ms[i] for i in range(nsats)])
+    Ixz = np.sum([(sat_xs[i] * sat_zs[i]) * sat_ms[i] for i in range(nsats)])
+    Iyz = np.sum([(sat_ys[i] * sat_zs[i]) * sat_ms[i] for i in range(nsats)])
+    
+    Iyx = Ixy
+    Izx = Ixz
+    Izy = Iyz
+    
+    I = np.array(((Ixx,-Ixy,-Ixz),(-Iyx,Iyy,-Iyz),(-Izx,-Izy,Izz)))
+
+    return I 
+
+def find_axes_of_rot(I):
+    evals,evec = np.linalg.eig(I)
+    vec1,vec2,vec3 = evec[:,0],evec[:,1],evec[:,2]
+    return vec1,vec2,vec3
+
+
+def find_axes_ratios(I):
+    evals,evec = np.linalg.eig(I)
+    lam1, lam2, lam3 = evals[0],evals[1],evals[2]
+    
+    c_to_a = np.sqrt(lam3 + lam2 - lam1) / np.sqrt(lam1 + lam2 - lam3)
+    
+    return c_to_a
 
    
         
