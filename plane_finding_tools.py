@@ -543,7 +543,7 @@ def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best,inertia=None):
     #plot the plane
     plane = ax.plot_surface((xx-MW_x)*M_to_k,(yy-MW_y)*M_to_k, (z_best-MW_z)*M_to_k,color='k' ,alpha=0.4)
     plane_extent = np.max((xx-MW_x)*M_to_k) - np.min((xx-MW_x)*M_to_k)
-    plane_extent = round(plane_extent,5)
+    plane_extent = "{0:.2f}".format(plane_extent)
 
 
     if inertia:
@@ -555,7 +555,7 @@ def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best,inertia=None):
         vec3 = ax.quiver((systems[syst]['MW_px']-MW_x)*M_to_k,(systems[syst]['MW_py']-MW_y)*M_to_k,(systems[syst]['MW_pz']-MW_z)*M_to_k,
                  v3[0],v3[1],v3[2],color='black', length= 200, normalize=True)
 
-        c_to_a = round(c_to_a,5)
+        c_to_a = "{0:.2f}".format(c_to_a)
         ax.set_title(r'MW type Satellite System, $N_{nsats}$ =' + f'{nsats}\n Physical extent: {plane_extent}, Inertial extent:{c_to_a}',y=1.15)
     else:
         ax.set_title(r'MW type Satellite System, $N_{nsats}$ =' + f'{nsats}',y=1.15)

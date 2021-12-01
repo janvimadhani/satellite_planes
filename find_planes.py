@@ -34,9 +34,9 @@ for syst in range(len(systems)):
 
 
     #check for isotropy n times and find n rms dists
-    iso_systs_rms = pf.check_isotropy(systems=systems,syst=syst,n=2000)
+    #iso_systs_rms = pf.check_isotropy(systems=systems,syst=syst,n=2000)
 
 
-    name_of_hist = 'system_' + str(syst) +'_hist.png'
-    pf.save_hist(name_of_hist,best_rms,iso_systs_rms,snapshot=snapshot)
+    #name_of_hist = 'system_' + str(syst) +'_hist.png'
+    #pf.save_hist(name_of_hist,best_rms,iso_systs_rms,snapshot=snapshot)
 
