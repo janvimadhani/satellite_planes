@@ -29,7 +29,7 @@ for syst in range(len(systems)):
     inertia = [v1,v2,v3,c_to_a]
 
     name_of_3dplot = 'system_' + str(syst) +'.png'
-    pf.save_3Dplot(name_of_3dplot,systems=systems,syst=syst,snapshot=snapshot,xx=xx,yy=yy,z_best=z_best,inertia)
+    pf.save_3Dplot(name_of_3dplot,systems=systems,syst=syst,snapshot=snapshot,xx=xx,yy=yy,z_best=z_best,inertia=inertia)
 
 
 
