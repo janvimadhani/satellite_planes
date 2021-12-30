@@ -778,6 +778,8 @@ def find_axes_of_rot(I):
 def find_axes_ratios(I):
     evals,evec = np.linalg.eig(I)
     lam1, lam2, lam3 = evals[0],evals[1],evals[2]
+
+    lam3,lam2,lam1 = np.sort([lam1,lam2,lam3])
     
     c_to_a = np.sqrt(lam3 + lam2 - lam1) / np.sqrt(lam1 + lam2 - lam3)
     
