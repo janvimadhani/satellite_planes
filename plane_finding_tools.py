@@ -812,43 +812,83 @@ def find_physical_extent(u1,u2,u3,systems,system,actual_rms,nrms = 2,level=1):
     unit_n = n/mag_n
     
     
-     #calculate distances to best plane, then the extent
+    unx, uny, unz = unit_n[0],unit_n[1],unit_n[2]
+    
+    
+    #calculate distances to best plane, then the extent
     x0 = systems[system]['MW_px'][0]
     y0 = systems[system]['MW_py'][0]
     z0 = systems[system]['MW_pz'][0]
+    
+    
 
     gal_center = np.array([x0,y0,z0])
-    
-    n = np.array([nx,ny,nz])
-    mag_n = np.linalg.norm(n)
-    unit_n = n/mag_n
+
 
     d = np.dot(-gal_center,unit_n)
     
     distances = []
+    sep_vect = []
     #calculate the distance of ALL the sats (needed for shape)
     for k in range(len(systems[system]['sat_pxs'])):
         x,y,z = systems[system]['sat_pxs'][k],systems[system]['sat_pys'][k],systems[system]['sat_pzs'][k]
+        rx,ry,rz = x-x0,y-y0,z-z0
+        r = np.sqrt(rx**2 + ry**2 + rz**2)
         s = dist(x,y,z,unit_n,d)
         distances.append(s) 
+        sep_vect.append(r)
         
         
     distances = np.asarray(distances)
+    sep_vect = np.asarray(sep_vect)
+    
     #find satellites within n * rms AND right level
     #nrms = the number of rms within which you want to consider satellites as "on-plane"
     win_rms = np.where((distances <= nrms * actual_rms) & (systems[system]['sat_levels'] == level))
+    
+    
+    distances = distances[win_rms]
     x_win_rms = systems[system]['sat_pxs'][win_rms]
     y_win_rms = systems[system]['sat_pys'][win_rms]
     z_win_rms = systems[system]['sat_pzs'][win_rms]
+    sep_vect = sep_vect[win_rms]
     
+    xdists = []
+    ydists = []
+    
+    
+    #Now use similar triangles, using the separation vector's projection on the plane (the satellite's hypotenuse)
+    #and the hypotenuse of the normal vector's projection on the plane, ie. the unit nx and ny vector's hyp
+    
+    u_n_hyp = np.sqrt(unx**2 + uny**2)
+    
+    #projection of sep vectors on plane
+    a1 = np.sqrt(sep_vect**2 - distances**2)
+    
+    #x extents
+    a2 = unx * (a1/u_n_hyp)  
+    
+    #y extents 
+    
+    a3 = uny * (a1/u_n_hyp) 
+    
+    xmin, xmax = np.min(a2), np.max(a2)
+    ymin, ymax = np.min(a3), np.max(a3)
+    zmin, zmax = np.min(distances), np.max(distances)  
+    
+    
+
+    """
     xmin, xmax = np.min(x_win_rms), np.max(x_win_rms)
     ymin, ymax = np.min(y_win_rms), np.max(y_win_rms)
     zmin, zmax = np.min(z_win_rms), np.max(z_win_rms)
+    """
     
     M_to_k = 1000
     x_extent = np.abs(xmax-xmin) * M_to_k
     y_extent = np.abs(ymax-ymin) * M_to_k
     z_extent = np.abs(zmax-zmin) * M_to_k
+
     
 
     #print(xmin,xmax,ymin,ymax,zmin,zmax)
