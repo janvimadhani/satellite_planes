@@ -624,7 +624,7 @@ def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best,los,unit_n,phys_
         ax.set_title(r'MW type Satellite System, $N_{nsats}$ =' + f'{nsats}\n Physical extent, c/a:{p_c_to_a}, Inertial extent, c/a:{i_c_to_a}',y=1.15)
     else:
         ax.set_title(r'MW type Satellite System, $N_{nsats}$ =' + f'{nsats}',y=1.15)
-    plt.colorbar(imsats,label=r'Velocity of Satellites [km/s]')
+    #plt.colorbar(imsats,label=r'Velocity of Satellites [km/s]')
     ax.autoscale('False')
     ax.set_xlabel('X [kpc]')
     ax.set_ylabel('Y [kpc]')
