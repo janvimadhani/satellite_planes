@@ -515,14 +515,50 @@ def get_plane(u1,u2,u3,systems,system,mock=False):
     
     return z,xx,yy,unit_n,los
 
+def project_on_los(sat_velocity,los):
+    """
+    Input: sat_velocity, array: [vx,vy,vz]
+           line of sight, array: [nx,0,0] for example
+    Returns: component of sat_velocity along line of sight
+    
+    Make sure satellite velocity is in frame of ref of central, i.e. subtract off central velociy first
+    """
+    
+    dot = np.dot(sat_velocity,los)
+    
+    mag_los = np.linalg.norm(los)
+    unit_los = los/mag_los
+    
+    projection = (dot/mag_los) * unit_los
+    
+    return projection
 
-def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best,los,phys_ext,inertia=None):
+
+def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best,los,unit_n,phys_ext,inertia=None):
     ## Figure for presentation
     p_a,p_b,p_c,p_c_to_a = phys_ext[0],phys_ext[1],phys_ext[2],phys_ext[3]
 
+    #project sat velocities onto nx vector of the plane 
+    project_onto = np.array([unit_n[0],0,0]) #change this vector if you want to project onto a different vector
+
+    projected_v = []
+    mv = np.array([systems[syst]['MW_vx'],systems[syst]['MW_vy'],systems[syst]['MW_vz']])
+
+    for i in range(len(systems[syst]['sat_vxs'])):
+        sv = np.array([systems[syst]['sat_vxs'][i],systems[syst]['sat_vys'][i],systems[syst]['sat_vzs'][i] ])
+        v = sv-mv
+        p_los = project_onto
+        
+        vx = project_on_los(v,p_los)
+        
+        projected_v.append(vx[0]) #change this if you're projecting onto some component other than x
+    projected_v = np.asarray(projected_v)
+
     fig = plt.figure(figsize=[8,6])
     ax = plt.axes(projection='3d')
-    ax.view_init(los[0],los[1])
+
+    #initialize the plane edge on 
+    ax.view_init(np.degrees(los[0]),np.degrees(los[1]))
 
     M_to_k = 1000
     MW_x,MW_y,MW_z = systems[syst]['MW_px'],systems[syst]['MW_py'],systems[syst]['MW_pz']
@@ -535,8 +571,13 @@ def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best,los,phys_ext,ine
         sat = Circle(((systems[syst]['sat_pxs'][i]-MW_x)*M_to_k, (systems[syst]['sat_pys'][i] - MW_y)*M_to_k), radius=systems[syst]['sat_rvirs'][i]*M_to_k,color='black',alpha=0.4)
         ax.add_patch(sat)
         art3d.pathpatch_2d_to_3d(sat, (systems[syst]['sat_pzs'][i]-MW_z)*M_to_k, zdir="z")
+    #colored by x line of sight velocity
+    #imsats = ax.scatter3D((systems[syst]['sat_pxs'] - MW_x)*M_to_k,(systems[syst]['sat_pys']- MW_y)*M_to_k,(systems[syst]['sat_pzs'] - MW_z)*M_to_k,
+                        #s=systems[syst]['sat_rvirs']*M_to_k*scaleby**2,c=20*(systems[syst]['sat_vxs']-systems[syst]['MW_vx']),cmap='seismic',vmin=-300,vmax=300,alpha=0.8,label='Satellites')
+    
+    #colored by los along nx vector of plane
     imsats = ax.scatter3D((systems[syst]['sat_pxs'] - MW_x)*M_to_k,(systems[syst]['sat_pys']- MW_y)*M_to_k,(systems[syst]['sat_pzs'] - MW_z)*M_to_k,
-                        s=systems[syst]['sat_rvirs']*M_to_k*scaleby**2,c=20*(systems[syst]['sat_vxs']-systems[syst]['MW_vx']),cmap='seismic',vmin=-300,vmax=300,alpha=0.8,label='Satellites')
+                        s=systems[syst]['sat_rvirs']*M_to_k*scaleby**2,c=projected_v,cmap='seismic',vmin=-300,vmax=300,alpha=0.8,label='Satellites')
     imcentral = ax.scatter3D((systems[syst]['MW_px']- MW_x)*M_to_k,(systems[syst]['MW_py']- MW_y)*M_to_k ,(systems[syst]['MW_pz'] - MW_z)*M_to_k,
                         s=systems[syst]['MW_rvir']*M_to_k*scaleby**2,c='slateblue',edgecolors='darkblue',alpha=0.4,label='Central')
     #spin = ax.quiver((systems[syst]['MW_px']-MW_x)*M_to_k,(systems[syst]['MW_py']-MW_y)*M_to_k,(systems[syst]['MW_pz']-MW_z)*M_to_k,
