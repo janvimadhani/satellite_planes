@@ -560,7 +560,7 @@ def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best,los,unit_n,phys_
     ax = plt.axes(projection='3d')
 
     #initialize the plane edge on 
-    ax.view_init(np.degrees(los[0]),np.degrees(los[1]))
+    #ax.view_init(np.degrees(los[0]),np.degrees(los[1]))
 
     M_to_k = 1000
     MW_x,MW_y,MW_z = systems[syst]['MW_px'],systems[syst]['MW_py'],systems[syst]['MW_pz']
