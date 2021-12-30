@@ -581,8 +581,17 @@ def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best,los,unit_n,phys_
     
     #colored by los along nx vector of plane
     #"""
-    imsats = ax.scatter3D((systems[syst]['sat_pxs'] - MW_x)*M_to_k,(systems[syst]['sat_pys']- MW_y)*M_to_k,(systems[syst]['sat_pzs'] - MW_z)*M_to_k,
-                        s=systems[syst]['sat_rvirs']*M_to_k*scaleby**2,c=projected_v,cmap='seismic',vmin=-300,vmax=300,alpha=0.8,label='Satellites')
+    for i in range(len(systems[syst]['sat_pxs'] )):
+        color = projected_v[i]
+        if color > 0:
+            ax.scatter3D((systems[syst]['sat_pxs'][i] - MW_x)*M_to_k,(systems[syst]['sat_pys'][i]- MW_y)*M_to_k,(systems[syst]['sat_pzs'][i] - MW_z)*M_to_k,
+                        s=systems[syst]['sat_rvirs'][i]*M_to_k*scaleby**2,c='blue',alpha=0.8)
+        else:
+            ax.scatter3D((systems[syst]['sat_pxs'][i] - MW_x)*M_to_k,(systems[syst]['sat_pys'][i]- MW_y)*M_to_k,(systems[syst]['sat_pzs'][i] - MW_z)*M_to_k,
+                        s=systems[syst]['sat_rvirs'][i]*M_to_k*scaleby**2,c='red',alpha=0.8)
+    
+    #imsats = ax.scatter3D((systems[syst]['sat_pxs'] - MW_x)*M_to_k,(systems[syst]['sat_pys']- MW_y)*M_to_k,(systems[syst]['sat_pzs'] - MW_z)*M_to_k,
+                        #s=systems[syst]['sat_rvirs']*M_to_k*scaleby**2,c=projected_v,cmap='seismic',vmin=-300,vmax=300,alpha=0.8,label='Satellites')
 
     #"""
     
