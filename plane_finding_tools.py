@@ -512,9 +512,9 @@ def get_plane(u1,u2,u3,systems,system,mock=False):
     
     return z,xx,yy,unit_n
 
-def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best,inertia=None):
+def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best,phys_c_to_a,inertia=None):
     ## Figure for presentation
-
+    physical_extent = phys_c_to_a
     fig = plt.figure(figsize=[8,6])
     ax = plt.axes(projection='3d')
 
@@ -542,8 +542,8 @@ def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best,inertia=None):
 
     #plot the plane
     plane = ax.plot_surface((xx-MW_x)*M_to_k,(yy-MW_y)*M_to_k, (z_best-MW_z)*M_to_k,color='k' ,alpha=0.4)
-    plane_extent = np.max((xx-MW_x)*M_to_k) - np.min((xx-MW_x)*M_to_k)
-    plane_extent = "{0:.2f}".format(plane_extent)
+    #plane_extent = np.max((xx-MW_x)*M_to_k) - np.min((xx-MW_x)*M_to_k)
+    #plane_extent = "{0:.2f}".format(plane_extent)
 
 
     if inertia:
@@ -556,7 +556,7 @@ def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best,inertia=None):
                  v3[0],v3[1],v3[2],color='black', length= 200, normalize=True)
 
         c_to_a = "{0:.2f}".format(c_to_a)
-        ax.set_title(r'MW type Satellite System, $N_{nsats}$ =' + f'{nsats}\n Physical extent: {plane_extent}, Inertial extent:{c_to_a}',y=1.15)
+        ax.set_title(r'MW type Satellite System, $N_{nsats}$ =' + f'{nsats}\n Physical extent, c/a:{physical_extent}, Inertial extent, c/a:{c_to_a}',y=1.15)
     else:
         ax.set_title(r'MW type Satellite System, $N_{nsats}$ =' + f'{nsats}',y=1.15)
     plt.colorbar(imsats,label=r'Velocity of Satellites [km/s]')
@@ -567,7 +567,7 @@ def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best,inertia=None):
     plt.legend(loc="upper left", markerscale=.4)
 
     #"""
-    extent = 500 #kpc
+    extent = 600 #kpc
     ax.set_xlim(-extent,extent)
     ax.set_ylim(-extent,extent)
     ax.set_zlim(-extent,extent)
@@ -736,7 +736,7 @@ def save_hist(name_of_plot,best_rms,mean_rms,snapshot,histbins=70):
 
 
 ######################################
-# Line of Sight Analysis
+# Line of Sight Analysis and Extent of Plane
 ######################################
 
 
@@ -782,6 +782,82 @@ def find_axes_ratios(I):
     c_to_a = np.sqrt(lam3 + lam2 - lam1) / np.sqrt(lam1 + lam2 - lam3)
     
     return c_to_a
+
+def find_physical_extent(u1,u2,u3,systems,system,actual_rms,nrms = 2,level=1):
+    
+    level_sats = np.where(systems[system]['sat_levels'] == level)
+    nsats = len(level_sats[0]) 
+    
+    #calc relevant angles 
+    
+    cos_theta = 2*u1 - 1   #makes sure cos_phi is bw 0,1
+
+    sin_theta = np.sqrt(1-cos_theta**2)
+    #randomly select sign of arccos 
+
+    if u3 <= 0.5:
+        sin_theta = -1*sin_theta
+
+
+    phi = 2*np.pi*u2  #[-pi,pi]  
+
+    nx = np.cos(phi)*sin_theta
+    ny = np.sin(phi)*sin_theta
+    nz = cos_theta
+    n = np.array([nx,ny,nz])
+    mag_n = np.linalg.norm(n)
+    unit_n = n/mag_n
+    
+    
+     #calculate distances to best plane, then the extent
+    x0 = systems[system]['MW_px'][0]
+    y0 = systems[system]['MW_py'][0]
+    z0 = systems[system]['MW_pz'][0]
+
+    gal_center = np.array([x0,y0,z0])
+    
+    n = np.array([nx,ny,nz])
+    mag_n = np.linalg.norm(n)
+    unit_n = n/mag_n
+
+    d = np.dot(-gal_center,unit_n)
+    
+    distances = []
+    #calculate the distance of ALL the sats (needed for shape)
+    for k in range(len(systems[system]['sat_pxs'])):
+        x,y,z = systems[system]['sat_pxs'][k],systems[system]['sat_pys'][k],systems[system]['sat_pzs'][k]
+        s = dist(x,y,z,unit_n,d)
+        distances.append(s) 
+        
+        
+    distances = np.asarray(distances)
+    #find satellites within n * rms AND right level
+    #nrms = the number of rms within which you want to consider satellites as "on-plane"
+    win_rms = np.where((distances <= nrms * actual_rms) & (systems[system]['sat_levels'] == level))
+    x_win_rms = systems[system]['sat_pxs'][win_rms]
+    y_win_rms = systems[system]['sat_pys'][win_rms]
+    z_win_rms = systems[system]['sat_pzs'][win_rms]
+    
+    xmin, xmax = np.min(x_win_rms), np.max(x_win_rms)
+    ymin, ymax = np.min(y_win_rms), np.max(y_win_rms)
+    zmin, zmax = np.min(z_win_rms), np.max(z_win_rms)
+    
+    M_to_k = 1000
+    x_extent = np.abs(xmax-xmin) * M_to_k
+    y_extent = np.abs(ymax-ymin) * M_to_k
+    z_extent = np.abs(zmax-zmin) * M_to_k
+    
+
+    #print(xmin,xmax,ymin,ymax,zmin,zmax)
+    print(x_extent,y_extent,z_extent)
+    
+    extents = [x_extent,y_extent,z_extent]
+    extents = sorted(extents)
+    c,b,a = extents[0], extents[1], extents[2]
+    c_to_a = c/a
+    return(a,b,c,c_to_a)
+
+    
 
    
         
