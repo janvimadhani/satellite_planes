@@ -574,17 +574,17 @@ def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best,los,unit_n,phys_
         ax.add_patch(sat)
         art3d.pathpatch_2d_to_3d(sat, (systems[syst]['sat_pzs'][i]-MW_z)*M_to_k, zdir="z")
     #colored by x line of sight velocity
-    #"""
+    """
     imsats = ax.scatter3D((systems[syst]['sat_pxs'] - MW_x)*M_to_k,(systems[syst]['sat_pys']- MW_y)*M_to_k,(systems[syst]['sat_pzs'] - MW_z)*M_to_k,
                         s=systems[syst]['sat_rvirs']*M_to_k*scaleby**2,c=20*(systems[syst]['sat_vxs']-systems[syst]['MW_vx']),cmap='seismic',vmin=-300,vmax=300,alpha=0.8,label='Satellites')
-    #"""
+    """
     
     #colored by los along nx vector of plane
-    """
+    #"""
     imsats = ax.scatter3D((systems[syst]['sat_pxs'] - MW_x)*M_to_k,(systems[syst]['sat_pys']- MW_y)*M_to_k,(systems[syst]['sat_pzs'] - MW_z)*M_to_k,
                         s=systems[syst]['sat_rvirs']*M_to_k*scaleby**2,c=projected_v,cmap='seismic',vmin=-300,vmax=300,alpha=0.8,label='Satellites')
 
-    """
+    #"""
     
     
     imcentral = ax.scatter3D((systems[syst]['MW_px']- MW_x)*M_to_k,(systems[syst]['MW_py']- MW_y)*M_to_k ,(systems[syst]['MW_pz'] - MW_z)*M_to_k,
