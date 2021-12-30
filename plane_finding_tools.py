@@ -538,7 +538,7 @@ def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best,los,unit_n,phys_
     ## Figure for presentation
     p_a,p_b,p_c,p_c_to_a = phys_ext[0],phys_ext[1],phys_ext[2],phys_ext[3]
 
-    """
+    #"""
     #project sat velocities onto nx vector of the plane 
     project_onto = np.array([unit_n[0],0,0]) #change this vector if you want to project onto a different vector
 
@@ -554,13 +554,13 @@ def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best,los,unit_n,phys_
         
         projected_v.append(vx[0]) #change this if you're projecting onto some component other than x
     projected_v = np.asarray(projected_v)
-    """
+    #"""
 
     fig = plt.figure(figsize=[8,6])
     ax = plt.axes(projection='3d')
 
     #initialize the plane edge on 
-    ax.view_init(np.degrees(los[0]),np.degrees(los[1]))
+    #ax.view_init(np.degrees(los[0]),np.degrees(los[1]))
 
     M_to_k = 1000
     MW_x,MW_y,MW_z = systems[syst]['MW_px'],systems[syst]['MW_py'],systems[syst]['MW_pz']
