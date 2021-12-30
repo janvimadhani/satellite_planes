@@ -23,8 +23,8 @@ for syst in range(len(systems)):
 
     #get physical extent, c_to_a:
     a,b,c,phys_c_to_a = pf.find_physical_extent(u1=best_u1,u2=best_u2,u3=best_u3,systems=systems,system=syst,actual_rms=best_rms,nrms = 2,level=1)
-
     phys_ext = [a,b,c,phys_c_to_a]
+
     #find inertia tensor
     I = pf.find_inertia_tensor(systems[syst])
     v1,v2,v3 = pf.find_axes_of_rot(I)
