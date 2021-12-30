@@ -509,15 +509,20 @@ def get_plane(u1,u2,u3,systems,system,mock=False):
     # calculate corresponding z
     z = (-unit_n[0] * xx - unit_n[1] * yy - d) * 1. /unit_n[2]
     #z = (- unit_n[1]*xx)/unit_n[2] - (unit_n[0]*yy)/unit_n[2]
-    
-    return z,xx,yy,unit_n
 
-def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best,phys_ext,inertia=None):
+    #line of sight,theta,phi  
+    los = [np.arccos(cos_theta),phi]
+    
+    return z,xx,yy,unit_n,los
+
+
+def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best,los,phys_ext,inertia=None):
     ## Figure for presentation
     p_a,p_b,p_c,p_c_to_a = phys_ext[0],phys_ext[1],phys_ext[2],phys_ext[3]
 
     fig = plt.figure(figsize=[8,6])
     ax = plt.axes(projection='3d')
+    ax.view_init(los[0],los[1])
 
     M_to_k = 1000
     MW_x,MW_y,MW_z = systems[syst]['MW_px'],systems[syst]['MW_py'],systems[syst]['MW_pz']

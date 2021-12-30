@@ -19,7 +19,7 @@ for syst in range(len(systems)):
     print('System with Halo ID:', systems[syst]['halo_ID'])
 
     best_u1,best_u2,best_u3,best_rms = pf.evolutionary_plane_finder(systems=systems,system=syst,n_iter=200,n_start=25,n_erase=10,n_avg_mutants=5,level=1,rand=False,verbose=True)
-    z_best,xx,yy,unit_n = pf.get_plane(u1=best_u1,u2=best_u2,u3=best_u3,systems=systems,system=syst)
+    z_best,xx,yy,unit_n,los = pf.get_plane(u1=best_u1,u2=best_u2,u3=best_u3,systems=systems,system=syst)
 
     #get physical extent, c_to_a:
     a,b,c,phys_c_to_a = pf.find_physical_extent(u1=best_u1,u2=best_u2,u3=best_u3,systems=systems,system=syst,actual_rms=best_rms,nrms = 2,level=1)
@@ -33,7 +33,7 @@ for syst in range(len(systems)):
     inertia = [v1,v2,v3,i_c_to_a]
 
     name_of_3dplot = 'system_' + str(syst) +'.png'
-    pf.save_3Dplot(name_of_3dplot,systems=systems,syst=syst,snapshot=snapshot,xx=xx,yy=yy,z_best=z_best,phys_ext = phys_ext, inertia=inertia)
+    pf.save_3Dplot(name_of_3dplot,systems=systems,syst=syst,snapshot=snapshot,xx=xx,yy=yy,z_best=z_best,los=los,phys_ext = phys_ext, inertia=inertia)
 
 
 
