@@ -512,9 +512,10 @@ def get_plane(u1,u2,u3,systems,system,mock=False):
     
     return z,xx,yy,unit_n
 
-def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best,phys_c_to_a,inertia=None):
+def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best,phys_ext,inertia=None):
     ## Figure for presentation
-    physical_extent = phys_c_to_a
+    p_a,p_b,p_c,p_c_to_a = phys_ext[0],phys_ext[1],phys_ext[2],phys_ext[3]
+
     fig = plt.figure(figsize=[8,6])
     ax = plt.axes(projection='3d')
 
@@ -547,7 +548,7 @@ def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best,phys_c_to_a,iner
 
 
     if inertia:
-        v1,v2,v3,c_to_a = inertia[0],inertia[1],inertia[2],inertia[3]
+        v1,v2,v3,i_c_to_a = inertia[0],inertia[1],inertia[2],inertia[3]
         vec1 = ax.quiver((systems[syst]['MW_px']-MW_x)*M_to_k,(systems[syst]['MW_py']-MW_y)*M_to_k,(systems[syst]['MW_pz']-MW_z)*M_to_k,
                  v1[0],v1[1],v1[2],color='black', length= 200, normalize=True,label='Axes of Rotation')
         vec2 = ax.quiver((systems[syst]['MW_px']-MW_x)*M_to_k,(systems[syst]['MW_py']-MW_y)*M_to_k,(systems[syst]['MW_pz']-MW_z)*M_to_k,
@@ -555,8 +556,8 @@ def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best,phys_c_to_a,iner
         vec3 = ax.quiver((systems[syst]['MW_px']-MW_x)*M_to_k,(systems[syst]['MW_py']-MW_y)*M_to_k,(systems[syst]['MW_pz']-MW_z)*M_to_k,
                  v3[0],v3[1],v3[2],color='black', length= 200, normalize=True)
 
-        c_to_a = "{0:.2f}".format(c_to_a)
-        ax.set_title(r'MW type Satellite System, $N_{nsats}$ =' + f'{nsats}\n Physical extent, c/a:{physical_extent}, Inertial extent, c/a:{c_to_a}',y=1.15)
+        i_c_to_a = "{0:.2f}".format(c_to_a)
+        ax.set_title(r'MW type Satellite System, $N_{nsats}$ =' + f'{nsats}\n Physical extent, c/a:{p_c_to_a}, Inertial extent, c/a:{i_c_to_a}',y=1.15)
     else:
         ax.set_title(r'MW type Satellite System, $N_{nsats}$ =' + f'{nsats}',y=1.15)
     plt.colorbar(imsats,label=r'Velocity of Satellites [km/s]')
@@ -783,7 +784,7 @@ def find_axes_ratios(I):
     
     c_to_a = np.sqrt(lam3 + lam2 - lam1) / np.sqrt(lam1 + lam2 - lam3)
     
-    return c_to_a
+    return float(c_to_a)
 
 def find_physical_extent(u1,u2,u3,systems,system,actual_rms,nrms = 2,level=1):
     
