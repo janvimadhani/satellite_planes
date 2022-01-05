@@ -980,10 +980,10 @@ def save_outputs(name_of_file,snapshot,systems,syst,inertial,physical,sig_spheri
     halo_axes = [ systems[syst]['halo_a'], systems[syst]['halo_b'], systems[syst]['halo_c'] ]
 
     syst_analysis = {}
-    syst_analysis['halo_id'] = int(halo_id)
-    syst_analysis['location_of_central'] = [float(i) for i in location_of_central]
-    syst_analysis['halo_axes'] = [float(i) for i in halo_axes]
-    syst_analysis['physical_extent: a,b,c,c_to_a'] = [float(i) for i in physical]
+    syst_analysis['halo_id'] = halo_id
+    syst_analysis['location_of_central'] = location_of_central
+    syst_analysis['halo_axes'] = halo_axes
+    syst_analysis['physical_extent: a,b,c,c_to_a'] = physical
     syst_analysis['inertial_extent: a,b,c,c_to_a'] = inertial
 
     #ONCE YOU ACTUALLY CALCULATE THIS, THIS WILL CHANGE FROM RANDO DEFAULT VAL
@@ -998,9 +998,10 @@ def save_outputs(name_of_file,snapshot,systems,syst,inertial,physical,sig_spheri
         os.makedirs(results_dir)
 
     print(f'Saving histogram to:  {results_dir + name_of_file}')
-    file = open(results_dir + name_of_file, "w")
-    json.dump(syst_analysis, file)
-    file.close()
+    #file = open(results_dir + name_of_file, "w")
+    #json.dump(syst_analysis, file)
+    #file.close()
+    np.savetxt(results_dir+name_of_file,str(syst_analysis))
 
 
 
