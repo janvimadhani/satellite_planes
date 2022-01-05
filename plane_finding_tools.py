@@ -984,7 +984,7 @@ def save_outputs(name_of_file,snapshot,systems,syst,inertial,physical,sig_spheri
     syst_analysis['location_of_central'] = [float(i) for i in location_of_central]
     syst_analysis['halo_axes'] = [float(i) for i in halo_axes]
     syst_analysis['physical_extent: a,b,c,c_to_a'] = [float(i) for i in physical]
-    syst_analysis['inertial_extent: a,b,c,c_to_a'] = [float(i) for i in inertial]
+    syst_analysis['inertial_extent: a,b,c,c_to_a'] = inertial
 
     #ONCE YOU ACTUALLY CALCULATE THIS, THIS WILL CHANGE FROM RANDO DEFAULT VAL
     syst_analysis['spherical_significance'] = sig_spherical
