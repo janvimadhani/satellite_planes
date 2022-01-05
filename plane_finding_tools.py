@@ -997,7 +997,7 @@ def save_outputs(name_of_file,snapshot,systems,syst,inertial,physical,sig_spheri
     if not os.path.isdir(results_dir):
         os.makedirs(results_dir)
 
-    print(f'Saving histogram to:  {results_dir + name_of_file}')
+    print(f'Saving output data to:  {results_dir + name_of_file}')
     #file = open(results_dir + name_of_file, "w")
     #json.dump(syst_analysis, file)
     #file.close()

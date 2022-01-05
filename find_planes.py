@@ -48,6 +48,6 @@ for syst in range(len(systems)):
 
 
     #save all information to a .json file
-    name_of_file = 'system_' + str(name_of_syst) + '.json'
+    name_of_file = 'system_' + str(name_of_syst) + '.txt'
     pf.save_outputs(name_of_file,snapshot=snapshot,systems=systems,syst=syst,inertial=inertia,physical=phys_ext,sig_spherical=2,sig_elliptical=2)
 
