@@ -967,7 +967,7 @@ def find_physical_extent(u1,u2,u3,systems,system,actual_rms,nrms = 2,level=1):
 
     
 
-def save_outputs(name_of_file,snapshot,systems,syst,inertia,physical,sig_spherical=2,sig_elliptical=2):
+def save_outputs(name_of_file,snapshot,systems,syst,inertial,physical,sig_spherical=2,sig_elliptical=2):
     """
     Input: systems_file,str: path to systems file
 
@@ -984,7 +984,7 @@ def save_outputs(name_of_file,snapshot,systems,syst,inertia,physical,sig_spheric
     syst_analysis['location_of_central'] = location_of_central
     syst_analysis['halo_axes'] = halo_axes
     syst_analysis['physical_extent: a,b,c,c_to_a'] = physical
-    syst_analysis['inertial_extent: a,b,c,c_to_a'] = inertial 
+    syst_analysis['inertial_extent: a,b,c,c_to_a'] = inertial
 
     #ONCE YOU ACTUALLY CALCULATE THIS, THIS WILL CHANGE FROM RANDO DEFAULT VAL
     syst_analysis['spherical_significance'] = sig_spherical
