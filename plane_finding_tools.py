@@ -12,6 +12,7 @@ import random
 import pickle
 import os
 import json
+import csv
 
 def read_systems(systems_file):
     """
@@ -1001,7 +1002,15 @@ def save_outputs(name_of_file,snapshot,systems,syst,inertial,physical,sig_spheri
     #file = open(results_dir + name_of_file, "w")
     #json.dump(syst_analysis, file)
     #file.close()
-    np.savetxt(results_dir+name_of_file,str(syst_analysis))
+
+    file = results_dir + name_of_file
+    w = csv.writer(open(file, "w"))
+
+    # loop over dictionary keys and values
+    for key, val in syst_analysis.items():
+
+        # write every key and value to file
+        w.writerow([key, val])
 
 
 
