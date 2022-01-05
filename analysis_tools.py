@@ -199,10 +199,10 @@ class MWsystems:
         halo_level = halo_level[halo_zoom]
   
         halo_masses = [self.haloes['haloes'][i]['mass'] for i in range(nhaloes)]
-        halo_masses = np.asarray(halo_masses)*10e10
+        halo_masses = np.asarray(halo_masses)*10e10 
         halo_masses = np.squeeze(halo_masses)   
         halo_masses = halo_masses[halo_zoom]
-        MW_type_haloes = np.where(mw_halo_mass < halo_masses ) 
+        #MW_type_haloes = np.where(mw_halo_mass < halo_masses ) 
 
 
         
@@ -266,7 +266,7 @@ class MWsystems:
             possible_haloes = np.where(((g_px - gal_search_thresh*gvir  < h_pxs) & (h_pxs < gal_search_thresh*gvir + g_px))
                                     & ((g_py - gal_search_thresh*gvir  < h_pys) & (h_pys < gal_search_thresh*gvir + g_py))
                                     & ((g_pz - gal_search_thresh*gvir  < h_pzs) & (h_pzs < gal_search_thresh*gvir + g_pz))
-                                    & (halo_masses>10e11))
+                                    & (halo_masses>=mw_halo_mass))
 
             #print(possible_haloes[0])
             if len(halo_masses[possible_haloes]) < 1:
@@ -758,13 +758,14 @@ class MWsystems:
         """
         writes MWsystems dictionary to a pickle file, easy to read later 
         Inputs: name,string: name of file to be written
+        Output: path,pickle: pickle file written at specified location
         """
         script_dir = os.path.dirname(__file__)
         #results_dir = os.path.join(script_dir, 'systems/')
-        #results_dir = '/data78/welker/madhani/systems/'
+        results_dir = '/data78/welker/madhani/systems/'
         
         #local results dir
-        results_dir = '/Users/JanviMadhani/satellite_planes/systems/'
+        #results_dir = '/Users/JanviMadhani/satellite_planes/systems/'
     
 
         if not os.path.isdir(results_dir):
@@ -773,6 +774,7 @@ class MWsystems:
         path_of_file = results_dir + name_to_save + '.pickle'
 
         path = Path(path_of_file)
+
 
         if path.is_file():
             if rewrite:
