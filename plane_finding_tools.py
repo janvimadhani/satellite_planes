@@ -11,7 +11,7 @@ import mpl_toolkits.mplot3d.art3d as art3d
 import random
 import pickle
 import os
-
+import json
 
 def read_systems(systems_file):
     """
@@ -789,6 +789,7 @@ def save_hist(name_of_plot,best_rms,mean_rms,snapshot,histbins=70):
     #script_dir = os.path.dirname(__file__)
     #results_dir = os.path.join(script_dir, 'iso_histograms/')
 
+    #where it will be saved to 
     results_dir = '/data78/welker/madhani/iso_histograms/' + str(snapshot) + '/'
     
 
@@ -966,7 +967,40 @@ def find_physical_extent(u1,u2,u3,systems,system,actual_rms,nrms = 2,level=1):
 
     
 
+def save_outputs(name_of_file,snapshot,systems,syst,inertia,physical,sig_spherical=2,sig_elliptical=2):
+    """
+    Input: systems_file,str: path to systems file
+
+    Returns: system_[x]_data, .json file : where all the relevant information is stored 
+    """
+
+    #extract information you want to include in new file 
+    halo_id = systems[syst]['halo_ID']
+    location_of_central = [ systems[syst]['MW_px'], systems[syst]['MW_py'], systems[syst]['MW_pz'] ]
+    halo_axes = [ systems[syst]['halo_a'], systems[syst]['halo_b'], systems[syst]['halo_c'] ]
+
+    syst_analysis = {}
+    syst_analysis['halo_id'] = halo_id
+    syst_analysis['location_of_central'] = location_of_central
+    syst_analysis['halo_axes'] = halo_axes
+    syst_analysis['physical_extent: a,b,c,c_to_a'] = physical
+    syst_analysis['inertial_extent: a,b,c,c_to_a'] = inertial 
+
+    #ONCE YOU ACTUALLY CALCULATE THIS, THIS WILL CHANGE FROM RANDO DEFAULT VAL
+    syst_analysis['spherical_significance'] = sig_spherical
+    syst_analysis['elliptical_significance'] = sig_elliptical 
+
    
-        
+    results_dir = '/data78/welker/madhani/analysis_data/' + str(snapshot) + '/'
+    
+
+    if not os.path.isdir(results_dir):
+        os.makedirs(results_dir)
+
+    print(f'Saving histogram to:  {results_dir + name_of_file}')
+    file = open(results_dir + name_of_file, "w")
+    json.dump(syst_analysis, file)
+    file.close()
+
 
 

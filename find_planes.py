@@ -17,6 +17,7 @@ systems = pf.read_systems(systems_file)
 for syst in range(len(systems)):
  
     print('System with Halo ID:', systems[syst]['halo_ID'])
+    name_of_syst = systems[syst]['halo_ID']
 
     best_u1,best_u2,best_u3,best_rms = pf.evolutionary_plane_finder(systems=systems,system=syst,n_iter=200,n_start=25,n_erase=10,n_avg_mutants=5,level=1,rand=False,verbose=True)
     z_best,xx,yy,unit_n,los = pf.get_plane(u1=best_u1,u2=best_u2,u3=best_u3,systems=systems,system=syst)
@@ -32,7 +33,7 @@ for syst in range(len(systems)):
 
     inertia = [v1,v2,v3,i_c_to_a]
 
-    name_of_3dplot = 'system_' + str(syst) +'.png'
+    name_of_3dplot = 'system_' + str(name_of_syst) +'.png'
     pf.save_3Dplot(name_of_3dplot,systems=systems,syst=syst,snapshot=snapshot,xx=xx,yy=yy,z_best=z_best,los=los,unit_n=unit_n,phys_ext = phys_ext, inertia=inertia)
 
 
@@ -43,4 +44,9 @@ for syst in range(len(systems)):
 
     #name_of_hist = 'system_' + str(syst) +'_hist.png'
     #pf.save_hist(name_of_hist,best_rms,iso_systs_rms,snapshot=snapshot)
+
+
+    #save all information to a .json file
+    name_of_file = 'system_' + str(name_of_syst) + '.json'
+    pf.save_outputs(name_of_file,snapshot,systems,syst,inertia,physical,sig_spherical=2,sig_elliptical=2)
 
