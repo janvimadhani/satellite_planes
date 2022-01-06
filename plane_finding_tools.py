@@ -886,11 +886,13 @@ def save_hist(name_of_plot,best_rms,mean_rms,snapshot,type='spherical',histbins=
 
     mu, sigma = ss.norm.fit(mean_rms)
     best_fit_line = ss.norm.pdf(dense_bins, mu, sigma)
-    ax.plot(dense_bins,best_fit_line,c='purple',label='PDF')
+    
     if type=='spherical':
+        ax.plot(dense_bins,best_fit_line,c='purple',label='PDF')
         ax.set_title(f'Spherically Isotropic Distribution of {n} Planes')
 
     elif type=='elliptical':
+        ax.plot(dense_bins,best_fit_line,c='midnightblue',label='PDF')
         ax.set_title(f'Elliptical (Tracing DM Halo) Distribution of {n} Planes')
     ax.set_xlabel(r'Mean RMS')
     ax.legend()
@@ -903,9 +905,9 @@ def save_hist(name_of_plot,best_rms,mean_rms,snapshot,type='spherical',histbins=
 
     #where it will be saved to 
     if type=='spherical':
-        results_dir = '/data78/welker/madhani/iso_histograms/spherical' + str(snapshot) + '/'
+        results_dir = '/data78/welker/madhani/iso_histograms/spherical/' + str(snapshot) + '/'
     elif type=='elliptical':
-        results_dir = '/data78/welker/madhani/iso_histograms/elliptical' + str(snapshot) + '/'
+        results_dir = '/data78/welker/madhani/iso_histograms/elliptical/' + str(snapshot) + '/'
     
 
     if not os.path.isdir(results_dir):
