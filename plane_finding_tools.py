@@ -880,7 +880,7 @@ def save_hist(name_of_plot,best_rms,mean_rms,snapshot,type='spherical',histbins=
     if type=='spherical':
         ncounts,dense_bins,patches = ax.hist(mean_rms, density=True,bins =histbins,ec='purple',fc='thistle')
 
-    elif type='elliptical':
+    elif type=='elliptical':
         ncounts,dense_bins,patches = ax.hist(mean_rms, density=True,bins =histbins,ec='royalblue',fc='cornflowerblue')
     ax.axvline(x=best_rms,c='black',label='mean rms of actual distribution')
 
