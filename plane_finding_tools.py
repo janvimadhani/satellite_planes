@@ -834,7 +834,7 @@ def check_isotropy(systems,syst,n=2000):
         rand_e_system['MW_pz'] = systems[syst]['MW_pz'][0]
         
         sx,sy,sz = rand_spherical_dist(systems,syst,level=1)
-        ex,ey,ez = rand_elliptical_dist(syst,level=1,niter=2000)
+        ex,ey,ez = rand_elliptical_dist(systems,syst,level=1,niter=2000)
 
         
         rand_s_system['sat_px'] = sx
