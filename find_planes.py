@@ -40,13 +40,20 @@ for syst in range(len(systems)):
 
 
     #check for isotropy n times and find n rms dists
-    #iso_systs_rms = pf.check_isotropy(systems=systems,syst=syst,n=2000)
+    iso_sph_systs_rms,iso_ell_systs_rms = pf.check_isotropy(systems=systems,syst=syst,n=2000)
 
 
-    #name_of_hist = 'system_' + str(syst) +'_hist.png'
-    #pf.save_hist(name_of_hist,best_rms,iso_systs_rms,snapshot=snapshot)
+    name_of_hist = 'system_' + str(syst) +'_hist.png'
+    #save spherical
+    pf.save_hist(name_of_hist,best_rms,iso_sph_systs_rms,snapshot=snapshot,type='spherical')
+
+    #save elliptical
+    pf.save_hist(name_of_hist,best_rms,iso_ell_systs_rms,snapshot=snapshot,type='elliptical')
 
 
+    ## find significance of rms then change below file to include this info
+
+    
     #save all information to a .json file
     name_of_file = 'system_' + str(name_of_syst) + '.csv'
     pf.save_outputs(name_of_file,snapshot=snapshot,systems=systems,syst=syst,inertial=inertia,physical=phys_ext,sig_spherical=2,sig_elliptical=2)

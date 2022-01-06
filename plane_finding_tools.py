@@ -686,6 +686,15 @@ def rand_angle():
     
 
 def rand_spherical_dist(systems,system,level=1):
+
+    """
+    Input: systems, dict
+           system, dict
+           level, int
+    Returns: x,y,z, float: ONE spherical redistribution of all level sats in system
+    
+    """
+
  
    
     spherical_isotropy = {}
@@ -720,51 +729,145 @@ def rand_spherical_dist(systems,system,level=1):
 
     return spherical_isotropy['sat_x'],spherical_isotropy['sat_y'],spherical_isotropy['sat_z']
 
+def rand_elliptical_dist(systems,system,level=1,niter=1000):
+    """
+    Input: systems, dict
+           system, dict
+           level, int
+           niter, int: default 1000, how many MC points to define ellipsoid of DM halo
+    Returns: x,y,z, float: ONE elliptical redistribution of all level sats in system
+    
+    """
+
+    
+
+    elliptical_isotropy = {}
+    elliptical_isotropy['sat_x'] = []
+    elliptical_isotropy['sat_y'] = []
+    elliptical_isotropy['sat_z'] = []
+    x0 = systems[system]['MW_px'][0]
+    y0 = systems[system]['MW_py'][0]
+    z0 = systems[system]['MW_pz'][0]
+    a = systems[system]['halo_a'][0]
+    b = systems[system]['halo_b'][0]
+    c = systems[system]['halo_c'][0]
+    
+
+    #redistribute satellites, preserving their separation vector, but new angles
+
+    level_sats = np.where(systems[system]['sat_levels'] == level)
+
+    nsats = len(level_sats[0]) 
+    
+    #generate an elliptical cloud of niter scatter points to pull nsat angles out of 
+  
+    xrand = [np.random.normal(0,scale=a/2) for n in range(niter)]
+    yrand = [np.random.normal(0,scale=b/2) for n in range(niter)]
+    zrand = [np.random.normal(0,scale=c/2) for n in range(niter)]
+    for k in range(nsats):
+        #separation vector of actual satellite
+        x,y,z = systems[system]['sat_pxs'][level_sats][k],systems[system]['sat_pys'][level_sats][k],systems[system]['sat_pzs'][level_sats][k]
+        rx,ry,rz = x-x0,y-y0,z-z0
+        r = np.sqrt(rx**2 + ry**2 + rz**2)
+        
+        #pick a random angle from distribution
+        rand_idx = random.randrange(niter)
+        
+        randx = xrand[rand_idx]
+        randy = yrand[rand_idx]
+        randz = zrand[rand_idx]
+        
+        
+        #find the angles
+        
+        theta = np.arccos(randz/ (np.sqrt(randx**2 + randy**2 + randz**2)))
+        if randx > 0:
+            phi = np.arctan(randy/randx)
+        elif randx < 0:
+            phi = np.arctan(randy/randx) + np.pi 
+        else:
+            phi = np.pi/2
+            
+            
+        #back into cartesian, using the original radius of the satellite
+        
+        xp = r*np.cos(phi)*np.sin(theta) + x0
+        yp = r*np.sin(phi)*np.sin(theta) + y0
+        zp = r*np.cos(theta) + z0
+        
+        
+        
+        elliptical_isotropy['sat_x'].append(xp)
+        elliptical_isotropy['sat_y'].append(yp)
+        elliptical_isotropy['sat_z'].append(zp)
+
+
+
+
+    return elliptical_isotropy['sat_x'],elliptical_isotropy['sat_y'],elliptical_isotropy['sat_z']
+
+
 
 def check_isotropy(systems,syst,n=2000):
 ## check that it's uniformly dist by running n times
     t0 = time.time()
 
     n = 2000
-    rand_systems = {}
-    rand_systems['systems'] = []
+    rand_s_systems = {}
+    rand_s_systems['systems'] = []
+
+    rand_e_systems = {}
+    rand_e_systems['systems'] = []
 
 
     #make n random rystems
     for i in range(n):
-        rand_system = {}
-        #rand_system['sat_px'] = []
-        #rand_system['sat_py'] = []
-        #rand_system['sat_pz'] = []
-        rand_system['MW_px'] = systems[syst]['MW_px'][0]
-        rand_system['MW_py'] = systems[syst]['MW_py'][0]
-        rand_system['MW_pz'] = systems[syst]['MW_pz'][0]
+        rand_s_system = {}
+        rand_e_system = {}
+        
+        rand_s_system['MW_px'] = systems[syst]['MW_px'][0]
+        rand_s_system['MW_py'] = systems[syst]['MW_py'][0]
+        rand_s_system['MW_pz'] = systems[syst]['MW_pz'][0]
+    
+        rand_e_system['MW_px'] = systems[syst]['MW_px'][0]
+        rand_e_system['MW_py'] = systems[syst]['MW_py'][0]
+        rand_e_system['MW_pz'] = systems[syst]['MW_pz'][0]
         
         sx,sy,sz = rand_spherical_dist(systems,syst,level=1)
+        ex,ey,ez = rand_elliptical_dist(syst,level=1,niter=2000)
 
         
-        rand_system['sat_px'] = sx
-        rand_system['sat_py'] = sy
-        rand_system['sat_pz'] = sz
-        rand_systems['systems'].append(rand_system)
+        rand_s_system['sat_px'] = sx
+        rand_s_system['sat_py'] = sy
+        rand_s_system['sat_pz'] = sz
+        rand_s_systems['systems'].append(rand_s_system)
+        
+        rand_e_system['sat_px'] = ex
+        rand_e_system['sat_py'] = ey
+        rand_e_system['sat_pz'] = ez
+        rand_e_systems['systems'].append(rand_e_system)
 
     #find best fit plane of n random systems
     print(f'Finding best fit plane of {n} random, isotropically distributed systems...')
-    mean_rms = []
+    sph_mean_rms = []
+    ell_mean_rms = []
 
     for rand_syst in range(n):
         
-        best_u1,best_u2,best_u3,rand_rms = evolutionary_plane_finder(systems=systems,system=rand_systems['systems'][rand_syst],n_iter = 200,n_start=25,n_erase=10,n_avg_mutants=5,level=1,rand=True,verbose=False)
-        mean_rms.append(rand_rms)
+        s_best_u1,s_best_u2,s_best_u3,sph_rand_rms = evolutionary_plane_finder(systems=systems,system=rand_s_systems['systems'][rand_syst],n_iter = 200,n_start=25,n_erase=10,n_avg_mutants=5,level=1,rand=True,verbose=False)
+        sph_mean_rms.append(sph_rand_rms)
+
+        e_best_u1,e_best_u2,e_best_u3,ell_rand_rms = evolutionary_plane_finder(systems=systems,system=rand_e_systems['systems'][rand_syst],n_iter = 200,n_start=25,n_erase=10,n_avg_mutants=5,level=1,rand=True,verbose=False)
+        ell_mean_rms.append(ell_rand_rms)
 
     t1 = time.time()
 
     print(f'Took {t1-t0} seconds.')
 
 
-    return mean_rms
+    return sph_mean_rms,ell_mean_rms
 
-def save_hist(name_of_plot,best_rms,mean_rms,snapshot,histbins=70):
+def save_hist(name_of_plot,best_rms,mean_rms,snapshot,type='spherical',histbins=70):
     n = len(mean_rms)
 
     fig, ax = plt.subplots(1, 1,
@@ -773,14 +876,22 @@ def save_hist(name_of_plot,best_rms,mean_rms,snapshot,histbins=70):
 
     histbins = 70
     
-    ncounts,dense_bins,patches = ax.hist(mean_rms, density=True,bins =histbins,ec='purple',fc='thistle')
+    #change color according to which type of distribution you're pulling from
+    if type=='spherical':
+        ncounts,dense_bins,patches = ax.hist(mean_rms, density=True,bins =histbins,ec='purple',fc='thistle')
+
+    elif type='elliptical':
+        ncounts,dense_bins,patches = ax.hist(mean_rms, density=True,bins =histbins,ec='royalblue',fc='cornflowerblue')
     ax.axvline(x=best_rms,c='black',label='mean rms of actual distribution')
 
     mu, sigma = ss.norm.fit(mean_rms)
     best_fit_line = ss.norm.pdf(dense_bins, mu, sigma)
     ax.plot(dense_bins,best_fit_line,c='purple',label='PDF')
+    if type=='spherical'
+        ax.set_title(f'Spherically Isotropic Distribution of {n} Planes')
 
-    ax.set_title(f'Distribution of {n} Isotropically Distributed Planes')
+    elif type=='elliptical':
+        ax.set_title(f'Elliptical (Tracing DM Halo) Distribution of {n} Planes')
     ax.set_xlabel(r'Mean RMS')
     ax.legend()
     
@@ -791,7 +902,10 @@ def save_hist(name_of_plot,best_rms,mean_rms,snapshot,histbins=70):
     #results_dir = os.path.join(script_dir, 'iso_histograms/')
 
     #where it will be saved to 
-    results_dir = '/data78/welker/madhani/iso_histograms/' + str(snapshot) + '/'
+    if type=='spherical':
+        results_dir = '/data78/welker/madhani/iso_histograms/spherical' + str(snapshot) + '/'
+    elif type=='elliptical':
+        results_dir = '/data78/welker/madhani/iso_histograms/elliptical' + str(snapshot) + '/'
     
 
     if not os.path.isdir(results_dir):
