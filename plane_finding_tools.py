@@ -886,6 +886,7 @@ def save_hist(name_of_plot,best_rms,mean_rms,snapshot,type='spherical',histbins=
 
     mu, sigma = ss.norm.fit(mean_rms)
     best_fit_line = ss.norm.pdf(dense_bins, mu, sigma)
+    significance = (mu-best_rms)/sigma
     
     if type=='spherical':
         ax.plot(dense_bins,best_fit_line,c='purple',label='PDF')
@@ -894,6 +895,10 @@ def save_hist(name_of_plot,best_rms,mean_rms,snapshot,type='spherical',histbins=
     elif type=='elliptical':
         ax.plot(dense_bins,best_fit_line,c='midnightblue',label='PDF')
         ax.set_title(f'Elliptical (Tracing DM Halo) Distribution of {n} Planes')
+
+    ax.axvline(x=mu,c='red',label='$\mu$, mean rms of random distributions')
+    ax.axvline(x=best_rms,c='black',label=f'mean rms of actual distribution, {significance:.2f} $\sigma$ from $\mu$')
+
     ax.set_xlabel(r'Mean RMS')
     ax.legend()
     
