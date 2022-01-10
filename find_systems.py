@@ -12,12 +12,12 @@ t0 = time.time()
 snapshot = sys.argv[1]
 
 #LOCAL PATHS
-filepath_haloes = '/Users/JanviMadhani/satellite_planes/catalogs/tree_bricks'+str(snapshot)
-filepath_galaxies = '/Users/JanviMadhani/satellite_planes/catalogs/tree_bricks' +str(snapshot) +'_stars_NH'
+#filepath_haloes = '/Users/JanviMadhani/satellite_planes/catalogs/tree_bricks'+str(snapshot)
+#filepath_galaxies = '/Users/JanviMadhani/satellite_planes/catalogs/tree_bricks' +str(snapshot) +'_stars_NH'
 
 #INFINITY PATHS
-#filepath_haloes = '/home/madhani/satellite_planes/catalogs/Halos/TREE_DM/tree_bricks'+str(snapshot)
-#filepath_galaxies = '/home/madhani/satellite_planes/catalogs/Stars/TREE_STARS_HOP_dp_SCnew_gross/tree_brick_'+str(snapshot)
+filepath_haloes = '/home/madhani/satellite_planes/catalogs/Halos/TREE_DM/tree_bricks'+str(snapshot)
+filepath_galaxies = '/home/madhani/satellite_planes/catalogs/Stars/TREE_STARS_HOP_dp_SCnew_gross/tree_brick_'+str(snapshot)
 
 
 haloes = fr.ReadTreebrick_lowp(filepath_haloes)
