@@ -137,6 +137,7 @@ class MWsystems:
 
         #HALOES
         nhaloes = self.haloes['nhaloes']
+        aexp = self.haloes['aexp']
 
 
         halo_px = [self.haloes['haloes'][i]['px'] for i in range(nhaloes)]
@@ -421,6 +422,10 @@ class MWsystems:
                 system['sat_mvirs'] = sat_mvirs
                 system['sat_levels'] = sat_levs
                 
+
+                #add global info
+                system['aexp'] = aexp
+
                 systems.append(system)
         for system in systems:
             get_sep_vector(system)
@@ -486,6 +491,7 @@ class MWsystems:
 
         #HALOES
         nhaloes = self.haloes['nhaloes']
+        aexp = self.haloes['aexp']
 
 
         halo_px = [self.haloes['haloes'][i]['px'] for i in range(nhaloes)]
@@ -737,6 +743,9 @@ class MWsystems:
             system['sat_rvirs'] = sat_rvirs
             system['sat_mvirs'] = sat_mvirs
             system['sat_levels'] = sat_levs
+
+            #add global info
+            system['aexp'] = aexp
             
             
             get_sep_vector(system)

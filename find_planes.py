@@ -44,17 +44,17 @@ for syst in range(len(systems)):
 
 
     name_of_hist = 'system_' + str(syst) +'_hist.png'
-    #save spherical
-    pf.save_hist(name_of_hist,best_rms,iso_sph_systs_rms,snapshot=snapshot,type='spherical')
+    #save spherical and get significance 
+    sph_sig = pf.save_hist(name_of_hist,best_rms,iso_sph_systs_rms,snapshot=snapshot,type='spherical')
 
-    #save elliptical
-    pf.save_hist(name_of_hist,best_rms,iso_ell_systs_rms,snapshot=snapshot,type='elliptical')
+    #save elliptical and get significance 
+    ell_sig = pf.save_hist(name_of_hist,best_rms,iso_ell_systs_rms,snapshot=snapshot,type='elliptical')
 
 
     ## find significance of rms then change below file to include this info
 
-    
+
     #save all information to a .json file
     name_of_file = 'system_' + str(name_of_syst) + '.csv'
-    pf.save_outputs(name_of_file,snapshot=snapshot,systems=systems,syst=syst,inertial=inertia,physical=phys_ext,sig_spherical=2,sig_elliptical=2)
+    pf.save_outputs(name_of_file,snapshot=snapshot,systems=systems,syst=syst,inertial=inertia,physical=phys_ext,sig_spherical=sph_sig,sig_elliptical=ell_sig)
 

@@ -868,6 +868,14 @@ def check_isotropy(systems,syst,n=2000):
     return sph_mean_rms,ell_mean_rms
 
 def save_hist(name_of_plot,best_rms,mean_rms,snapshot,type='spherical',histbins=70):
+    """
+    Input:
+
+    Output:
+        saves figure
+        returns significance 
+    """
+
     n = len(mean_rms)
 
     fig, ax = plt.subplots(1, 1,
@@ -920,6 +928,8 @@ def save_hist(name_of_plot,best_rms,mean_rms,snapshot,type='spherical',histbins=
 
     print(f'Saving histogram to:  {results_dir + name_of_plot}')
     plt.savefig(results_dir + name_of_plot)
+
+    return significance 
 
 
 
@@ -1100,8 +1110,12 @@ def save_outputs(name_of_file,snapshot,systems,syst,inertial,physical,sig_spheri
     halo_id = systems[syst]['halo_ID']
     location_of_central = [ systems[syst]['MW_px'], systems[syst]['MW_py'], systems[syst]['MW_pz'] ]
     halo_axes = [ systems[syst]['halo_a'], systems[syst]['halo_b'], systems[syst]['halo_c'] ]
+    a = systems[syst]['aexp']
+    z = 1/(1+a)
 
     syst_analysis = {}
+    syst_analysis['aexp'] = a
+    syst_analysis['z'] = z
     syst_analysis['halo_id'] = halo_id
     syst_analysis['location_of_central'] = location_of_central
     syst_analysis['halo_axes'] = halo_axes

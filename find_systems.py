@@ -11,10 +11,14 @@ t0 = time.time()
 #when you run this file, run it as python3 find_systems.py 970 
 snapshot = sys.argv[1]
 
-filepath_haloes = '/home/madhani/satellite_planes/catalogs/Halos/TREE_DM/tree_bricks'+str(snapshot)
-#filepath_haloes = '/Users/JanviMadhani/Desktop/Satellite Galaxies/Analysis/New_Horizon/tree_bricks970'
-filepath_galaxies = '/home/madhani/satellite_planes/catalogs/Stars/TREE_STARS_HOP_dp_SCnew_gross/tree_brick_'+str(snapshot)
-#filepath_galaxies = '/Users/JanviMadhani/Desktop/Satellite Galaxies/Analysis/New_Horizon/tree_bricks970_stars_NH'
+#LOCAL PATHS
+filepath_haloes = '/Users/JanviMadhani/satellite_planes/catalogs/tree_bricks'+str(snapshot)
+filepath_galaxies = '/Users/JanviMadhani/satellite_planes/catalogs/tree_bricks' +str(snapshot) +'_stars_NH'
+
+#INFINITY PATHS
+#filepath_haloes = '/home/madhani/satellite_planes/catalogs/Halos/TREE_DM/tree_bricks'+str(snapshot)
+#filepath_galaxies = '/home/madhani/satellite_planes/catalogs/Stars/TREE_STARS_HOP_dp_SCnew_gross/tree_brick_'+str(snapshot)
+
 
 haloes = fr.ReadTreebrick_lowp(filepath_haloes)
 galaxies = fr.GalaxyCatalog(filepath_galaxies)
