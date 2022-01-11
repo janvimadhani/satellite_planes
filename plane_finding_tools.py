@@ -560,8 +560,10 @@ def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best,los,unit_n,phys_
     fig = plt.figure(figsize=[8,6])
     ax = plt.axes(projection='3d')
 
-    #initialize the plane edge on 
-    #ax.view_init(np.degrees(los[0]),np.degrees(los[1]))
+    #initialize the plane edge on and add some random offset so it's not completely edge on
+    randomize_theta = random.randint(-5,5)
+    randomize_phi = random.randint(-5,5)
+    ax.view_init(np.degrees(los[0])+randomize_theta,np.degrees(los[1])+randomize_phi)
 
     M_to_k = 1000
     MW_x,MW_y,MW_z = systems[syst]['MW_px'],systems[syst]['MW_py'],systems[syst]['MW_pz']

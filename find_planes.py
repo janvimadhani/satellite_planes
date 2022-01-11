@@ -54,7 +54,7 @@ for syst in range(len(systems)):
     ## find significance of rms then change below file to include this info
 
 
-    #save all information to a .json file
+    #save all information to a .csv file
     name_of_file = 'system_' + str(name_of_syst) + '.csv'
     pf.save_outputs(name_of_file,snapshot=snapshot,systems=systems,syst=syst,inertial=inertia,physical=phys_ext,sig_spherical=sph_sig,sig_elliptical=ell_sig)
 
