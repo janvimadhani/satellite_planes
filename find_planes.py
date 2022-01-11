@@ -43,7 +43,7 @@ for syst in range(len(systems)):
     iso_sph_systs_rms,iso_ell_systs_rms = pf.check_isotropy(systems=systems,syst=syst,n=2000)
 
 
-    name_of_hist = 'system_' + str(syst) +'_hist.png'
+    name_of_hist = 'system_' + str(name_of_syst) +'_hist.png'
     #save spherical and get significance 
     sph_sig = pf.save_hist(name_of_hist,best_rms,iso_sph_systs_rms,snapshot=snapshot,type='spherical')
 
