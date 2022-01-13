@@ -27,7 +27,7 @@ class MWsystems:
             galaxies_dict [dict]
     """
     
-    def __init__(self,haloes_dict,galaxies_dict,haloIDs:
+    def __init__(self,haloes_dict,galaxies_dict,haloIDs):
         self.haloes = None
         self.galaxies = None
         self.haloIDs = None
