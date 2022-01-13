@@ -299,7 +299,7 @@ class MWsystems:
                 #print('hrvir = ',hrvir)
                 
                 
-                print('h_id',h_id)
+                
                 system['halo_ID'] = h_id[0]
                 system['halo_px'] = h_px
                 system['halo_py'] = h_py
@@ -620,6 +620,8 @@ class MWsystems:
             h_lz = halo_lz[host_halo_mask]
             h_lev = halo_level[host_halo_mask]
             h_id = halo_ID[host_halo_mask]
+
+            print('h_id',h_id)
             
             h_angmom = np.sqrt(h_lz**2 + h_ly**2 + h_lx**2)
             h_iz = np.degrees(np.arccos(h_lz/h_angmom))
