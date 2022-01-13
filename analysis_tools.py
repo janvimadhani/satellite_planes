@@ -601,12 +601,12 @@ class MWsystems:
         systems = []
 
         for haloID in haloIDs:
-            print('HALO ID ', haloID)
+            #print('HALO ID ', haloID)
 
             system = {}
 
             host_halo_mask = np.where(halo_ID == haloID)
-            print('DId mask work?',halo_ID[host_halo_mask])
+            #print('DId mask work?',halo_ID[host_halo_mask])
             host_halo_mass = halo_masses[host_halo_mask]
             #print(host_halo_mass)
             h_px = halo_px[host_halo_mask]
@@ -654,7 +654,7 @@ class MWsystems:
                                 ((h_pz - distance  < g_pzs) & (g_pzs < distance + h_pz)))
             """
             
-            
+            print('Did it find satellites within 2 rvir of halo?',within_rad)
             #assign sattelite galaxies parameters
             sat_pxs = g_pxs[within_rad]
             sat_pys = g_pys[within_rad]
