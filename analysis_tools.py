@@ -835,7 +835,7 @@ class halosystems:
             get_sep_vector(system)
         self.halosystems = systems
                 
-        return self.halosystem 
+        return self.halosystems
 
     
 
