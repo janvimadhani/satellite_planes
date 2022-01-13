@@ -27,11 +27,11 @@ class MWsystems:
             galaxies_dict [dict]
     """
     
-    def __init__(self,haloes_dict,galaxies_dict):
+    def __init__(self,haloes_dict,galaxies_dict,haloIDs=None):
         self.haloes = None
         self.galaxies = None
         self.find_MWsystems(haloes_dict,galaxies_dict)
-        self.find_systs_by_halo_id()
+        self.find_systs_by_halo_id(haloIDs,haloes_dict,galaxies_dict)
 
 
         
