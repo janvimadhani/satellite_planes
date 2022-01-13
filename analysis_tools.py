@@ -601,10 +601,12 @@ class MWsystems:
         systems = []
 
         for haloID in haloIDs:
+            print('HALO ID ', haloID)
 
             system = {}
 
             host_halo_mask = np.where(halo_ID == haloID)
+            print('DId mask work?',halo_ID[host_halo_mask])
             host_halo_mass = halo_masses[host_halo_mask]
             #print(host_halo_mass)
             h_px = halo_px[host_halo_mask]
