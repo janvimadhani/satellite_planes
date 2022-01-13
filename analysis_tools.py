@@ -743,7 +743,7 @@ class halosystems:
 
                     
                     #find the most massive galaxy that is within 0.2 of the host halo -- this is MW analog
-                    vir_thresh = 0.5
+                    vir_thresh = 1
 
                     within_vir = np.where(((h_px - vir_thresh*hrvir  < sat_pxs) & (sat_pxs < vir_thresh*hrvir + h_px)) &
                                         ((h_py - vir_thresh*hrvir  < sat_pys) & (sat_pys < vir_thresh*hrvir + h_py)) &
