@@ -658,7 +658,7 @@ class MWsystems:
 
             #assign sattelite galaxies parameters
 
-            if len(sat_pxs = g_pxs[within_rad]) < 1:
+            if len(g_pxs[within_rad]) < 1:
                 print(f'No satellites found within {sat_thresh} rvir of halo.')
             else:
                 sat_pxs = g_pxs[within_rad]
