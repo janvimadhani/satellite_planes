@@ -671,13 +671,13 @@ class MWsystems:
 
             
             #find the most massive galaxy that is within 0.2 of the host halo -- this is MW analog
-            vir_thresh = 0.2
+            vir_thresh = 0.5
 
             within_vir = np.where(((h_px - vir_thresh*hrvir  < sat_pxs) & (sat_pxs < vir_thresh*hrvir + h_px)) &
                                 ((h_py - vir_thresh*hrvir  < sat_pys) & (sat_pys < vir_thresh*hrvir + h_py)) &
                                 ((h_pz - vir_thresh*hrvir  < sat_pzs) & (sat_pzs < vir_thresh*hrvir + h_pz)))
 
-            
+            print('WITHIN_VIR',within_vir)
             ### Check that there is a system of satellites that satisfies these conditions for a halo
             if len(within_vir) < 1:
                 print('No satisfactory system found within this halo. Please try searching a different halo.')
