@@ -639,7 +639,7 @@ class MWsystems:
 
             
             #find all galaxies within this 1 virial radii halo, and identify the central 
-            sat_thresh = 2
+            sat_thresh = 4
             #"""        
             within_rad = np.where(((h_px - sat_thresh*hrvir  < g_pxs) & (g_pxs < sat_thresh*hrvir + h_px)) &
                                 ((h_py - sat_thresh*hrvir  < g_pys) & (g_pys < sat_thresh*hrvir + h_py)) &
