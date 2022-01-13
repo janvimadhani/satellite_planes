@@ -697,7 +697,7 @@ class MWsystems:
 
                     #print('WITHIN_VIR',within_vir)
                     ### Check that there is a system of satellites that satisfies these conditions for a halo
-                    if len(np.where(sat_mvirs == np.max(sat_mvirs[within_vir]))) < 1:
+                    if len(sat_mvirs[within_vir]) < 1:
                         print('No satisfactory system found within this halo. Please try searching a different halo.')
                     else:
 
