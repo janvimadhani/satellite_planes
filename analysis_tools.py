@@ -299,7 +299,7 @@ class MWsystems:
                 #print('hrvir = ',hrvir)
                 
                 
-                
+                print('h_id',h_id)
                 system['halo_ID'] = h_id[0]
                 system['halo_px'] = h_px
                 system['halo_py'] = h_py
