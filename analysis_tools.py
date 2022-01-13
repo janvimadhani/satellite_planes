@@ -27,11 +27,12 @@ class MWsystems:
             galaxies_dict [dict]
     """
     
-    def __init__(self,haloes_dict,galaxies_dict,haloIDs=None):
+    def __init__(self,haloes_dict,galaxies_dict,haloIDs:
         self.haloes = None
         self.galaxies = None
-        self.find_MWsystems(haloes_dict=None,galaxies_dict=None)
-        self.find_systs_by_halo_id(haloIDs,haloes_dict=None,galaxies_dict=None)
+        self.haloIDs = None
+        self.find_MWsystems(haloes_dict,galaxies_dict)
+        self.find_systs_by_halo_id(haloIDs,haloes_dict,galaxies_dict)
 
 
         
@@ -493,6 +494,7 @@ class MWsystems:
 
         self.haloes = haloes_dict
         self.galaxies = galaxies_dict
+        self.haloIDs = haloIDs
 
         #HALOES
         nhaloes = self.haloes['nhaloes']
@@ -654,7 +656,7 @@ class MWsystems:
                                 ((h_pz - distance  < g_pzs) & (g_pzs < distance + h_pz)))
             """
             
-            print('Did it find satellites within 2 rvir of halo?',within_rad)
+            #print('Did it find satellites within 2 rvir of halo?',within_rad)
 
             #assign sattelite galaxies parameters
 
@@ -684,7 +686,7 @@ class MWsystems:
                                     ((h_py - vir_thresh*hrvir  < sat_pys) & (sat_pys < vir_thresh*hrvir + h_py)) &
                                     ((h_pz - vir_thresh*hrvir  < sat_pzs) & (sat_pzs < vir_thresh*hrvir + h_pz)))
 
-                print('WITHIN_VIR',within_vir)
+                #print('WITHIN_VIR',within_vir)
                 ### Check that there is a system of satellites that satisfies these conditions for a halo
                 if len(np.where(sat_mvirs == np.max(sat_mvirs[within_vir]))) < 1:
                     print('No satisfactory system found within this halo. Please try searching a different halo.')
