@@ -355,7 +355,7 @@ class MWsystems:
                                     ((h_py - vir_thresh*hrvir  < sat_pys) & (sat_pys < vir_thresh*hrvir + h_py)) &
                                     ((h_pz - vir_thresh*hrvir  < sat_pzs) & (sat_pzs < vir_thresh*hrvir + h_pz)))
                 if len(within_vir) < 1:
-                    print('No satisfactory system found within this halo. Please try searching a different halo.')
+                    print(f'No satellites found within {vir_thresh} rvir of halo.')
                 else:
                     MW_analog_mask = np.where(sat_mvirs == np.max(sat_mvirs[within_vir]))
                     #print('MW MASK',MW_analog_mask)
@@ -752,7 +752,7 @@ class halosystems:
                     #print('WITHIN_VIR',within_vir)
                     ### Check that there is a system of satellites that satisfies these conditions for a halo
                     if len(sat_mvirs[within_vir]) < 1:
-                        print('No satisfactory system found within this halo. Please try searching a different halo.')
+                        print(f'No satellites found within {vir_thresh} rvir of halo.')
                     else:
 
 
