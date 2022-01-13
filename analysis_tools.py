@@ -27,12 +27,11 @@ class MWsystems:
             galaxies_dict [dict]
     """
     
-    def __init__(self,haloes_dict,galaxies_dict,haloIDs):
+    def __init__(self,haloes_dict,galaxies_dict):
         self.haloes = None
         self.galaxies = None
-        self.haloIDs = None
         self.find_MWsystems(haloes_dict,galaxies_dict)
-        self.find_systs_by_halo_id(haloIDs,haloes_dict,galaxies_dict)
+
 
 
         
@@ -440,7 +439,62 @@ class MWsystems:
                 
         return self.MWsystems
 
+                
+
+    def write_to_pickle(self,name_to_save,rewrite=True):
+        """
+        writes MWsystems dictionary to a pickle file, easy to read later 
+        Inputs: name,string: name of file to be written
+        Output: path,pickle: pickle file written at specified location
+        """
+        script_dir = os.path.dirname(__file__)
+        #results_dir = os.path.join(script_dir, 'systems/')
+        results_dir = '/data78/welker/madhani/systems/'
+        
+        #local results dir
+        #results_dir = '/Users/JanviMadhani/satellite_planes/systems/'
     
+
+        if not os.path.isdir(results_dir):
+             os.makedirs(results_dir)
+
+        path_of_file = results_dir + name_to_save + '.pickle'
+
+        path = Path(path_of_file)
+
+
+        if path.is_file():
+            if rewrite:
+                print(f'File already exists, rewriting anyway to {path} ...')
+                with open(path_of_file,'wb') as handle:
+                    pickle.dump(self.MWsystems,handle,protocol=pickle.HIGHEST_PROTOCOL)
+            else:
+                print('File already exists.')
+
+        else:
+            print(f'Writing file to {path} ...')
+            with open(path_of_file,'wb') as handle:
+                pickle.dump(self.MWsystems,handle,protocol=pickle.HIGHEST_PROTOCOL)
+                
+                    
+class halosystems:
+
+
+    """
+    Takes the raw halo and galaxy catalogs from NH 
+    and a list of halo IDs to find corresponding systems within these
+    halos at different snapshots of time.
+
+    Inputs: haloes_dict   [dict]
+            galaxies_dict [dict]
+    """   
+
+    def __init__(self,haloes_dict,galaxies_dict,haloIDs):
+        self.haloes = None
+        self.galaxies = None
+        self.haloIDs = None
+        self.find_systs_by_halo_id(haloIDs,haloes_dict,galaxies_dict) 
+
 
     def find_systs_by_halo_id(self,haloIDs,haloes_dict,galaxies_dict,rvir_search_thresh=1):
         """
@@ -455,22 +509,22 @@ class MWsystems:
                 
 
         """
-        def get_sep_vector(MWsystem):
+        def get_sep_vector(halosystem):
             angles = []
             dots = []
             rseps = []
-            for i in range(len(MWsystem['sat_pxs'])):
-                sx = MWsystem['sat_pxs'][i]
-                sy = MWsystem['sat_pys'][i]
-                sz = MWsystem['sat_pzs'][i]
-                cx = MWsystem['MW_px']
-                cy = MWsystem['MW_py']
-                cz = MWsystem['MW_pz']
+            for i in range(len(halosystem['sat_pxs'])):
+                sx = halosystem['sat_pxs'][i]
+                sy = halosystem['sat_pys'][i]
+                sz = halosystem['sat_pzs'][i]
+                cx = halosystem['MW_px']
+                cy = halosystem['MW_py']
+                cz = halosystem['MW_pz']
 
-                spin = MWsystem['MW_spin']
-                Lx = MWsystem['MW_lx']
-                Ly = MWsystem['MW_ly']
-                Lz = MWsystem['MW_lz']
+                spin = halosystem['MW_spin']
+                Lx = halosystem['MW_lx']
+                Ly = halosystem['MW_ly']
+                Lz = halosystem['MW_lz']
                 L = np.array([Lx,Ly,Lz])
                 #print(L)
                 L_mag = np.sqrt(Lx**2 + Ly**2 + Lz**2)
@@ -488,9 +542,9 @@ class MWsystems:
                 dots.append(L_dot_r)
                 cos = L_dot_r/(L_mag*r_mag)
                 angles.append(cos)
-            MWsystem['r_sep'] = np.squeeze(np.asarray(rseps))
-            MWsystem['cos'] = np.squeeze(np.asarray(angles))
-            MWsystem['dot'] = np.squeeze(np.asarray(dots))
+            halosystem['r_sep'] = np.squeeze(np.asarray(rseps))
+            halosystem['cos'] = np.squeeze(np.asarray(angles))
+            halosystem['dot'] = np.squeeze(np.asarray(dots))
 
         self.haloes = haloes_dict
         self.galaxies = galaxies_dict
@@ -781,14 +835,9 @@ class MWsystems:
             get_sep_vector(system)
         self.halosystems = systems
                 
-        return self.halosystem
+        return self.halosystem 
 
     
-
-
-
-
-                
 
 
     def write_to_pickle(self,name_to_save,rewrite=True):
@@ -817,17 +866,15 @@ class MWsystems:
             if rewrite:
                 print(f'File already exists, rewriting anyway to {path} ...')
                 with open(path_of_file,'wb') as handle:
-                    pickle.dump(self.MWsystems,handle,protocol=pickle.HIGHEST_PROTOCOL)
+                    pickle.dump(self.halosystems,handle,protocol=pickle.HIGHEST_PROTOCOL)
             else:
                 print('File already exists.')
 
         else:
             print(f'Writing file to {path} ...')
             with open(path_of_file,'wb') as handle:
-                pickle.dump(self.MWsystems,handle,protocol=pickle.HIGHEST_PROTOCOL)
-                
-                    
-                                    
+                pickle.dump(self.halosystems,handle,protocol=pickle.HIGHEST_PROTOCOL)
+
                                     
                             
                         
