@@ -30,7 +30,7 @@ galaxies_dict = galaxies.treebricks_dict
 #the halos you are trying to trace
 haloIDs = [1301,10889,1421,563,1388,563,3331,5485,675,5498,10886,8292,467]
 
-systs = analyze.MWsystems(haloes_dict,galaxies_dict,haloIDs) #first make a class object of all systems
+systs = analyze.halosystems(haloes_dict,galaxies_dict,haloIDs) #first make a class object of all systems
 halosystems = systs.find_systs_by_halo_ids(haloIDs,haloes_dict,galaxies_dict) #then find systems corresponding to these halos
 
 #write file 
