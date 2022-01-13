@@ -711,7 +711,7 @@ class halosystems:
                 """
                 #"""
                 
-                distance = 0.5 #look for satellites within 0.5 Mpc *1000 kpc = 500 kpc
+                distance = 1 #look for satellites within 0.5 Mpc *1000 kpc = 500 kpc
                 dist_kpc = distance*1000 
                 within_rad = np.where(((h_px - distance  < g_pxs) & (g_pxs < distance + h_px)) &
                                     ((h_py - distance  < g_pys) & (g_pys < distance + h_py)) &
@@ -743,7 +743,7 @@ class halosystems:
 
                     
                     #find the most massive galaxy that is within 0.2 of the host halo -- this is MW analog
-                    vir_thresh = 1
+                    vir_thresh = 0.5
 
                     within_vir = np.where(((h_px - vir_thresh*hrvir  < sat_pxs) & (sat_pxs < vir_thresh*hrvir + h_px)) &
                                         ((h_py - vir_thresh*hrvir  < sat_pys) & (sat_pys < vir_thresh*hrvir + h_py)) &
@@ -752,7 +752,7 @@ class halosystems:
                     #print('WITHIN_VIR',within_vir)
                     ### Check that there is a system of satellites that satisfies these conditions for a halo
                     if len(sat_mvirs[within_vir]) < 1:
-                        print(f'No satellites found within {vir_thresh} rvir of halo.')
+                        print(f'No central found within {vir_thresh} rvir of halo.')
                     else:
 
 
