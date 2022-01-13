@@ -658,7 +658,7 @@ class MWsystems:
 
             #assign sattelite galaxies parameters
 
-            if len(within_rad) < 1:
+            if len(sat_pxs = g_pxs[within_rad]) < 1:
                 print(f'No satellites found within {sat_thresh} rvir of halo.')
             else:
                 sat_pxs = g_pxs[within_rad]
@@ -686,7 +686,7 @@ class MWsystems:
 
                 print('WITHIN_VIR',within_vir)
                 ### Check that there is a system of satellites that satisfies these conditions for a halo
-                if len(within_vir) < 1:
+                if len(np.where(sat_mvirs == np.max(sat_mvirs[within_vir]))) < 1:
                     print('No satisfactory system found within this halo. Please try searching a different halo.')
                 else:
 
