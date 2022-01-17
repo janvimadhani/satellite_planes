@@ -613,6 +613,10 @@ def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best,los,unit_n,phys_
     #plane_extent = np.max((xx-MW_x)*M_to_k) - np.min((xx-MW_x)*M_to_k)
     #plane_extent = "{0:.2f}".format(plane_extent)
 
+    #plot the vector of projected velocities
+    proj_vec = ax.quiver((systems[syst]['MW_px']-MW_x)*M_to_k,(systems[syst]['MW_py']-MW_y)*M_to_k,(systems[syst]['MW_pz']-MW_z)*M_to_k,
+            project_onto[0],project_onto[1],project_onto[2],color='red', length= 200, normalize=True,label='Line of Sight')
+
 
     if inertia:
         v1,v2,v3,i_c_to_a = inertia[0],inertia[1],inertia[2],inertia[3]
