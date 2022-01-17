@@ -40,21 +40,21 @@ for syst in range(len(systems)):
 
 
     #check for isotropy n times and find n rms dists
-    iso_sph_systs_rms,iso_ell_systs_rms = pf.check_isotropy(systems=systems,syst=syst,n=2000)
+    #iso_sph_systs_rms,iso_ell_systs_rms = pf.check_isotropy(systems=systems,syst=syst,n=2000)
 
 
-    name_of_hist = 'system_' + str(name_of_syst) +'_hist.png'
+    #name_of_hist = 'system_' + str(name_of_syst) +'_hist.png'
     #save spherical and get significance 
-    sph_sig = pf.save_hist(name_of_hist,best_rms,iso_sph_systs_rms,snapshot=snapshot,type='spherical')
+    #sph_sig = pf.save_hist(name_of_hist,best_rms,iso_sph_systs_rms,snapshot=snapshot,type='spherical')
 
     #save elliptical and get significance 
-    ell_sig = pf.save_hist(name_of_hist,best_rms,iso_ell_systs_rms,snapshot=snapshot,type='elliptical')
+    #ell_sig = pf.save_hist(name_of_hist,best_rms,iso_ell_systs_rms,snapshot=snapshot,type='elliptical')
 
 
     ## find significance of rms then change below file to include this info
 
 
     #save all information to a .csv file
-    name_of_file = 'system_' + str(name_of_syst) + '.csv'
-    pf.save_outputs(name_of_file,snapshot=snapshot,systems=systems,syst=syst,inertial=inertia,physical=phys_ext,sig_spherical=sph_sig,sig_elliptical=ell_sig)
+    #name_of_file = 'system_' + str(name_of_syst) + '.csv'
+    #pf.save_outputs(name_of_file,snapshot=snapshot,systems=systems,syst=syst,inertial=inertia,physical=phys_ext,sig_spherical=sph_sig,sig_elliptical=ell_sig)
 
