@@ -27,6 +27,42 @@ def read_systems(systems_file):
         
     return systems
 
+def write_to_pickle(dictionary,snapshot,name_to_save,rewrite=True):
+    """
+    writes any dictionary to a pickle file, easy to read later 
+    Inputs: dictionary, dict: python dictionary to be saved 
+            snapshot of file, int: snapshot to create directory under
+            name,string: name of file to be written
+    Output: path,pickle: pickle file written at specified location
+    """
+    script_dir = os.path.dirname(__file__)
+    #results_dir = os.path.join(script_dir, 'systems/')
+    results_dir = '/data78/welker/madhani/analysis_data/' + str(snapshot) + '/'
+    
+    #local results dir
+    #results_dir = '/Users/JanviMadhani/satellite_planes/systems/'
+
+
+    if not os.path.isdir(results_dir):
+            os.makedirs(results_dir)
+
+    path_of_file = results_dir + name_to_save + '.pickle'
+
+    path = Path(path_of_file)
+
+
+    if path.is_file():
+        if rewrite:
+            print(f'File already exists, rewriting anyway to {path} ...')
+            with open(path_of_file,'wb') as handle:
+                pickle.dump(dictionary,handle,protocol=pickle.HIGHEST_PROTOCOL)
+        else:
+            print('File already exists.')
+
+    else:
+        print(f'Writing file to {path} ...')
+        with open(path_of_file,'wb') as handle:
+            pickle.dump(dictionary,handle,protocol=pickle.HIGHEST_PROTOCOL)
 
 def dist(x,y,z,normal_vect,d):
     """
@@ -536,6 +572,11 @@ def project_on_los(sat_velocity,plos):
 
 
 def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best,los,unit_n,phys_ext,inertia=None):
+
+    """
+    Input:
+    Returns: corotation ratio, float
+    """
     ## Figure for presentation
     p_a,p_b,p_c,p_c_to_a = phys_ext[0],phys_ext[1],phys_ext[2],phys_ext[3]
 
@@ -556,6 +597,10 @@ def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best,los,unit_n,phys_
         projected_v.append(vx[0]) #change this if you're projecting onto some component other than x
     projected_v = np.asarray(projected_v)
     #"""
+
+    #collect info for co-rotation
+    pos = 0
+    neg = 0
 
     fig = plt.figure(figsize=[8,6])
     ax = plt.axes(projection='3d')
@@ -589,9 +634,11 @@ def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best,los,unit_n,phys_
         if color > 0:
             ax.scatter3D((systems[syst]['sat_pxs'][i] - MW_x)*M_to_k,(systems[syst]['sat_pys'][i]- MW_y)*M_to_k,(systems[syst]['sat_pzs'][i] - MW_z)*M_to_k,
                         s=systems[syst]['sat_rvirs'][i]*M_to_k*scaleby**2,c='blue',alpha=0.8)
+            pos += 1
         else:
             ax.scatter3D((systems[syst]['sat_pxs'][i] - MW_x)*M_to_k,(systems[syst]['sat_pys'][i]- MW_y)*M_to_k,(systems[syst]['sat_pzs'][i] - MW_z)*M_to_k,
                         s=systems[syst]['sat_rvirs'][i]*M_to_k*scaleby**2,c='red',alpha=0.8)
+            neg +=1
     
     #imsats = ax.scatter3D((systems[syst]['sat_pxs'] - MW_x)*M_to_k,(systems[syst]['sat_pys']- MW_y)*M_to_k,(systems[syst]['sat_pzs'] - MW_z)*M_to_k,
                         #s=systems[syst]['sat_rvirs']*M_to_k*scaleby**2,c=projected_v,cmap='seismic',vmin=-300,vmax=300,alpha=0.8,label='Satellites')
@@ -659,6 +706,23 @@ def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best,los,unit_n,phys_
 
     print(f'Saving 3D Plot to:  {results_dir + name_of_plot}')
     plt.savefig(results_dir + name_of_plot)
+
+    #finish co-rotation analysis
+    # pos = number of positive velocity sats around los
+    # neg = number of negative velocity sats around los
+
+    R_pos = pos/neg
+    R_neg = neg/pos
+
+    if R_pos > R_neg:
+        corotation_rat = R_pos
+    elif R_neg > R_pos:
+        corotation_rat = R_neg
+    else:
+        corotation_rat = 0
+
+    return corotation_rat
+
 
 
 
