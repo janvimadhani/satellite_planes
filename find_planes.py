@@ -73,4 +73,4 @@ for syst in range(len(systems)):
 #save corotation dictionary to pickle for later analysis
 
 name_of_corot_dict = 'corotation_analysis_' + str(snapshot)
-pf.write_to_pickle(corotation_dict,snapshot)
+pf.write_to_pickle(corotation_dict,snapshot,name_of_corot_dict)
