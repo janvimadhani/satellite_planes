@@ -607,13 +607,13 @@ def corotating_frac(systems,syst,level=1):
 
     #redistribute satellites, preserving their separation vector, but new angles
 
-    level_sats = np.where(systems[system]['sat_levels'] == level)
+    level_sats = np.where(systems[syst]['sat_levels'] == level)
     nsats = len(level_sats[0]) 
 
     vrots = []
     for k in range(nsats):
         r = systems[syst]['r_sep'][level_sats][k]
-        vx,vy,vz = systems[syst]['sat_vxs'][level_sats][k],systems[system]['sat_vys'][level_sats][k],systems[system]['sat_vzs'][level_sats][k]
+        vx,vy,vz = systems[syst]['sat_vxs'][level_sats][k],systems[syst]['sat_vys'][level_sats][k],systems[syst]['sat_vzs'][level_sats][k]
         vrot = get_vrot(vx,vy,vz,r,unit_ez)
         vrots.append(vrot)
 
