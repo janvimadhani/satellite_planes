@@ -637,7 +637,7 @@ def corotating_frac(systems,syst,unit_n,actual_rms,nrms=1,level=1):
     
     #find satellites within n * rms AND right level
     #nrms = the number of rms within which you want to consider satellites as "on-plane"
-    win_rms = np.where((distances <= nrms * actual_rms) & (systems[system]['sat_levels'] == level))
+    win_rms = np.where((distances <= nrms * actual_rms) & (systems[syst]['sat_levels'] == level))
     
     nsats = len(win_rms[0])
     
