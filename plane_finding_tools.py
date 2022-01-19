@@ -574,17 +574,16 @@ def project_on_los(sat_velocity,plos):
 
 def corotating_frac(systems,syst,level=1):
 
-        Lx = systems[syst]['MW_lx']
-        Ly = systems[syst]['MW_ly']
-        Lz = systems[syst]['MW_lz']
-        L = np.array([Lx,Ly,Lz])
-        L_mag = np.linalg.norm(L)
-        unit_ez = L/L_mag
-        unit_ez = unit_ez.reshape(3,)
+    Lx = systems[syst]['MW_lx']
+    Ly = systems[syst]['MW_ly']
+    Lz = systems[syst]['MW_lz']
+    L = np.array([Lx,Ly,Lz])
+    L_mag = np.linalg.norm(L)
+    unit_ez = L/L_mag
+    unit_ez = unit_ez.reshape(3,)
 
 
     def get_vrot(satvx,satvy,satvz,r,unit_ez):
-        
         rz = r[2]
         b = (rz*unit_ez)
         b = b.flatten()
