@@ -591,7 +591,6 @@ def corotating_frac(systems,syst,level=1):
         unit_er = a/np.linalg.norm(a)
 
         unit_etheta = np.cross(unit_ez,unit_er)
-        unit_etheta = etheta
         vx = satvx
         vy = satvy
         vz = satvz
