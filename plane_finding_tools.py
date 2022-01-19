@@ -937,7 +937,7 @@ def rand_elliptical_dist(systems,system,level=1,niter=1000):
 
 
 
-def check_isotropy(systems,syst,n=2000):
+def check_isotropy(systems,syst,n=2000,corot=False):
 ## check that it's uniformly dist by running n times
     t0 = time.time()
 
@@ -961,6 +961,8 @@ def check_isotropy(systems,syst,n=2000):
         rand_e_system['MW_px'] = systems[syst]['MW_px'][0]
         rand_e_system['MW_py'] = systems[syst]['MW_py'][0]
         rand_e_system['MW_pz'] = systems[syst]['MW_pz'][0]
+
+
         
         sx,sy,sz = rand_spherical_dist(systems,syst,level=1)
         ex,ey,ez = rand_elliptical_dist(systems,syst,level=1,niter=2000)
@@ -978,23 +980,43 @@ def check_isotropy(systems,syst,n=2000):
 
     #find best fit plane of n random systems
     print(f'Finding best fit plane of {n} random, isotropically distributed systems...')
+    
     sph_mean_rms = []
-    ell_mean_rms = []
+    sph_corot_frac = []
+    sph_c_to_a = []
 
+
+
+    ell_mean_rms = []
+    ell_corot_frac = []
+    ell_c_to_a = []
+
+    corot_frac = pf.corotating_frac(systems=systems,syst=syst,level=1)
     for rand_syst in range(n):
         
         s_best_u1,s_best_u2,s_best_u3,sph_rand_rms = evolutionary_plane_finder(systems=systems,system=rand_s_systems['systems'][rand_syst],n_iter = 200,n_start=25,n_erase=10,n_avg_mutants=5,level=1,rand=True,verbose=False)
         sph_mean_rms.append(sph_rand_rms)
 
-        e_best_u1,e_best_u2,e_best_u3,ell_rand_rms = evolutionary_plane_finder(systems=systems,system=rand_e_systems['systems'][rand_syst],n_iter = 200,n_start=25,n_erase=10,n_avg_mutants=5,level=1,rand=True,verbose=False)
+        e_best_u1,e_best_u2,e_best_u3,ell_rand_rms = evolutionary_plane_finder(systems=systems,system=rand_e_systems['systems'][rand_syst],n_iter = 200,n_start=25,n_erase=10,n_avg_mutants=5,level=1,rand=True,verbose=False) 
         ell_mean_rms.append(ell_rand_rms)
+    
 
+        if corot:
+            a,b,c,s_phys_c_to_a = find_physical_extent(u1=s_best_u1,u2=s_best_u2,u3=s_best_u3,systems=systems,system=syst,actual_rms=sph_rand_rms,nrms = 2,level=1)
+            sph_c_to_a.append(s_phys_c_to_a)
+            sph_corot_frac.append(corot_frac)
+
+            a,b,c,e_phys_c_to_a = find_physical_extent(u1=e_best_u1,u2=e_best_u2,u3=e_best_u3,systems=systems,system=syst,actual_rms=ell_rand_rms,nrms = 2,level=1)
+            ell_c_to_a.append(e_phys_c_to_a)
+            ell_corot_frac.append(corot_frac)
     t1 = time.time()
 
     print(f'Took {t1-t0} seconds.')
 
-
-    return sph_mean_rms,ell_mean_rms
+    if corot:
+        return sph_mean_rms,ell_mean_rms,sph_corot_frac,sph_c_to_a,ell_corot_frac,ell_c_to_a
+    else:
+        return sph_mean_rms,ell_mean_rms
 
 def save_hist(name_of_plot,best_rms,mean_rms,snapshot,type='spherical',histbins=70):
     """

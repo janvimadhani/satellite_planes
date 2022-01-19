@@ -16,6 +16,10 @@ corotation_dict['syst_ID'] = []
 corotation_dict['best_rms'] = []
 corotation_dict['phys_c_to_a'] = []
 corotation_dict['corotating_frac'] = []
+corotation_dict['sph_corotating_frac'] = []
+corotation_dict['ell_corotating_frac'] = []
+corotation_dict['sph_c_to_a'] = []
+corotation_dict['ell_c_to_a'] = []
 
 
 
@@ -37,40 +41,18 @@ for syst in range(len(systems)):
     a,b,c,phys_c_to_a = pf.find_physical_extent(u1=best_u1,u2=best_u2,u3=best_u3,systems=systems,system=syst,actual_rms=best_rms,nrms = 2,level=1)
     phys_ext = [a,b,c,phys_c_to_a]
     corotation_dict['phys_c_to_a'].append(phys_c_to_a)
-
-
-    ## find inertia tensor
-    I = pf.find_inertia_tensor(systems[syst])
-    v1,v2,v3 = pf.find_axes_of_rot(I)
-    i_c_to_a = pf.find_axes_ratios(I)
-
-    inertia = [v1,v2,v3,i_c_to_a]
-
-    name_of_3dplot = 'system_' + str(name_of_syst) +'.png'
-    pf.save_3Dplot(name_of_3dplot,systems=systems,syst=syst,snapshot=snapshot,xx=xx,yy=yy,z_best=z_best,los=v2,unit_n=unit_n,phys_ext = phys_ext, inertia=inertia)
     
     corot_frac = pf.corotating_frac(systems=systems,syst=syst,level=1)
     
     corotation_dict['corotating_frac'].append(corot_frac)
 
     ## check for isotropy n times and find n rms dists
-    #iso_sph_systs_rms,iso_ell_systs_rms = pf.check_isotropy(systems=systems,syst=syst,n=2000,corot=False)
+    iso_sph_systs_rms,iso_ell_systs_rms,sph_corot_frac,sph_c_to_a,ell_corot_frac,ell_c_to_a = pf.check_isotropy(systems=systems,syst=syst,n=2000,corot=True)
 
-
-    #name_of_hist = 'system_' + str(name_of_syst) +'_hist.png'
-    ## save spherical and get significance 
-    #sph_sig = pf.save_hist(name_of_hist,best_rms,iso_sph_systs_rms,snapshot=snapshot,type='spherical')
-
-    ## save elliptical and get significance 
-    #ell_sig = pf.save_hist(name_of_hist,best_rms,iso_ell_systs_rms,snapshot=snapshot,type='elliptical')
-
-
-    ## find significance of rms then change below file to include this info
-
-
-    #save all information to a .csv file
-    #name_of_file = 'system_' + str(name_of_syst) + '.csv'
-    #pf.save_outputs(name_of_file,snapshot=snapshot,systems=systems,syst=syst,inertial=inertia,physical=phys_ext,sig_spherical=sph_sig,sig_elliptical=ell_sig)
+    corotation_dict['sph_corotating_frac'].append(sph_corot_frac)
+    corotation_dict['ell_corotating_frac'].append(ell_corot_frac)
+    corotation_dict['sph_c_to_a'].append(sph_c_to_a)
+    corotation_dict['ell_c_to_a'].append(ell_c_to_a)
 
 #save corotation dictionary to pickle for later analysis
 
