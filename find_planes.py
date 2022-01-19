@@ -47,8 +47,10 @@ for syst in range(len(systems)):
     inertia = [v1,v2,v3,i_c_to_a]
 
     name_of_3dplot = 'system_' + str(name_of_syst) +'.png'
-    corot_frac = pf.save_3Dplot(name_of_3dplot,systems=systems,syst=syst,snapshot=snapshot,xx=xx,yy=yy,z_best=z_best,los=los,unit_n=unit_n,phys_ext = phys_ext, inertia=inertia)
-
+    pf.save_3Dplot(name_of_3dplot,systems=systems,syst=syst,snapshot=snapshot,xx=xx,yy=yy,z_best=z_best,los=v2,unit_n=unit_n,phys_ext = phys_ext, inertia=inertia)
+    
+    corot_frac = pf.corotating_frac(systems=systems,syst=syst,level=1
+    
     corotation_dict['corotating_frac'].append(corot_frac)
 
     #check for isotropy n times and find n rms dists

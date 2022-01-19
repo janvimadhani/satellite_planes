@@ -572,18 +572,95 @@ def project_on_los(sat_velocity,plos):
     return projection
 
 
+def corotating_frac(systems,syst,level=1):
+
+        Lx = systems[syst]['MW_lx']
+        Ly = systems[syst]['MW_ly']
+        Lz = systems[syst]['MW_lz']
+        L = np.array([Lx,Ly,Lz])
+        L_mag = np.linalg.norm(L)
+        unit_ez = L/L_mag
+        unit_ez = unit_ez.reshape(3,)
+
+
+    def get_vrot(satvx,satvy,satvz,r,unit_ez):
+        
+        rz = r[2]
+        b = (rz*unit_ez)
+        b = b.flatten()
+        a = (r - b)
+        unit_er = a/np.linalg.norm(a)
+
+        unit_etheta = np.cross(unit_ez,unit_er)
+        unit_etheta = etheta
+        vx = satvx
+        vy = satvy
+        vz = satvz
+        v = np.array([vx,vy,vz])
+        
+        vrot = np.dot(v,unit_etheta)
+
+        return vrot
+    
+    x0 = systems[syst]['MW_px'][0]
+    y0 = systems[syst]['MW_py'][0]
+    z0 = systems[syst]['MW_pz'][0]
+
+    #redistribute satellites, preserving their separation vector, but new angles
+
+    level_sats = np.where(systems[system]['sat_levels'] == level)
+    nsats = len(level_sats[0]) 
+
+    vrots = []
+    for k in range(nsats):
+        r = systems[syst]['r_sep'][level_sats][k]
+        vx,vy,vz = systems[syst]['sat_vxs'][level_sats][k],systems[system]['sat_vys'][level_sats][k],systems[system]['sat_vzs'][level_sats][k]
+        vrot = get_vrot(vx,vy,vz,r,unit_ez)
+        vrots.append(vrot)
+
+    pos = 0
+    neg = 0
+
+    for v in vrots:
+        if v > 0:
+            pos +=1
+        elif v < 0:
+            neg += 1
+        else:
+            print('Check velocities, something off!')
+
+    ntot = len(vrots)
+    Rpos = pos/ntot
+    Rneg = neg/ntot
+
+    if Rpos > Rneg:
+        corot_frac = Rpos
+    elif Rneg > Rpos:
+        corot_frac = Rneg
+    
+    else:
+        corot_frac = 0
+
+    return corot_frac
+
+
+
+
+    
+
 def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best,los,unit_n,phys_ext,inertia=None):
 
     """
     Input:
-    Returns: corotation ratio, float
+    Returns: saves a plot
     """
     ## Figure for presentation
     p_a,p_b,p_c,p_c_to_a = phys_ext[0],phys_ext[1],phys_ext[2],phys_ext[3]
 
     #"""
-    #project sat velocities onto nx vector of the plane 
-    project_onto = np.array([unit_n[0],0,0]) #change this vector if you want to project onto a different vector
+    #project sat velocities onto los vector of the plane 
+    #project_onto = np.array([unit_n[0],0,0]) #change this vector if you want to project onto a different vector
+    project_onto = los 
 
     projected_v = []
     mv = np.array([systems[syst]['MW_vx'],systems[syst]['MW_vy'],systems[syst]['MW_vz']])
@@ -599,9 +676,6 @@ def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best,los,unit_n,phys_
     projected_v = np.asarray(projected_v)
     #"""
 
-    #collect info for co-rotation
-    pos = 0
-    neg = 0
 
     fig = plt.figure(figsize=[8,6])
     ax = plt.axes(projection='3d')
@@ -635,11 +709,11 @@ def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best,los,unit_n,phys_
         if color > 0:
             ax.scatter3D((systems[syst]['sat_pxs'][i] - MW_x)*M_to_k,(systems[syst]['sat_pys'][i]- MW_y)*M_to_k,(systems[syst]['sat_pzs'][i] - MW_z)*M_to_k,
                         s=systems[syst]['sat_rvirs'][i]*M_to_k*scaleby**2,c='blue',alpha=0.8)
-            pos += 1
+
         else:
             ax.scatter3D((systems[syst]['sat_pxs'][i] - MW_x)*M_to_k,(systems[syst]['sat_pys'][i]- MW_y)*M_to_k,(systems[syst]['sat_pzs'][i] - MW_z)*M_to_k,
                         s=systems[syst]['sat_rvirs'][i]*M_to_k*scaleby**2,c='red',alpha=0.8)
-            neg +=1
+
     
     #imsats = ax.scatter3D((systems[syst]['sat_pxs'] - MW_x)*M_to_k,(systems[syst]['sat_pys']- MW_y)*M_to_k,(systems[syst]['sat_pzs'] - MW_z)*M_to_k,
                         #s=systems[syst]['sat_rvirs']*M_to_k*scaleby**2,c=projected_v,cmap='seismic',vmin=-300,vmax=300,alpha=0.8,label='Satellites')
@@ -708,21 +782,7 @@ def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best,los,unit_n,phys_
     print(f'Saving 3D Plot to:  {results_dir + name_of_plot}')
     plt.savefig(results_dir + name_of_plot)
 
-    #finish co-rotation analysis
-    # pos = number of positive velocity sats around los
-    # neg = number of negative velocity sats around los
 
-    R_pos = pos/neg
-    R_neg = neg/pos
-
-    if R_pos > R_neg:
-        corotation_rat = R_pos
-    elif R_neg > R_pos:
-        corotation_rat = R_neg
-    else:
-        corotation_rat = 0
-
-    return corotation_rat
 
 
 
