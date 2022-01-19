@@ -42,7 +42,7 @@ for syst in range(len(systems)):
     phys_ext = [a,b,c,phys_c_to_a]
     corotation_dict['phys_c_to_a'].append(phys_c_to_a)
     
-    corot_frac = pf.corotating_frac(systems=systems,syst=syst,unit_n,rms=1,level=1)
+    corot_frac = pf.corotating_frac(systems=systems,syst=syst,unit_n=unit_n,rms=1,level=1)
     
     corotation_dict['corotating_frac'].append(corot_frac)
 
