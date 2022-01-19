@@ -572,7 +572,17 @@ def project_on_los(sat_velocity,plos):
     return projection
 
 
-def corotating_frac(systems,syst,level=1):
+def corotating_frac(systems,syst,rms=1,level=1):
+    """
+    find the ratio of corotation for all satellites that are within rms of plane
+    Input: systems, dict: systems dictionary
+           syst, int: index of relevant system
+           rms, int: within how many rms you want to inspect corotation
+           level, int: what level satellites you want to consider
+
+    """
+
+
 
     Lx = systems[syst]['MW_lx']
     Ly = systems[syst]['MW_ly']
@@ -604,15 +614,34 @@ def corotating_frac(systems,syst,level=1):
     y0 = systems[syst]['MW_py'][0]
     z0 = systems[syst]['MW_pz'][0]
 
-    #redistribute satellites, preserving their separation vector, but new angles
 
-    level_sats = np.where(systems[syst]['sat_levels'] == level)
-    nsats = len(level_sats[0]) 
+
+    #level_sats = np.where(systems[syst]['sat_levels'] == level)
+    #nsats = len(level_sats[0]) 
+
+    distances = []
+
+    #calculate the distance of ALL the sats (needed for shape)
+    for k in range(len(systems[system]['sat_pxs'])):
+        x,y,z = systems[system]['sat_pxs'][k],systems[system]['sat_pys'][k],systems[system]['sat_pzs'][k]
+        s = dist(x,y,z,unit_n,d)
+        distances.append(s) 
+
+           
+    distances = np.asarray(distances)
+
+    
+    #find satellites within n * rms AND right level
+    #nrms = the number of rms within which you want to consider satellites as "on-plane"
+    win_rms = np.where((distances <= nrms * actual_rms) & (systems[system]['sat_levels'] == level))
+    
+    nsats = len(win_rms[0])
+    
 
     vrots = []
     for k in range(nsats):
-        r = systems[syst]['r_sep'][level_sats][k]
-        vx,vy,vz = systems[syst]['sat_vxs'][level_sats][k],systems[syst]['sat_vys'][level_sats][k],systems[syst]['sat_vzs'][level_sats][k]
+        r = systems[syst]['r_sep'][win_rms][k]
+        vx,vy,vz = systems[syst]['sat_vxs'][win_rms][k],systems[syst]['sat_vys'][win_rms][k],systems[syst]['sat_vzs'][win_rms][k]
         vrot = get_vrot(vx,vy,vz,r,unit_ez)
         vrots.append(vrot)
 
@@ -991,7 +1020,7 @@ def check_isotropy(systems,syst,n=2000,corot=False):
     ell_corot_frac = []
     ell_c_to_a = []
 
-    corot_frac = pf.corotating_frac(systems=systems,syst=syst,level=1)
+    corot_frac = corotating_frac(systems=systems,syst=syst,level=1)
     for rand_syst in range(n):
         
         s_best_u1,s_best_u2,s_best_u3,sph_rand_rms = evolutionary_plane_finder(systems=systems,system=rand_s_systems['systems'][rand_syst],n_iter = 200,n_start=25,n_erase=10,n_avg_mutants=5,level=1,rand=True,verbose=False)
