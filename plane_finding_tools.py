@@ -622,8 +622,8 @@ def corotating_frac(systems,syst,rms=1,level=1):
     distances = []
 
     #calculate the distance of ALL the sats (needed for shape)
-    for k in range(len(systems[system]['sat_pxs'])):
-        x,y,z = systems[system]['sat_pxs'][k],systems[system]['sat_pys'][k],systems[system]['sat_pzs'][k]
+    for k in range(len(systems[syst]['sat_pxs'])):
+        x,y,z = systems[syst]['sat_pxs'][k],systems[syst]['sat_pys'][k],systems[syst]['sat_pzs'][k]
         s = dist(x,y,z,unit_n,d)
         distances.append(s) 
 
