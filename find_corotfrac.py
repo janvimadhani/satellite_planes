@@ -42,12 +42,12 @@ for syst in range(len(systems)):
     phys_ext = [a,b,c,phys_c_to_a]
     corotation_dict['phys_c_to_a'].append(phys_c_to_a)
     
-    corot_frac = pf.corotating_frac(systems=systems,syst=syst,unit_n=unit_n,nrms=1,level=1)
+    corot_frac = pf.corotating_frac(systems=systems,syst=syst,unit_n=unit_n,actual_rms=best_rms,nrms=1,level=1)
     
     corotation_dict['corotating_frac'].append(corot_frac)
 
     ## check for isotropy n times and find n rms dists
-    iso_sph_systs_rms,iso_ell_systs_rms,sph_corot_frac,sph_c_to_a,ell_corot_frac,ell_c_to_a = pf.check_isotropy(systems=systems,syst=syst,n=2000,corot=True)
+    iso_sph_systs_rms,iso_ell_systs_rms,sph_corot_frac,sph_c_to_a,ell_corot_frac,ell_c_to_a = pf.check_isotropy(systems=systems,syst=syst,unit_n=unit_n,actual_rms=best_rms,n=2000,corot=True)
 
     corotation_dict['sph_corotating_frac'].append(sph_corot_frac)
     corotation_dict['ell_corotating_frac'].append(ell_corot_frac)
