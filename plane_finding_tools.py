@@ -572,7 +572,7 @@ def project_on_los(sat_velocity,plos):
     return projection
 
 
-def corotating_frac(systems,syst,rms=1,level=1):
+def corotating_frac(systems,syst,unit_n,rms=1,level=1):
     """
     find the ratio of corotation for all satellites that are within rms of plane
     Input: systems, dict: systems dictionary
@@ -613,6 +613,10 @@ def corotating_frac(systems,syst,rms=1,level=1):
     x0 = systems[syst]['MW_px'][0]
     y0 = systems[syst]['MW_py'][0]
     z0 = systems[syst]['MW_pz'][0]
+
+    gal_center = np.array([x0,y0,z0])
+
+    d = np.dot(-gal_center,unit_n)
 
 
 
@@ -966,7 +970,7 @@ def rand_elliptical_dist(systems,system,level=1,niter=1000):
 
 
 
-def check_isotropy(systems,syst,n=2000,corot=False):
+def check_isotropy(systems,syst,unit_n,n=2000,corot=False):
 ## check that it's uniformly dist by running n times
     t0 = time.time()
 
@@ -1020,7 +1024,7 @@ def check_isotropy(systems,syst,n=2000,corot=False):
     ell_corot_frac = []
     ell_c_to_a = []
 
-    corot_frac = corotating_frac(systems=systems,syst=syst,level=1)
+    corot_frac = corotating_frac(systems=systems,syst=syst,unit_n,level=1)
     for rand_syst in range(n):
         
         s_best_u1,s_best_u2,s_best_u3,sph_rand_rms = evolutionary_plane_finder(systems=systems,system=rand_s_systems['systems'][rand_syst],n_iter = 200,n_start=25,n_erase=10,n_avg_mutants=5,level=1,rand=True,verbose=False)
