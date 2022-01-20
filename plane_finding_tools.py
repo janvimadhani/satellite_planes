@@ -1273,7 +1273,7 @@ def find_physical_extent(u1,u2,u3,systems,system,actual_rms,nrms = 2,level=1):
     
 
     #print(xmin,xmax,ymin,ymax,zmin,zmax)
-    print(x_extent,y_extent,z_extent)
+    #print(x_extent,y_extent,z_extent)
     
     extents = [x_extent,y_extent,z_extent]
     extents = sorted(extents)
