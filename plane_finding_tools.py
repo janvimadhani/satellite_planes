@@ -974,7 +974,7 @@ def check_isotropy(systems,syst,unit_n,actual_rms,n=2000,corot=False):
 ## check that it's uniformly dist by running n times
     t0 = time.time()
 
-    n = 2000
+    
     rand_s_systems = {}
     rand_s_systems['systems'] = []
 
@@ -1011,8 +1011,7 @@ def check_isotropy(systems,syst,unit_n,actual_rms,n=2000,corot=False):
         rand_e_system['sat_pz'] = ez
         rand_e_systems['systems'].append(rand_e_system)
 
-    #find best fit plane of n random systems
-    print(f'Finding best fit plane of {n} random, isotropically distributed systems...')
+
     
     sph_mean_rms = []
     sph_corot_frac = []
@@ -1025,6 +1024,8 @@ def check_isotropy(systems,syst,unit_n,actual_rms,n=2000,corot=False):
     ell_c_to_a = []
 
     corot_frac = corotating_frac(systems=systems,syst=syst,unit_n=unit_n,actual_rms=actual_rms,level=1)
+    if corot:
+        print(f'Finding best fit plane of {n} random, isotropically distributed systems...')
     for rand_syst in range(n):
         
         s_best_u1,s_best_u2,s_best_u3,sph_rand_rms = evolutionary_plane_finder(systems=systems,system=rand_s_systems['systems'][rand_syst],n_iter = 200,n_start=25,n_erase=10,n_avg_mutants=5,level=1,rand=True,verbose=False)
@@ -1035,6 +1036,8 @@ def check_isotropy(systems,syst,unit_n,actual_rms,n=2000,corot=False):
     
 
         if corot:
+            #find best fit plane of n random systems
+            
             a,b,c,s_phys_c_to_a = find_physical_extent(u1=s_best_u1,u2=s_best_u2,u3=s_best_u3,systems=systems,system=syst,actual_rms=sph_rand_rms,nrms = 2,level=1)
             sph_c_to_a.append(s_phys_c_to_a)
             sph_corot_frac.append(corot_frac)
