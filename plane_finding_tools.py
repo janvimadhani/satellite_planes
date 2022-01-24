@@ -1255,34 +1255,41 @@ def find_physical_extent(u1,u2,u3,systems,system,actual_rms,nrms = 2,level=1):
     #y extents 
     
     a3 = uny * (a1/u_n_hyp) 
+
+    #put in a clause to catch instances where there is no array
     
-    xmin, xmax = np.min(a2), np.max(a2)
-    ymin, ymax = np.min(a3), np.max(a3)
-    zmin, zmax = np.min(distances), np.max(distances)  
+    if len(a2) > 1:
+        xmin, xmax = np.min(a2), np.max(a2)
+        ymin, ymax = np.min(a3), np.max(a3)
+        zmin, zmax = np.min(distances), np.max(distances)  
     
     
 
-    """
-    xmin, xmax = np.min(x_win_rms), np.max(x_win_rms)
-    ymin, ymax = np.min(y_win_rms), np.max(y_win_rms)
-    zmin, zmax = np.min(z_win_rms), np.max(z_win_rms)
-    """
+        """
+        xmin, xmax = np.min(x_win_rms), np.max(x_win_rms)
+        ymin, ymax = np.min(y_win_rms), np.max(y_win_rms)
+        zmin, zmax = np.min(z_win_rms), np.max(z_win_rms)
+        """
     
-    M_to_k = 1000
-    x_extent = np.abs(xmax-xmin) * M_to_k
-    y_extent = np.abs(ymax-ymin) * M_to_k
-    z_extent = np.abs(zmax-zmin) * M_to_k
+        M_to_k = 1000
+        x_extent = np.abs(xmax-xmin) * M_to_k
+        y_extent = np.abs(ymax-ymin) * M_to_k
+        z_extent = np.abs(zmax-zmin) * M_to_k
 
-    
+        
 
-    #print(xmin,xmax,ymin,ymax,zmin,zmax)
-    #print(x_extent,y_extent,z_extent)
+        #print(xmin,xmax,ymin,ymax,zmin,zmax)
+        #print(x_extent,y_extent,z_extent)
+        
+        extents = [x_extent,y_extent,z_extent]
+        extents = sorted(extents)
+        c,b,a = extents[0], extents[1], extents[2]
+        c_to_a = c/a
+        return(a,b,c,c_to_a)
     
-    extents = [x_extent,y_extent,z_extent]
-    extents = sorted(extents)
-    c,b,a = extents[0], extents[1], extents[2]
-    c_to_a = c/a
-    return(a,b,c,c_to_a)
+    #can mask out these erroneous vals later
+    else:
+        return(0,0,0,0)
 
     
 
