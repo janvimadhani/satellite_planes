@@ -1096,7 +1096,7 @@ def check_isotropy(systems,syst,unit_n,actual_rms,n=2000,corot=False):
         if corot:
             #find best fit plane of n random systems
             
-            a,b,c,s_phys_c_to_a = find_physical_extent(u1=s_best_u1,u2=s_best_u2,u3=s_best_u3,systems=systems,rand_s_systems['systems'][rand_syst],actual_rms=sph_rand_rms,nrms = 2,level=1)
+            a,b,c,s_phys_c_to_a = find_physical_extent(u1=s_best_u1,u2=s_best_u2,u3=s_best_u3,systems=systems,system = rand_s_systems['systems'][rand_syst],actual_rms=sph_rand_rms,nrms = 2,level=1)
             sph_c_to_a.append(s_phys_c_to_a)
 
             s_corot_frac = corotating_frac(systems=systems,syst=rand_s_systems['systems'][rand_syst],unit_n=unit_n,actual_rms=actual_rms,level=1)
