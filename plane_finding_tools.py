@@ -847,12 +847,13 @@ def rand_angle():
 
     
 
-def rand_spherical_dist(systems,system,level=1):
+def rand_spherical_dist(systems,system,vel=False,level=1):
 
     """
     Input: systems, dict
            system, dict
            level, int
+           vel, bool: if True, will assign a random velocity to your satellite
     Returns: x,y,z, float: ONE spherical redistribution of all level sats in system
     
     """
@@ -864,6 +865,10 @@ def rand_spherical_dist(systems,system,level=1):
     spherical_isotropy['sat_x'] = []
     spherical_isotropy['sat_y'] = []
     spherical_isotropy['sat_z'] = []
+
+    spherical_isotropy['sat_vxs'] = []
+    spherical_isotropy['sat_vys'] = []
+    spherical_isotropy['sat_vzs'] = []
     x0 = systems[system]['MW_px'][0]
     y0 = systems[system]['MW_py'][0]
     z0 = systems[system]['MW_pz'][0]
@@ -884,14 +889,29 @@ def rand_spherical_dist(systems,system,level=1):
         yp = r*np.sin(phi)*sin_theta + y0
         zp = r*cos_theta + z0
 
+
         spherical_isotropy['sat_x'].append(xp)
         spherical_isotropy['sat_y'].append(yp)
         spherical_isotropy['sat_z'].append(zp)
 
+        if vel:
+            #either +100 km/s, -100 km/s
+            vx = random.choice([-100,100])
+            vy = random.choice([-100,100])
+            vz = random.choice([-100,100])
 
-    return spherical_isotropy['sat_x'],spherical_isotropy['sat_y'],spherical_isotropy['sat_z']
+            spherical_isotropy['sat_vxs'].append(vx)
+            spherical_isotropy['sat_vys'].append(vy)
+            spherical_isotropy['sat_vzs'].append(vz)
 
-def rand_elliptical_dist(systems,system,level=1,niter=1000):
+
+
+    if vel:
+        return spherical_isotropy['sat_x'],spherical_isotropy['sat_y'],spherical_isotropy['sat_z'],spherical_isotropy['sat_vxs'],spherical_isotropy['sat_vys'],spherical_isotropy['sat_vzs']
+    else:
+        return spherical_isotropy['sat_x'],spherical_isotropy['sat_y'],spherical_isotropy['sat_z']
+
+def rand_elliptical_dist(systems,system,vel=False,level=1,niter=1000):
     """
     Input: systems, dict
            system, dict
@@ -907,6 +927,9 @@ def rand_elliptical_dist(systems,system,level=1,niter=1000):
     elliptical_isotropy['sat_x'] = []
     elliptical_isotropy['sat_y'] = []
     elliptical_isotropy['sat_z'] = []
+    elliptical_isotropy['sat_vxs']= []
+    elliptical_isotropy['sat_vys'] = []
+    elliptical_isotropy['sat_vzs'] = []
     x0 = systems[system]['MW_px'][0]
     y0 = systems[system]['MW_py'][0]
     z0 = systems[system]['MW_pz'][0]
@@ -963,10 +986,22 @@ def rand_elliptical_dist(systems,system,level=1,niter=1000):
         elliptical_isotropy['sat_y'].append(yp)
         elliptical_isotropy['sat_z'].append(zp)
 
+        if vel:
+            #either +100 km/s, -100 km/s
+            vx = random.choice([-100,100])
+            vy = random.choice([-100,100])
+            vz = random.choice([-100,100])
+
+            elliptical_isotropy['sat_vxs'].append(vx)
+            elliptical_isotropy['sat_vys'].append(vy)
+            elliptical_isotropy['sat_vzs'].append(vz)
 
 
+    if vel:
+        return elliptical_isotropy['sat_x'],elliptical_isotropy['sat_y'],elliptical_isotropy['sat_z'],elliptical_isotropy['sat_vxs'],elliptical_isotropy['sat_vys'],elliptical_isotropy['sat_vzs']
 
-    return elliptical_isotropy['sat_x'],elliptical_isotropy['sat_y'],elliptical_isotropy['sat_z']
+    else:
+        return elliptical_isotropy['sat_x'],elliptical_isotropy['sat_y'],elliptical_isotropy['sat_z']
 
 
 
@@ -982,7 +1017,7 @@ def check_isotropy(systems,syst,unit_n,actual_rms,n=2000,corot=False):
     rand_e_systems['systems'] = []
 
 
-    #make n random rystems
+    #make n random systems
     for i in range(n):
         rand_s_system = {}
         rand_e_system = {}
@@ -990,25 +1025,48 @@ def check_isotropy(systems,syst,unit_n,actual_rms,n=2000,corot=False):
         rand_s_system['MW_px'] = systems[syst]['MW_px'][0]
         rand_s_system['MW_py'] = systems[syst]['MW_py'][0]
         rand_s_system['MW_pz'] = systems[syst]['MW_pz'][0]
+
+        rand_s_system['MW_lx'] = systems[syst]['MW_lx'][0]
+        rand_s_system['MW_ly'] = systems[syst]['MW_ly'][0]
+        rand_s_system['MW_lz'] = systems[syst]['MW_lz'][0]
     
+    
+        
         rand_e_system['MW_px'] = systems[syst]['MW_px'][0]
         rand_e_system['MW_py'] = systems[syst]['MW_py'][0]
         rand_e_system['MW_pz'] = systems[syst]['MW_pz'][0]
 
+        rand_e_system['MW_lx'] = systems[syst]['MW_lx'][0]
+        rand_e_system['MW_ly'] = systems[syst]['MW_ly'][0]
+        rand_e_system['MW_lz'] = systems[syst]['MW_lz'][0]
+
 
         
-        sx,sy,sz = rand_spherical_dist(systems,syst,level=1)
-        ex,ey,ez = rand_elliptical_dist(systems,syst,level=1,niter=2000)
+        sx,sy,sz,svx,svy,svz = rand_spherical_dist(systems,syst,vel=True,level=1)
+        ex,ey,ez,evx,evy,evz = rand_elliptical_dist(systems,syst,vel=True,level=1,niter=2000)
 
         
         rand_s_system['sat_px'] = sx
         rand_s_system['sat_py'] = sy
         rand_s_system['sat_pz'] = sz
+
+
+        #assign random velocities
+
+        rand_s_system['sat_vxs'] = svx
+        rand_s_system['sat_vys'] = svy
+        rand_s_system['sat_vzs'] = svz
         rand_s_systems['systems'].append(rand_s_system)
         
         rand_e_system['sat_px'] = ex
         rand_e_system['sat_py'] = ey
         rand_e_system['sat_pz'] = ez
+
+        #assign random velocities
+
+        rand_e_system['sat_vxs'] = evx
+        rand_e_system['sat_vys'] = evy
+        rand_e_system['sat_vzs'] = evz
         rand_e_systems['systems'].append(rand_e_system)
 
 
@@ -1023,7 +1081,7 @@ def check_isotropy(systems,syst,unit_n,actual_rms,n=2000,corot=False):
     ell_corot_frac = []
     ell_c_to_a = []
 
-    corot_frac = corotating_frac(systems=systems,syst=syst,unit_n=unit_n,actual_rms=actual_rms,level=1)
+    #corot_frac = corotating_frac(systems=systems,syst=syst,unit_n=unit_n,actual_rms=actual_rms,level=1)
     if corot:
         print(f'Finding best fit plane of {n} random, isotropically distributed systems...')
     for rand_syst in range(n):
@@ -1038,13 +1096,18 @@ def check_isotropy(systems,syst,unit_n,actual_rms,n=2000,corot=False):
         if corot:
             #find best fit plane of n random systems
             
-            a,b,c,s_phys_c_to_a = find_physical_extent(u1=s_best_u1,u2=s_best_u2,u3=s_best_u3,systems=systems,system=syst,actual_rms=sph_rand_rms,nrms = 2,level=1)
+            a,b,c,s_phys_c_to_a = find_physical_extent(u1=s_best_u1,u2=s_best_u2,u3=s_best_u3,systems=systems,rand_s_systems['systems'][rand_syst],actual_rms=sph_rand_rms,nrms = 2,level=1)
             sph_c_to_a.append(s_phys_c_to_a)
-            sph_corot_frac.append(corot_frac)
 
-            a,b,c,e_phys_c_to_a = find_physical_extent(u1=e_best_u1,u2=e_best_u2,u3=e_best_u3,systems=systems,system=syst,actual_rms=ell_rand_rms,nrms = 2,level=1)
+            s_corotating_frac(systems=systems,syst=rand_s_systems['systems'][rand_syst],unit_n=unit_n,actual_rms=actual_rms,level=1)
+            sph_corot_frac.append(s_corot_frac)
+
+            a,b,c,e_phys_c_to_a = find_physical_extent(u1=e_best_u1,u2=e_best_u2,u3=e_best_u3,systems=systems,system=rand_e_systems['systems'][rand_syst],actual_rms=ell_rand_rms,nrms = 2,level=1)
             ell_c_to_a.append(e_phys_c_to_a)
+
+            e_corotating_frac(systems=systems,syst=rand_e_systems['systems'][rand_syst],unit_n=unit_n,actual_rms=actual_rms,level=1)
             ell_corot_frac.append(corot_frac)
+            
     t1 = time.time()
 
     print(f'Took {t1-t0} seconds.')
