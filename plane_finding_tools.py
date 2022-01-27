@@ -1048,9 +1048,9 @@ def check_isotropy(systems,syst,unit_n,actual_rms,n=2000,corot=False):
         
         sx,sy,sz,svx,svy,svz = rand_spherical_dist(systems,syst,vel=True,level=1)
         
-        rand_s_system['sat_px'] = sx
-        rand_s_system['sat_py'] = sy
-        rand_s_system['sat_pz'] = sz
+        rand_s_system['sat_pxs'] = sx
+        rand_s_system['sat_pys'] = sy
+        rand_s_system['sat_pzs'] = sz
 
 
         #assign random velocities
@@ -1062,9 +1062,9 @@ def check_isotropy(systems,syst,unit_n,actual_rms,n=2000,corot=False):
         
         ex,ey,ez,evx,evy,evz = rand_elliptical_dist(systems,syst,vel=True,level=1,niter=2000)
 
-        rand_e_system['sat_px'] = ex
-        rand_e_system['sat_py'] = ey
-        rand_e_system['sat_pz'] = ez
+        rand_e_system['sat_pxs'] = ex
+        rand_e_system['sat_pys'] = ey
+        rand_e_system['sat_pzs'] = ez
 
         #assign random velocities
 
