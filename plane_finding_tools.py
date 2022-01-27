@@ -1269,12 +1269,18 @@ def find_physical_extent(u1,u2,u3,systems,system,actual_rms,rand=False,nrms = 2,
     
     
     unx, uny, unz = unit_n[0],unit_n[1],unit_n[2]
+
+    if rand:
+        #calculate distances to best plane, then the extent
+        x0 = systems[system]['MW_px']
+        y0 = systems[system]['MW_py']
+        z0 = systems[system]['MW_pz']
     
-    
-    #calculate distances to best plane, then the extent
-    x0 = systems[system]['MW_px'][0]
-    y0 = systems[system]['MW_py'][0]
-    z0 = systems[system]['MW_pz'][0]
+    else:
+        #calculate distances to best plane, then the extent
+        x0 = systems[system]['MW_px'][0]
+        y0 = systems[system]['MW_py'][0]
+        z0 = systems[system]['MW_pz'][0]
     
     
 
