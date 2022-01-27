@@ -1306,7 +1306,11 @@ def find_physical_extent(u1,u2,u3,systems,system,actual_rms,rand=False,nrms = 2,
     
     #find satellites within n * rms AND right level
     #nrms = the number of rms within which you want to consider satellites as "on-plane"
-    win_rms = np.where((distances <= nrms * actual_rms) & (systems[system]['sat_levels'] == level))
+    if rand:
+        win_rms = np.where(distances <= nrms * actual_rms) 
+
+    else:
+        win_rms = np.where((distances <= nrms * actual_rms) & (systems[system]['sat_levels'] == level))
     
     
     distances = distances[win_rms]
