@@ -1090,7 +1090,7 @@ def check_isotropy(systems,syst,unit_n,actual_rms,n=2000,corot=False):
         print(f'Finding best fit plane of {n} random, isotropically distributed systems...')
     for rand_syst in range(n):
 
-        print('SAT VXS',rand_s_systems['systems'][rand_syst]['sat_vxs'])
+        #print('SAT VXS',rand_s_systems['systems'][rand_syst]['sat_vxs'])
         
         s_best_u1,s_best_u2,s_best_u3,sph_rand_rms = evolutionary_plane_finder(systems=systems,system=rand_s_systems['systems'][rand_syst],n_iter = 200,n_start=25,n_erase=10,n_avg_mutants=5,level=1,rand=True,verbose=False)
         sph_mean_rms.append(sph_rand_rms)
@@ -1102,16 +1102,16 @@ def check_isotropy(systems,syst,unit_n,actual_rms,n=2000,corot=False):
         if corot:
             #find best fit plane of n random systems
             
-            a,b,c,s_phys_c_to_a = find_physical_extent(u1=s_best_u1,u2=s_best_u2,u3=s_best_u3,systems=systems,system = rand_s_systems['systems'][rand_syst],actual_rms=sph_rand_rms,rand = True,nrms = 2,level=1)
+            a,b,c,s_phys_c_to_a = find_physical_extent(u1=s_best_u1,u2=s_best_u2,u3=s_best_u3,systems=rand_s_systems['systems'],system = rand_syst,actual_rms=sph_rand_rms,rand = True,nrms = 2,level=1)
             sph_c_to_a.append(s_phys_c_to_a)
 
-            s_corot_frac = corotating_frac(systems=systems,syst=rand_s_systems['systems'][rand_syst],unit_n=unit_n,actual_rms=sph_rand_rms,rand=True,nrms=1,level=1)
+            s_corot_frac = corotating_frac(systems=rand_s_systems['systems'],syst=rand_syst,unit_n=unit_n,actual_rms=sph_rand_rms,rand=True,nrms=1,level=1)
             sph_corot_frac.append(s_corot_frac)
 
-            a,b,c,e_phys_c_to_a = find_physical_extent(u1=e_best_u1,u2=e_best_u2,u3=e_best_u3,systems=systems,system=rand_e_systems['systems'][rand_syst],actual_rms=ell_rand_rms,rand = True,nrms = 2,level=1)
+            a,b,c,e_phys_c_to_a = find_physical_extent(u1=e_best_u1,u2=e_best_u2,u3=e_best_u3,systems=rand_e_systems['systems'],system=rand_syst,actual_rms=ell_rand_rms,rand = True,nrms = 2,level=1)
             ell_c_to_a.append(e_phys_c_to_a)
 
-            e_corot_frac = corotating_frac(systems=systems,syst=rand_e_systems['systems'][rand_syst],unit_n=unit_n,actual_rms=ell_rand_rms,rand=True,nrms=1,level=1)
+            e_corot_frac = corotating_frac(systems=rand_e_systems['systems'],syst=rand_syst,unit_n=unit_n,actual_rms=ell_rand_rms,rand=True,nrms=1,level=1)
             ell_corot_frac.append(corot_frac)
 
     t1 = time.time()
