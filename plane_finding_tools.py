@@ -1315,6 +1315,7 @@ def find_physical_extent(u1,u2,u3,systems,system,actual_rms,rand=False,nrms = 2,
     
     distances = distances[win_rms]
     print('sat_pxs',systems[system]['sat_pxs'])
+    print('type',type(systems[system]['sat_pxs']))
     x_win_rms = systems[system]['sat_pxs'][win_rms]
     y_win_rms = systems[system]['sat_pys'][win_rms]
     z_win_rms = systems[system]['sat_pzs'][win_rms]
