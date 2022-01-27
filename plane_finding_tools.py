@@ -572,7 +572,7 @@ def project_on_los(sat_velocity,plos):
     return projection
 
 
-def corotating_frac(systems,syst,unit_n,actual_rms,nrms=1,level=1):
+def corotating_frac(systems,syst,unit_n,actual_rms,rand=False,nrms=1,level=1):
     """
     find the ratio of corotation for all satellites that are within rms of plane
     Input: systems, dict: systems dictionary
@@ -637,7 +637,11 @@ def corotating_frac(systems,syst,unit_n,actual_rms,nrms=1,level=1):
     
     #find satellites within n * rms AND right level
     #nrms = the number of rms within which you want to consider satellites as "on-plane"
-    win_rms = np.where((distances <= nrms * actual_rms) & (systems[syst]['sat_levels'] == level))
+    if rand:
+        win_rms = np.where(distances <= nrms * actual_rms)
+    
+    else:
+        win_rms = np.where((distances <= nrms * actual_rms) & (systems[syst]['sat_levels'] == level))
     
     nsats = len(win_rms[0])
     
@@ -1043,8 +1047,6 @@ def check_isotropy(systems,syst,unit_n,actual_rms,n=2000,corot=False):
 
         
         sx,sy,sz,svx,svy,svz = rand_spherical_dist(systems,syst,vel=True,level=1)
-        ex,ey,ez,evx,evy,evz = rand_elliptical_dist(systems,syst,vel=True,level=1,niter=2000)
-
         
         rand_s_system['sat_px'] = sx
         rand_s_system['sat_py'] = sy
@@ -1058,6 +1060,8 @@ def check_isotropy(systems,syst,unit_n,actual_rms,n=2000,corot=False):
         rand_s_system['sat_vzs'] = svz
         rand_s_systems['systems'].append(rand_s_system)
         
+        ex,ey,ez,evx,evy,evz = rand_elliptical_dist(systems,syst,vel=True,level=1,niter=2000)
+
         rand_e_system['sat_px'] = ex
         rand_e_system['sat_py'] = ey
         rand_e_system['sat_pz'] = ez
@@ -1096,16 +1100,16 @@ def check_isotropy(systems,syst,unit_n,actual_rms,n=2000,corot=False):
         if corot:
             #find best fit plane of n random systems
             
-            a,b,c,s_phys_c_to_a = find_physical_extent(u1=s_best_u1,u2=s_best_u2,u3=s_best_u3,systems=systems,system = rand_s_systems['systems'][rand_syst],actual_rms=sph_rand_rms,nrms = 2,level=1)
+            a,b,c,s_phys_c_to_a = find_physical_extent(u1=s_best_u1,u2=s_best_u2,u3=s_best_u3,systems=systems,system = rand_s_systems['systems'][rand_syst],actual_rms=sph_rand_rms,rand = True,nrms = 2,level=1)
             sph_c_to_a.append(s_phys_c_to_a)
 
-            s_corot_frac = corotating_frac(systems=systems,syst=rand_s_systems['systems'][rand_syst],unit_n=unit_n,actual_rms=actual_rms,level=1)
+            s_corot_frac = corotating_frac(systems=systems,syst=rand_s_systems['systems'][rand_syst],unit_n=unit_n,actual_rms=sph_rand_rms,rand=True,nrms=1,level=1)
             sph_corot_frac.append(s_corot_frac)
 
-            a,b,c,e_phys_c_to_a = find_physical_extent(u1=e_best_u1,u2=e_best_u2,u3=e_best_u3,systems=systems,system=rand_e_systems['systems'][rand_syst],actual_rms=ell_rand_rms,nrms = 2,level=1)
+            a,b,c,e_phys_c_to_a = find_physical_extent(u1=e_best_u1,u2=e_best_u2,u3=e_best_u3,systems=systems,system=rand_e_systems['systems'][rand_syst],actual_rms=ell_rand_rms,rand = True,nrms = 2,level=1)
             ell_c_to_a.append(e_phys_c_to_a)
 
-            e_corot_frac = corotating_frac(systems=systems,syst=rand_e_systems['systems'][rand_syst],unit_n=unit_n,actual_rms=actual_rms,level=1)
+            e_corot_frac = corotating_frac(systems=systems,syst=rand_e_systems['systems'][rand_syst],unit_n=unit_n,actual_rms=ell_rand_rms,rand=True,nrms=1,level=1)
             ell_corot_frac.append(corot_frac)
 
     t1 = time.time()
@@ -1233,10 +1237,13 @@ def find_axes_ratios(I):
     
     return float(c_to_a)
 
-def find_physical_extent(u1,u2,u3,systems,system,actual_rms,nrms = 2,level=1):
+def find_physical_extent(u1,u2,u3,systems,system,actual_rms,rand=False,nrms = 2,level=1):
+    if rand:
+        nsats = len(systems[system]['sat_vxs'])
     
-    level_sats = np.where(systems[system]['sat_levels'] == level)
-    nsats = len(level_sats[0]) 
+    else:
+        level_sats = np.where(systems[system]['sat_levels'] == level)
+        nsats = len(level_sats[0]) 
     
     #calc relevant angles 
     
