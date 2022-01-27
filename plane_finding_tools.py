@@ -1048,29 +1048,29 @@ def check_isotropy(systems,syst,unit_n,actual_rms,n=2000,corot=False):
         
         sx,sy,sz,svx,svy,svz = rand_spherical_dist(systems,syst,vel=True,level=1)
         
-        rand_s_system['sat_pxs'] = sx
-        rand_s_system['sat_pys'] = sy
-        rand_s_system['sat_pzs'] = sz
+        rand_s_system['sat_pxs'] = np.asarray(sx)
+        rand_s_system['sat_pys'] = np.asarray(sy)
+        rand_s_system['sat_pzs'] = np.asarray(sz)
 
 
         #assign random velocities
 
-        rand_s_system['sat_vxs'] = svx
-        rand_s_system['sat_vys'] = svy
-        rand_s_system['sat_vzs'] = svz
+        rand_s_system['sat_vxs'] = np.asarray(svx)
+        rand_s_system['sat_vys'] = np.asarray(svy)
+        rand_s_system['sat_vzs'] = np.asarray(svz)
         rand_s_systems['systems'].append(rand_s_system)
         
         ex,ey,ez,evx,evy,evz = rand_elliptical_dist(systems,syst,vel=True,level=1,niter=2000)
 
-        rand_e_system['sat_pxs'] = ex
-        rand_e_system['sat_pys'] = ey
-        rand_e_system['sat_pzs'] = ez
+        rand_e_system['sat_pxs'] = np.asarray(ex)
+        rand_e_system['sat_pys'] = np.asarray(ey)
+        rand_e_system['sat_pzs'] = np.asarray(ez)
 
         #assign random velocities
 
-        rand_e_system['sat_vxs'] = evx
-        rand_e_system['sat_vys'] = evy
-        rand_e_system['sat_vzs'] = evz
+        rand_e_system['sat_vxs'] = np.asarray(evx)
+        rand_e_system['sat_vys'] = np.asarray(evy)
+        rand_e_system['sat_vzs'] = np.asarray(evz)
         rand_e_systems['systems'].append(rand_e_system)
 
 
@@ -1314,8 +1314,8 @@ def find_physical_extent(u1,u2,u3,systems,system,actual_rms,rand=False,nrms = 2,
     
     
     distances = distances[win_rms]
-    print('sat_pxs',systems[system]['sat_pxs'])
-    print('type',type(systems[system]['sat_pxs']))
+    #print('sat_pxs',systems[system]['sat_pxs'])
+    #print('type',type(systems[system]['sat_pxs']))
     x_win_rms = systems[system]['sat_pxs'][win_rms]
     y_win_rms = systems[system]['sat_pys'][win_rms]
     z_win_rms = systems[system]['sat_pzs'][win_rms]
