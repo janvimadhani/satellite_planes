@@ -93,7 +93,7 @@ def evolutionary_plane_finder(systems,system,n_iter,n_start,n_erase,n_avg_mutant
     """
 
     if rand:
-        nsats = len(system['sat_px'])
+        nsats = len(system['sat_pxs'])
     else:
         level_sats = np.where(systems[system]['sat_levels'] == level)
         nsats = len(level_sats[0])
@@ -114,9 +114,9 @@ def evolutionary_plane_finder(systems,system,n_iter,n_start,n_erase,n_avg_mutant
         
         distances = []
         if random:
-            nsats = len(system['sat_px'])
-            for k in range(len(system['sat_px'])):
-                x,y,z = system['sat_px'][k],system['sat_py'][k],system['sat_pz'][k]
+            nsats = len(system['sat_pxs'])
+            for k in range(len(system['sat_pxs'])):
+                x,y,z = system['sat_pxs'][k],system['sat_pys'][k],system['sat_pzs'][k]
                 s = dist(x,y,z,unit_n,d)
                 distances.append(s)
         else:
