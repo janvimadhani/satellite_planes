@@ -635,7 +635,7 @@ def corotating_frac(systems,syst,unit_n,actual_rms,rand=False,nrms=1,level=1):
         x,y,z = systems[syst]['sat_pxs'][k],systems[syst]['sat_pys'][k],systems[syst]['sat_pzs'][k]
         rx,ry,rz = x-x0,y-y0,z-z0
         r = np.sqrt(rx**2 + ry**2 + rz**2)
-        sep_vect.append(r)
+        sep_vect.append(np.array([rx,ry,rz]))
         s = dist(x,y,z,unit_n,d)
         distances.append(s) 
 
