@@ -877,6 +877,7 @@ def rand_spherical_dist(systems,system,vel=False,level=1):
     spherical_isotropy['sat_vxs'] = []
     spherical_isotropy['sat_vys'] = []
     spherical_isotropy['sat_vzs'] = []
+    spherical_isotropy['r_sep'] = []
     x0 = systems[system]['MW_px'][0]
     y0 = systems[system]['MW_py'][0]
     z0 = systems[system]['MW_pz'][0]
@@ -890,6 +891,7 @@ def rand_spherical_dist(systems,system,vel=False,level=1):
         x,y,z = systems[system]['sat_pxs'][level_sats][k],systems[system]['sat_pys'][level_sats][k],systems[system]['sat_pzs'][level_sats][k]
         rx,ry,rz = x-x0,y-y0,z-z0
         r = np.sqrt(rx**2 + ry**2 + rz**2)
+        spherical_isotropy['r_sep'].append(r)
         
         cos_theta,sin_theta, phi = rand_angle()
         
@@ -915,7 +917,7 @@ def rand_spherical_dist(systems,system,vel=False,level=1):
 
 
     if vel:
-        return spherical_isotropy['sat_x'],spherical_isotropy['sat_y'],spherical_isotropy['sat_z'],spherical_isotropy['sat_vxs'],spherical_isotropy['sat_vys'],spherical_isotropy['sat_vzs']
+        return spherical_isotropy['sat_x'],spherical_isotropy['sat_y'],spherical_isotropy['sat_z'],spherical_isotropy['sat_vxs'],spherical_isotropy['sat_vys'],spherical_isotropy['sat_vzs'],spherical_isotropy['r_sep']
     else:
         return spherical_isotropy['sat_x'],spherical_isotropy['sat_y'],spherical_isotropy['sat_z']
 
@@ -938,6 +940,7 @@ def rand_elliptical_dist(systems,system,vel=False,level=1,niter=1000):
     elliptical_isotropy['sat_vxs']= []
     elliptical_isotropy['sat_vys'] = []
     elliptical_isotropy['sat_vzs'] = []
+    elliptical_isotropy['r_sep'] = []
     x0 = systems[system]['MW_px'][0]
     y0 = systems[system]['MW_py'][0]
     z0 = systems[system]['MW_pz'][0]
@@ -962,6 +965,7 @@ def rand_elliptical_dist(systems,system,vel=False,level=1,niter=1000):
         x,y,z = systems[system]['sat_pxs'][level_sats][k],systems[system]['sat_pys'][level_sats][k],systems[system]['sat_pzs'][level_sats][k]
         rx,ry,rz = x-x0,y-y0,z-z0
         r = np.sqrt(rx**2 + ry**2 + rz**2)
+        elliptical_isotropy['r_sep'].append(r)
         
         #pick a random angle from distribution
         rand_idx = random.randrange(niter)
@@ -1006,7 +1010,7 @@ def rand_elliptical_dist(systems,system,vel=False,level=1,niter=1000):
 
 
     if vel:
-        return elliptical_isotropy['sat_x'],elliptical_isotropy['sat_y'],elliptical_isotropy['sat_z'],elliptical_isotropy['sat_vxs'],elliptical_isotropy['sat_vys'],elliptical_isotropy['sat_vzs']
+        return elliptical_isotropy['sat_x'],elliptical_isotropy['sat_y'],elliptical_isotropy['sat_z'],elliptical_isotropy['sat_vxs'],elliptical_isotropy['sat_vys'],elliptical_isotropy['sat_vzs'],elliptical_isotropy['r_sep']
 
     else:
         return elliptical_isotropy['sat_x'],elliptical_isotropy['sat_y'],elliptical_isotropy['sat_z']
@@ -1048,9 +1052,9 @@ def check_isotropy(systems,syst,unit_n,actual_rms,n=2000,corot=False):
         rand_e_system['MW_ly'] = systems[syst]['MW_ly'][0]
         rand_e_system['MW_lz'] = systems[syst]['MW_lz'][0]
 
-
+        #define things for spherical 
         
-        sx,sy,sz,svx,svy,svz = rand_spherical_dist(systems,syst,vel=True,level=1)
+        sx,sy,sz,svx,svy,svz,srsep= rand_spherical_dist(systems,syst,vel=True,level=1)
         
         rand_s_system['sat_pxs'] = np.asarray(sx)
         rand_s_system['sat_pys'] = np.asarray(sy)
@@ -1062,9 +1066,12 @@ def check_isotropy(systems,syst,unit_n,actual_rms,n=2000,corot=False):
         rand_s_system['sat_vxs'] = np.asarray(svx)
         rand_s_system['sat_vys'] = np.asarray(svy)
         rand_s_system['sat_vzs'] = np.asarray(svz)
+        rand_s_system['r_sep'] = np.asarray(srsep)
+
         rand_s_systems['systems'].append(rand_s_system)
         
-        ex,ey,ez,evx,evy,evz = rand_elliptical_dist(systems,syst,vel=True,level=1,niter=2000)
+        #do the same for elliptical
+        ex,ey,ez,evx,evy,evz,ersep = rand_elliptical_dist(systems,syst,vel=True,level=1,niter=2000)
 
         rand_e_system['sat_pxs'] = np.asarray(ex)
         rand_e_system['sat_pys'] = np.asarray(ey)
@@ -1075,6 +1082,9 @@ def check_isotropy(systems,syst,unit_n,actual_rms,n=2000,corot=False):
         rand_e_system['sat_vxs'] = np.asarray(evx)
         rand_e_system['sat_vys'] = np.asarray(evy)
         rand_e_system['sat_vzs'] = np.asarray(evz)
+
+        rand_e_system['r_sep'] = np.asarray(ersep)
+
         rand_e_systems['systems'].append(rand_e_system)
 
 
