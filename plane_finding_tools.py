@@ -609,10 +609,14 @@ def corotating_frac(systems,syst,unit_n,actual_rms,rand=False,nrms=1,level=1):
         vrot = np.dot(v,unit_etheta)
 
         return vrot
-    
-    x0 = systems[syst]['MW_px'][0]
-    y0 = systems[syst]['MW_py'][0]
-    z0 = systems[syst]['MW_pz'][0]
+    if rand:
+        x0 = systems[syst]['MW_px']
+        y0 = systems[syst]['MW_py']
+        z0 = systems[syst]['MW_pz']
+    else:
+        x0 = systems[syst]['MW_px'][0]
+        y0 = systems[syst]['MW_py'][0]
+        z0 = systems[syst]['MW_pz'][0]
 
     gal_center = np.array([x0,y0,z0])
 
