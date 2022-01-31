@@ -1128,7 +1128,7 @@ def check_isotropy(systems,syst,unit_n,actual_rms,n=2000,corot=False):
             ell_c_to_a.append(e_phys_c_to_a)
 
             e_corot_frac = corotating_frac(systems=rand_e_systems['systems'],syst=rand_syst,unit_n=unit_n,actual_rms=ell_rand_rms,rand=True,nrms=1,level=1)
-            ell_corot_frac.append(corot_frac)
+            ell_corot_frac.append(e_corot_frac)
 
     t1 = time.time()
 
