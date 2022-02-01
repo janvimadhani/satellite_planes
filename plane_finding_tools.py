@@ -695,8 +695,12 @@ def corotating_frac(systems,syst,unit_n,actual_rms,rand=False,nrms=1,level=1):
             print('Check velocities, something off!')
 
     ntot = len(vrots)
-    Rpos = pos/ntot
-    Rneg = neg/ntot
+    if ntot != 0:
+        Rpos = pos/ntot
+        Rneg = neg/ntot
+    else:
+        corot_frac = 0
+        print(f'Not enough satellites within {nrms} rms of plane.')
 
     if Rpos > Rneg:
         corot_frac = Rpos
@@ -1146,13 +1150,13 @@ def check_isotropy(systems,syst,unit_n,actual_rms,n=2000,corot=False):
             a,b,c,s_phys_c_to_a = find_physical_extent(u1=s_best_u1,u2=s_best_u2,u3=s_best_u3,systems=rand_s_systems['systems'],system = rand_syst,actual_rms=sph_rand_rms,rand = True,nrms = 2,level=1)
             sph_c_to_a.append(s_phys_c_to_a)
 
-            s_corot_frac = corotating_frac(systems=rand_s_systems['systems'],syst=rand_syst,unit_n=s_unit_n,actual_rms=sph_rand_rms,rand=True,nrms=1,level=1)
+            s_corot_frac = corotating_frac(systems=rand_s_systems['systems'],syst=rand_syst,unit_n=s_unit_n,actual_rms=sph_rand_rms,rand=True,nrms=2,level=1)
             sph_corot_frac.append(s_corot_frac)
 
             a,b,c,e_phys_c_to_a = find_physical_extent(u1=e_best_u1,u2=e_best_u2,u3=e_best_u3,systems=rand_e_systems['systems'],system=rand_syst,actual_rms=ell_rand_rms,rand = True,nrms = 2,level=1)
             ell_c_to_a.append(e_phys_c_to_a)
 
-            e_corot_frac = corotating_frac(systems=rand_e_systems['systems'],syst=rand_syst,unit_n=e_unit_n,actual_rms=ell_rand_rms,rand=True,nrms=1,level=1)
+            e_corot_frac = corotating_frac(systems=rand_e_systems['systems'],syst=rand_syst,unit_n=e_unit_n,actual_rms=ell_rand_rms,rand=True,nrms=2,level=1)
             ell_corot_frac.append(e_corot_frac)
 
     t1 = time.time()
