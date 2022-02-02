@@ -799,20 +799,20 @@ def find_systs_by_halo_id(haloIDs,haloes_dict,galaxies_dict,rvir_search_thresh=1
 
 
                     #set MW stuff to 0 
-                    system['MW_iz'] = [0]
-                    system['MW_px'] = [0]
-                    system['MW_py'] = [0]
-                    system['MW_pz'] = [0]
-                    system['MW_mvir'] = [0]
-                    system['MW_rvir'] = [0]
-                    system['MW_spin'] = [0]
-                    system['MW_lx'] = [0]
-                    system['MW_ly'] = [0]
-                    system['MW_lz'] = [0]
-                    system['MW_vx'] = [0]
-                    system['MW_vy'] = [0]
-                    system['MW_vz'] = [0]
-                    system['MW_level'] = [0]
+                    system['MW_iz'] = 0
+                    system['MW_px'] = 0
+                    system['MW_py'] = 0
+                    system['MW_pz'] = 0
+                    system['MW_mvir'] = 0
+                    system['MW_rvir'] = 0
+                    system['MW_spin'] = 0
+                    system['MW_lx'] = 0
+                    system['MW_ly'] = 0
+                    system['MW_lz'] = 0
+                    system['MW_vx'] = [0
+                    system['MW_vy'] = 0
+                    system['MW_vz'] = 0
+                    system['MW_level'] = 0
 
                     #add global info
                     system['aexp'] = aexp
