@@ -476,7 +476,352 @@ class MWsystems:
             with open(path_of_file,'wb') as handle:
                 pickle.dump(self.MWsystems,handle,protocol=pickle.HIGHEST_PROTOCOL)
                 
+
+
+def find_systs_by_halo_id(haloIDs,haloes_dict,galaxies_dict,rvir_search_thresh=1):
+    """
+    Input:  haloIDs,list: list of haloIDs, ints
+            haloes_dict,dict: dictionary of halo catalog
+            galaxies_dict,dict: dictionary of galaxy catalog
+            mw_halo_mass,float: minimum mass of mw type halo, 
+            mw_mass,float: minimum mass of mw type gal
+            rvir_search_thresh,int: search for satellites within [x]*rvir of DM halo
+
+    Returns: systems,dictionary: dictionary of MW type systems
+            
+
+    """
+    def get_sep_vector(halosystem):
+        angles = []
+        dots = []
+        rseps = []
+        for i in range(len(halosystem['sat_pxs'])):
+            sx = halosystem['sat_pxs'][i]
+            sy = halosystem['sat_pys'][i]
+            sz = halosystem['sat_pzs'][i]
+            cx = halosystem['MW_px']
+            cy = halosystem['MW_py']
+            cz = halosystem['MW_pz']
+
+            spin = halosystem['MW_spin']
+            Lx = halosystem['MW_lx']
+            Ly = halosystem['MW_ly']
+            Lz = halosystem['MW_lz']
+            L = np.array([Lx,Ly,Lz])
+            #print(L)
+            L_mag = np.sqrt(Lx**2 + Ly**2 + Lz**2)
+
+            #separation vector = satellite vector - central vector
+            x = sx - cx
+            y = sy - cy
+            z = sz - cz 
+            r = np.array([x,y,z])
+            #print(r)
+            r_mag = np.sqrt(x**2 + y**2 + z**2)
+            L_dot_r = (Lx*x) + (Ly*y) +(Lz*z)
+            
+            rseps.append(r)
+            dots.append(L_dot_r)
+            cos = L_dot_r/(L_mag*r_mag)
+            angles.append(cos)
+        halosystem['r_sep'] = np.squeeze(np.asarray(rseps))
+        halosystem['cos'] = np.squeeze(np.asarray(angles))
+        halosystem['dot'] = np.squeeze(np.asarray(dots))
+
+    haloes = haloes_dict
+    galaxies = galaxies_dict
+    
+
+    #HALOES
+    nhaloes = haloes['nhaloes']
+    aexp = haloes['aexp']
+
+
+    halo_px = [haloes['haloes'][i]['px'] for i in range(nhaloes)]
+    halo_py = [haloes['haloes'][i]['py'] for i in range(nhaloes)]
+    halo_pz = [haloes['haloes'][i]['pz'] for i in range(nhaloes)]
+
+    halo_px = np.asarray(halo_px)
+    halo_py = np.asarray(halo_py)
+    halo_pz = np.asarray(halo_pz)
+
+    #get IDs
+    halo_ID = [haloes['haloes'][i]['my_number'] for i in range(nhaloes)]
+    halo_ID = np.asarray(halo_ID)
+    halo_ID = np.squeeze(halo_ID)
+        
+
+    #then, constrain to 'zoom portion', which is radius of 10 Mpc
+    r = 10
+    halo_zoom = np.where(((-r < halo_px) & (halo_px < r )) & ((-r < halo_py) & (halo_py < r )) &
+                    ((-r < halo_pz) & (halo_pz < r )))
+
+
+
+    halo_rvir = [haloes['haloes'][i]['rvir'] for i in range(nhaloes)]
+    halo_rvir = np.asarray(halo_rvir)
+
+
+    #apply zoom masks
+    halo_px = halo_px[halo_zoom]
+    halo_py = halo_py[halo_zoom]
+    halo_pz = halo_pz[halo_zoom]
+    halo_rvir = halo_rvir[halo_zoom]
+    halo_ID = halo_ID[halo_zoom]   
+
+    halo_lx = [haloes['haloes'][i]['Lx'] for i in range(nhaloes)]
+    halo_ly = [haloes['haloes'][i]['Ly'] for i in range(nhaloes)]
+    halo_lz = [haloes['haloes'][i]['Lz'] for i in range(nhaloes)]
+
+    halo_lx = np.asarray(halo_lx)
+    halo_ly = np.asarray(halo_ly)
+    halo_lz = np.asarray(halo_lz)
+
+    halo_lx = halo_lx[halo_zoom]
+    halo_ly = halo_ly[halo_zoom]
+    halo_lz = halo_lz[halo_zoom]    
+
+    halo_level = [haloes['haloes'][i]['level'] for i in range(nhaloes)]
+    halo_level = np.asarray(halo_level)
+    halo_level = halo_level[halo_zoom]
+
+    halo_masses = [haloes['haloes'][i]['mass'] for i in range(nhaloes)]
+    halo_masses = np.asarray(halo_masses)*10e10
+    halo_masses = np.squeeze(halo_masses)   
+    halo_masses = halo_masses[halo_zoom]
+    #MW_type_haloes = np.where(mw_halo_mass < halo_masses ) 
+
+
+    
+
+    #GALAXIES
+
+    ngalaxies = galaxies['nmax']
+
+    gal_mvir = [alaxies['galaxies'][i]['mvir'] for i in range(ngalaxies)]
+    gal_mvir = np.asarray(gal_mvir)*10e10 
+    gal_mvir = np.squeeze(gal_mvir)
+    #MW_type_gals = np.where((gal_mvir > mw_mass))
+
+    gal_px = [galaxies['galaxies'][i]['px'] for i in range(ngalaxies)]
+    gal_py = [galaxies['galaxies'][i]['py'] for i in range(ngalaxies)]
+    gal_pz = [galaxies['galaxies'][i]['pz'] for i in range(ngalaxies)]
+
+    gal_px = np.asarray(gal_px)
+    gal_py = np.asarray(gal_py)
+    gal_pz = np.asarray(gal_pz)
+
+    gal_rvir = [galaxies['galaxies'][i]['rvir'] for i in range(ngalaxies)]
+    gal_rvir = np.asarray(gal_rvir)
+
+    gal_vx = [galaxies['galaxies'][i]['vx'] for i in range(ngalaxies)]
+    gal_vy = [galaxies['galaxies'][i]['vy'] for i in range(ngalaxies)]
+    gal_vz = [galaxies['galaxies'][i]['vz'] for i in range(ngalaxies)]
+
+    gal_vx = np.asarray(gal_vx)
+    gal_vy = np.asarray(gal_vy)
+    gal_vz = np.asarray(gal_vz)
+
+    gal_lz = [galaxies['galaxies'][i]['Lz'] for i in range(ngalaxies)]
+    gal_lx = [galaxies['galaxies'][i]['Lx'] for i in range(ngalaxies)]
+    gal_ly = [galaxies['galaxies'][i]['Ly'] for i in range(ngalaxies)]
+    gal_spins = [galaxies['galaxies'][i]['spin'] for i in range(ngalaxies)]
+
+    gal_lz = np.asarray(gal_lz)
+    gal_lx = np.asarray(gal_lx)
+    gal_ly = np.asarray(gal_ly)
+    gal_spins = np.asarray(gal_spins)
+
+    #get level
+    gal_level = [galaxies['galaxies'][i]['level'] for i in range(ngalaxies)]
+    gal_level = np.asarray(gal_level)       
+
+    systems = []
+
+    for haloID in haloIDs:
+        #print('HALO ID ', haloID)
+
+        system = {}
+
+        host_halo_mask = np.where(halo_ID == haloID)
+        #print('DId mask work?',halo_ID[host_halo_mask])
+
+        #check if this halo has been found
+        if len(halo_masses[host_halo_mask]) < 1:
+            print('This halo can not be found at this snapshot.')
+        else:
+            host_halo_mass = halo_masses[host_halo_mask]
+            #print(host_halo_mass)
+            h_px = halo_px[host_halo_mask]
+            h_py = halo_py[host_halo_mask]
+            h_pz = halo_pz[host_halo_mask]
+            hrvir = halo_rvir[host_halo_mask]
+            h_lx = halo_lx[host_halo_mask]
+            h_ly = halo_ly[host_halo_mask]
+            h_lz = halo_lz[host_halo_mask]
+            h_lev = halo_level[host_halo_mask]
+            h_id = halo_ID[host_halo_mask]
+
+            #print('h_id',h_id)
+            
+            h_angmom = np.sqrt(h_lz**2 + h_ly**2 + h_lx**2)
+            h_iz = np.degrees(np.arccos(h_lz/h_angmom))
+            system['halo_iz'] = h_iz
+            #print('hrvir = ',hrvir)
+            
+            
+            
+            system['halo_ID'] = h_id[0]
+            system['halo_px'] = h_px
+            system['halo_py'] = h_py
+            system['halo_pz'] = h_pz
+            system['halo_rvir'] = hrvir
+            system['halo_mass'] = host_halo_mass
+            system['halo_level'] = h_lev
+            g_pxs = gal_px
+            g_pys = gal_py
+            g_pzs = gal_pz
+
+            
+            #find all galaxies within this 1 virial radii halo, and identify the central 
+            sat_thresh = 2
+            #3"""        
+            within_rad = np.where(((h_px - sat_thresh*hrvir  < g_pxs) & (g_pxs < sat_thresh*hrvir + h_px)) &
+                                ((h_py - sat_thresh*hrvir  < g_pys) & (g_pys < sat_thresh*hrvir + h_py)) &
+                                ((h_pz - sat_thresh*hrvir  < g_pzs) & (g_pzs < sat_thresh*hrvir + h_pz)))
+                                
+            #"""
+            """
+            
+            distance = 1 #look for satellites within 0.5 Mpc *1000 kpc = 500 kpc
+            dist_kpc = distance*1000 
+            within_rad = np.where(((h_px - distance  < g_pxs) & (g_pxs < distance + h_px)) &
+                                ((h_py - distance  < g_pys) & (g_pys < distance + h_py)) &
+                                ((h_pz - distance  < g_pzs) & (g_pzs < distance + h_pz)))
+            """
+            
+            #print('Did it find satellites within 2 rvir of halo?',within_rad)
+
+            #assign sattelite galaxies parameters
+
+            if len(g_pxs[within_rad]) < 1:
+                print(f'No satellites found within {sat_thresh} rvir of halo.')
+                #print(f'No satellites found within {dist_kpc} kpc of halo.')
+            else:
+                sat_pxs = g_pxs[within_rad]
+                sat_pys = g_pys[within_rad]
+                sat_pzs = g_pzs[within_rad]
+                sat_rvirs = gal_rvir[within_rad]
+                sat_mvirs = gal_mvir[within_rad]
+                sat_lx = gal_lx[within_rad]
+                sat_ly = gal_ly[within_rad]
+                sat_lz = gal_lz[within_rad]
+                sat_vx = gal_vx[within_rad]
+                sat_vy = gal_vy[within_rad]
+                sat_vz = gal_vz[within_rad]
+                sat_spins = gal_spins[within_rad]
+                sat_levs = gal_level[within_rad]
+                
+
+                
+                #find the most massive galaxy that is within 0.2 of the host halo -- this is MW analog
+                vir_thresh = 0.5
+
+                within_vir = np.where(((h_px - vir_thresh*hrvir  < sat_pxs) & (sat_pxs < vir_thresh*hrvir + h_px)) &
+                                    ((h_py - vir_thresh*hrvir  < sat_pys) & (sat_pys < vir_thresh*hrvir + h_py)) &
+                                    ((h_pz - vir_thresh*hrvir  < sat_pzs) & (sat_pzs < vir_thresh*hrvir + h_pz)))
+
+                #print('WITHIN_VIR',within_vir)
+                ### Check that there is a system of satellites that satisfies these conditions for a halo
+                if len(sat_mvirs[within_vir]) < 1:
+                    print(f'No central found within {vir_thresh} rvir of halo.')
+                else:
+
+
+                    MW_analog_mask = np.where(sat_mvirs == np.max(sat_mvirs[within_vir]))
+                    #print('MW MASK',MW_analog_mask)
                     
+                    MW_px = sat_pxs[MW_analog_mask]
+                    MW_py = sat_pys[MW_analog_mask]
+                    MW_pz = sat_pzs[MW_analog_mask]
+                    MW_mvir = sat_mvirs[MW_analog_mask]
+                    MW_rvir = sat_rvirs[MW_analog_mask]
+                    MW_lx = sat_lx[MW_analog_mask]
+                    MW_ly = sat_ly[MW_analog_mask]
+                    MW_lz = sat_lz[MW_analog_mask]
+                    MW_vx = sat_vx[MW_analog_mask]
+                    MW_vy = sat_vy[MW_analog_mask]
+                    MW_vz = sat_vz[MW_analog_mask]
+                    MW_spin = sat_spins[MW_analog_mask]
+                    MW_level = sat_levs[MW_analog_mask]
+                    
+                    MW_angmom = np.sqrt(MW_lz**2 + MW_ly**2 + MW_lx**2)
+                    MW_iz = np.degrees(np.arccos(MW_lz/MW_angmom))
+                    system['MW_iz'] = MW_iz
+                    #print('hrvir = ',hrvir)
+                    
+                    
+                    system['MW_px'] = MW_px
+                    system['MW_py'] = MW_py
+                    system['MW_pz'] = MW_pz
+                    system['MW_mvir'] = MW_mvir
+                    system['MW_rvir'] = MW_rvir
+                    system['MW_spin'] = MW_spin
+                    system['MW_lx'] = MW_lx
+                    system['MW_ly'] = MW_ly
+                    system['MW_lz'] = MW_lz
+                    system['MW_vx'] = MW_vx
+                    system['MW_vy'] = MW_vy
+                    system['MW_vz'] = MW_vz
+                    system['MW_level'] = MW_level
+                    
+                    #remove central galaxy from satellite list
+                    sat_pxs = np.delete(sat_pxs,MW_analog_mask)
+                    sat_pys = np.delete(sat_pys,MW_analog_mask)
+                    sat_pzs = np.delete(sat_pzs,MW_analog_mask)
+                    sat_rvirs = np.delete(sat_rvirs,MW_analog_mask)
+                    sat_mvirs = np.delete(sat_mvirs,MW_analog_mask)
+                    sat_lx = np.delete(sat_lx,MW_analog_mask)
+                    sat_ly = np.delete(sat_ly,MW_analog_mask)
+                    sat_lz = np.delete(sat_lz,MW_analog_mask)
+                    sat_vx = np.delete(sat_vx,MW_analog_mask)
+                    sat_vy = np.delete(sat_vy,MW_analog_mask)
+                    sat_vz = np.delete(sat_vz,MW_analog_mask)
+                    sat_spins = np.delete(sat_spins,MW_analog_mask)
+                    sat_levs = np.delete(sat_levs,MW_analog_mask)
+                    
+                    
+                    
+                    
+                    sat_angmom = np.sqrt(sat_lz**2 + sat_ly**2 + sat_lx**2)
+                    sat_iz = np.degrees(np.arccos(sat_lz/sat_angmom))
+                    system['sat_iz'] = sat_iz
+                    
+                    system['sat_pxs'] = sat_pxs
+                    system['sat_pys'] = sat_pys
+                    system['sat_pzs'] = sat_pzs
+                    system['sat_vxs'] = sat_vx
+                    system['sat_vys'] = sat_vy
+                    system['sat_vzs'] = sat_vz
+                    system['sat_rvirs'] = sat_rvirs
+                    system['sat_mvirs'] = sat_mvirs
+                    system['sat_levels'] = sat_levs
+
+                    #add global info
+                    system['aexp'] = aexp
+                    #add global info
+
+                    systems.append(system)
+        
+    for system in systems:
+        get_sep_vector(system)
+    halosystems = systems
+            
+    return halosystems
+
+
+
+
 class halosystems:
 
 
