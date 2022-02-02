@@ -1096,7 +1096,7 @@ def check_isotropy(systems,syst,unit_n,actual_rms,n=2000,corot=False):
 
         rand_e_system['sat_vxs'] = np.asarray([random.uniform(0, 1) for i in range(len(ex))])
         rand_e_system['sat_vys'] = np.asarray([random.uniform(0, 1) for i in range(len(ex))])
-        rand_e_system['sat_vzs'] = np.asarray([random.uniform(0, 1) for i in range(len(ex))]))
+        rand_e_system['sat_vzs'] = np.asarray([random.uniform(0, 1) for i in range(len(ex))])
 
 
         rand_e_systems['systems'].append(rand_e_system)
