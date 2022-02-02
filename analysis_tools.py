@@ -705,7 +705,55 @@ def find_systs_by_halo_id(haloIDs,haloes_dict,galaxies_dict,rvir_search_thresh=1
             #assign sattelite galaxies parameters
 
             if len(g_pxs[within_rad]) < 1:
-                print(f'No satellites found within {sat_thresh} rvir of halo.')
+                print(f'No satellites found within {sat_thresh} rvir of halo. Just including info about halo...')
+                h_angmom = np.sqrt(h_lz**2 + h_ly**2 + h_lx**2)
+                h_iz = np.degrees(np.arccos(h_lz/h_angmom))
+                system['halo_iz'] = h_iz
+                #print('hrvir = ',hrvir)
+            
+            
+            
+                system['halo_ID'] = h_id[0]
+                system['halo_px'] = h_px
+                system['halo_py'] = h_py
+                system['halo_pz'] = h_pz
+                system['halo_rvir'] = hrvir
+                system['halo_mass'] = host_halo_mass
+                system['halo_level'] = h_lev
+
+                #set sat attributes to 0 
+                system['sat_iz'] = [0]
+                    
+                system['sat_pxs'] = [0]
+                system['sat_pys'] = [0]
+                system['sat_pzs'] = [0]
+                system['sat_vxs'] = [0]
+                system['sat_vys'] = [0]
+                system['sat_vzs'] = [0]
+                system['sat_rvirs'] = [0]
+                system['sat_mvirs'] = [0]
+                system['sat_levels'] = [0]
+
+                system['MW_iz'] = [0]
+                system['MW_px'] = [0]
+                system['MW_py'] = [0]
+                system['MW_pz'] = [0]
+                system['MW_mvir'] = [0]
+                system['MW_rvir'] = [0]
+                system['MW_spin'] = [0]
+                system['MW_lx'] = [0]
+                system['MW_ly'] = [0]
+                system['MW_lz'] = [0]
+                system['MW_vx'] = [0]
+                system['MW_vy'] = [0]
+                system['MW_vz'] = [0]
+                system['MW_level'] = [0]
+
+                #add global info
+                system['aexp'] = aexp
+                #add global info
+
+                systems.append(system)
                 #print(f'No satellites found within {dist_kpc} kpc of halo.')
             else:
                 sat_pxs = g_pxs[within_rad]
@@ -734,7 +782,43 @@ def find_systs_by_halo_id(haloIDs,haloes_dict,galaxies_dict,rvir_search_thresh=1
                 #print('WITHIN_VIR',within_vir)
                 ### Check that there is a system of satellites that satisfies these conditions for a halo
                 if len(sat_mvirs[within_vir]) < 1:
-                    print(f'No central found within {vir_thresh} rvir of halo.')
+                    print(f'No central found within {vir_thresh} rvir of halo. Including info about rest of satellites...')
+                    sat_angmom = np.sqrt(sat_lz**2 + sat_ly**2 + sat_lx**2)
+                    sat_iz = np.degrees(np.arccos(sat_lz/sat_angmom))
+                    system['sat_iz'] = sat_iz
+                    
+                    system['sat_pxs'] = sat_pxs
+                    system['sat_pys'] = sat_pys
+                    system['sat_pzs'] = sat_pzs
+                    system['sat_vxs'] = sat_vx
+                    system['sat_vys'] = sat_vy
+                    system['sat_vzs'] = sat_vz
+                    system['sat_rvirs'] = sat_rvirs
+                    system['sat_mvirs'] = sat_mvirs
+                    system['sat_levels'] = sat_levs
+
+
+                    #set MW stuff to 0 
+                    system['MW_iz'] = [0]
+                    system['MW_px'] = [0]
+                    system['MW_py'] = [0]
+                    system['MW_pz'] = [0]
+                    system['MW_mvir'] = [0]
+                    system['MW_rvir'] = [0]
+                    system['MW_spin'] = [0]
+                    system['MW_lx'] = [0]
+                    system['MW_ly'] = [0]
+                    system['MW_lz'] = [0]
+                    system['MW_vx'] = [0]
+                    system['MW_vy'] = [0]
+                    system['MW_vz'] = [0]
+                    system['MW_level'] = [0]
+
+                    #add global info
+                    system['aexp'] = aexp
+                    #add global info
+
+                    systems.append(system)
                 else:
 
 
