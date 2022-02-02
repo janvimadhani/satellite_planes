@@ -722,32 +722,32 @@ def find_systs_by_halo_id(haloIDs,haloes_dict,galaxies_dict,rvir_search_thresh=1
                 system['halo_level'] = h_lev
 
                 #set sat attributes to 0 
-                system['sat_iz'] = [0]
+                system['sat_iz'] = 0
                     
-                system['sat_pxs'] = [0]
-                system['sat_pys'] = [0]
-                system['sat_pzs'] = [0]
-                system['sat_vxs'] = [0]
-                system['sat_vys'] = [0]
-                system['sat_vzs'] = [0]
-                system['sat_rvirs'] = [0]
-                system['sat_mvirs'] = [0]
-                system['sat_levels'] = [0]
+                system['sat_pxs'] = 0
+                system['sat_pys'] = 0
+                system['sat_pzs'] = 0
+                system['sat_vxs'] = 0
+                system['sat_vys'] = 0
+                system['sat_vzs'] = 0
+                system['sat_rvirs'] = 0
+                system['sat_mvirs'] = 0
+                system['sat_levels'] = 0
 
-                system['MW_iz'] = [0]
-                system['MW_px'] = [0]
-                system['MW_py'] = [0]
-                system['MW_pz'] = [0]
-                system['MW_mvir'] = [0]
-                system['MW_rvir'] = [0]
-                system['MW_spin'] = [0]
-                system['MW_lx'] = [0]
-                system['MW_ly'] = [0]
-                system['MW_lz'] = [0]
-                system['MW_vx'] = [0]
-                system['MW_vy'] = [0]
-                system['MW_vz'] = [0]
-                system['MW_level'] = [0]
+                system['MW_iz'] = 0
+                system['MW_px'] = 0
+                system['MW_py'] = 0
+                system['MW_pz'] = 0
+                system['MW_mvir'] = 0
+                system['MW_rvir'] = 0
+                system['MW_spin'] = 0
+                system['MW_lx'] = 0
+                system['MW_ly'] = 0
+                system['MW_lz'] = 0
+                system['MW_vx'] = 0
+                system['MW_vy'] = 0
+                system['MW_vz'] = 0
+                system['MW_level'] = 0
 
                 #add global info
                 system['aexp'] = aexp
