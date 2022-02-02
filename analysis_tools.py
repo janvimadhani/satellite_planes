@@ -598,7 +598,7 @@ def find_systs_by_halo_id(haloIDs,haloes_dict,galaxies_dict,rvir_search_thresh=1
 
     ngalaxies = galaxies['nmax']
 
-    gal_mvir = [alaxies['galaxies'][i]['mvir'] for i in range(ngalaxies)]
+    gal_mvir = [galaxies['galaxies'][i]['mvir'] for i in range(ngalaxies)]
     gal_mvir = np.asarray(gal_mvir)*10e10 
     gal_mvir = np.squeeze(gal_mvir)
     #MW_type_gals = np.where((gal_mvir > mw_mass))
