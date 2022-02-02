@@ -722,32 +722,32 @@ def find_systs_by_halo_id(haloIDs,haloes_dict,galaxies_dict,rvir_search_thresh=1
                 system['halo_level'] = h_lev
 
                 #set sat attributes to 0 
-                system['sat_iz'] = 0
+                system['sat_iz'] = np.array((0))
                     
-                system['sat_pxs'] = 0
-                system['sat_pys'] = 0
-                system['sat_pzs'] = 0
-                system['sat_vxs'] = 0
-                system['sat_vys'] = 0
-                system['sat_vzs'] = 0
-                system['sat_rvirs'] = 0
-                system['sat_mvirs'] = 0
-                system['sat_levels'] = 0
+                system['sat_pxs'] = np.array((0))
+                system['sat_pys'] = np.array((0))
+                system['sat_pzs'] = np.array((0))
+                system['sat_vxs'] = np.array((0))
+                system['sat_vys'] = np.array((0))
+                system['sat_vzs'] = np.array((0))
+                system['sat_rvirs'] = np.array((0))
+                system['sat_mvirs'] = np.array((0))
+                system['sat_levels'] = np.array((0))
 
-                system['MW_iz'] = 0
-                system['MW_px'] = 0
-                system['MW_py'] = 0
-                system['MW_pz'] = 0
-                system['MW_mvir'] = 0
-                system['MW_rvir'] = 0
-                system['MW_spin'] = 0
-                system['MW_lx'] = 0
-                system['MW_ly'] = 0
-                system['MW_lz'] = 0
-                system['MW_vx'] = 0
-                system['MW_vy'] = 0
-                system['MW_vz'] = 0
-                system['MW_level'] = 0
+                system['MW_iz'] = np.array((0))
+                system['MW_px'] = np.array((0))
+                system['MW_py'] = np.array((0))
+                system['MW_pz'] = np.array((0))
+                system['MW_mvir'] = np.array((0))
+                system['MW_rvir'] = np.array((0))
+                system['MW_spin'] = np.array((0))
+                system['MW_lx'] = np.array((0))
+                system['MW_ly'] = np.array((0))
+                system['MW_lz'] = np.array((0))
+                system['MW_vx'] = np.array((0))
+                system['MW_vy'] = np.array((0))
+                system['MW_vz'] = np.array((0))
+                system['MW_level'] = np.array((0))
 
                 #add global info
                 system['aexp'] = aexp
@@ -799,20 +799,20 @@ def find_systs_by_halo_id(haloIDs,haloes_dict,galaxies_dict,rvir_search_thresh=1
 
 
                     #set MW stuff to 0 
-                    system['MW_iz'] = 0
-                    system['MW_px'] = 0
-                    system['MW_py'] = 0
-                    system['MW_pz'] = 0
-                    system['MW_mvir'] = 0
-                    system['MW_rvir'] = 0
-                    system['MW_spin'] = 0
-                    system['MW_lx'] = 0
-                    system['MW_ly'] = 0
-                    system['MW_lz'] = 0
-                    system['MW_vx'] = 0
-                    system['MW_vy'] = 0
-                    system['MW_vz'] = 0
-                    system['MW_level'] = 0
+                    system['MW_iz'] = np.array((0))
+                    system['MW_px'] = np.array((0))
+                    system['MW_py'] = np.array((0))
+                    system['MW_pz'] = np.array((0))
+                    system['MW_mvir'] = np.array((0))
+                    system['MW_rvir'] = np.array((0))
+                    system['MW_spin'] = np.array((0))
+                    system['MW_lx'] = np.array((0))
+                    system['MW_ly'] = np.array((0))
+                    system['MW_lz'] = np.array((0))
+                    system['MW_vx'] = np.array((0))
+                    system['MW_vy'] = np.array((0))
+                    system['MW_vz'] = np.array((0))
+                    system['MW_level'] = np.array((0))
 
                     #add global info
                     system['aexp'] = aexp
