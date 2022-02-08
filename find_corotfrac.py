@@ -47,7 +47,7 @@ for syst in range(len(systems)):
     corotation_dict['corotating_frac'].append(corot_frac)
 
     ## check for isotropy n times and find n rms dists
-    iso_sph_systs_rms,iso_ell_systs_rms,sph_corot_frac,sph_c_to_a,ell_corot_frac,ell_c_to_a = pf.check_isotropy(systems=systems,syst=syst,unit_n=unit_n,actual_rms=best_rms,n=2000,corot=True)
+    iso_sph_systs_rms,iso_ell_systs_rms,sph_corot_frac,sph_c_to_a,ell_corot_frac,ell_c_to_a = pf.check_isotropy(systems=systems,syst=syst,unit_n=unit_n,actual_rms=best_rms,n=5000,corot=True)
 
     corotation_dict['sph_corotating_frac'].append(sph_corot_frac)
     corotation_dict['ell_corotating_frac'].append(ell_corot_frac)
