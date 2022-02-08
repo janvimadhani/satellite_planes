@@ -920,9 +920,9 @@ def rand_spherical_dist(systems,system,level=1):
    
     spherical_isotropy = {}
 
-    spherical_isotropy['sat_x'] = []
-    spherical_isotropy['sat_y'] = []
-    spherical_isotropy['sat_z'] = []
+    spherical_isotropy['sat_pxs'] = []
+    spherical_isotropy['sat_pys'] = []
+    spherical_isotropy['sat_pzs'] = []
 
     x0 = systems[system]['MW_px'][0]
     y0 = systems[system]['MW_py'][0]
@@ -946,13 +946,13 @@ def rand_spherical_dist(systems,system,level=1):
         zp = r*cos_theta + z0
 
 
-        spherical_isotropy['sat_x'].append(xp)
-        spherical_isotropy['sat_y'].append(yp)
-        spherical_isotropy['sat_z'].append(zp)
+        spherical_isotropy['sat_pxs'].append(xp)
+        spherical_isotropy['sat_pys'].append(yp)
+        spherical_isotropy['sat_pzs'].append(zp)
 
 
 
-        return spherical_isotropy['sat_x'],spherical_isotropy['sat_y'],spherical_isotropy['sat_z']
+    return spherical_isotropy['sat_pxs'],spherical_isotropy['sat_pys'],spherical_isotropy['sat_pzs']
 
 def rand_elliptical_dist(systems,system,level=1,niter=1000):
     """
@@ -967,9 +967,9 @@ def rand_elliptical_dist(systems,system,level=1,niter=1000):
     
 
     elliptical_isotropy = {}
-    elliptical_isotropy['sat_x'] = []
-    elliptical_isotropy['sat_y'] = []
-    elliptical_isotropy['sat_z'] = []
+    elliptical_isotropy['sat_pxs'] = []
+    elliptical_isotropy['sat_pys'] = []
+    elliptical_isotropy['sat_pzs'] = []
     x0 = systems[system]['MW_px'][0]
     y0 = systems[system]['MW_py'][0]
     z0 = systems[system]['MW_pz'][0]
@@ -1024,13 +1024,12 @@ def rand_elliptical_dist(systems,system,level=1,niter=1000):
         
         
         
-        elliptical_isotropy['sat_x'].append(xp)
-        elliptical_isotropy['sat_y'].append(yp)
-        elliptical_isotropy['sat_z'].append(zp)
+        elliptical_isotropy['sat_pxs'].append(xp)
+        elliptical_isotropy['sat_pys'].append(yp)
+        elliptical_isotropy['sat_pzs'].append(zp)
 
- 
-    else:
-        return elliptical_isotropy['sat_x'],elliptical_isotropy['sat_y'],elliptical_isotropy['sat_z']
+
+    return elliptical_isotropy['sat_pxs'],elliptical_isotropy['sat_pys'],elliptical_isotropy['sat_pzs']
 
 
 
@@ -1122,7 +1121,6 @@ def check_isotropy(systems,syst,unit_n,actual_rms,n=2000,corot=False):
         
         s_best_u1,s_best_u2,s_best_u3,sph_rand_rms = evolutionary_plane_finder(systems=systems,system=rand_s_systems['systems'][rand_syst],n_iter = 200,n_start=25,n_erase=10,n_avg_mutants=5,level=1,rand=True,verbose=False)
         sph_mean_rms.append(sph_rand_rms)
-
         s_unit_n = get_unit_n(s_best_u1,s_best_u2,s_best_u3)
 
         e_best_u1,e_best_u2,e_best_u3,ell_rand_rms = evolutionary_plane_finder(systems=systems,system=rand_e_systems['systems'][rand_syst],n_iter = 200,n_start=25,n_erase=10,n_avg_mutants=5,level=1,rand=True,verbose=False) 
