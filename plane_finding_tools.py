@@ -1197,8 +1197,7 @@ def check_isotropy(systems,syst,unit_n,actual_rms,n=2000,corot=False):
 
     print(f'Took {t1-t0} seconds.')
 
-    else:
-        return sph_mean_rms,ell_mean_rms
+    return sph_mean_rms,ell_mean_rms
 
 def save_hist(name_of_plot,best_rms,mean_rms,snapshot,type='spherical',histbins=70):
     """
