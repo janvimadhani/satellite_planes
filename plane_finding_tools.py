@@ -1032,6 +1032,77 @@ def rand_elliptical_dist(systems,system,level=1,niter=1000):
     return elliptical_isotropy['sat_pxs'],elliptical_isotropy['sat_pys'],elliptical_isotropy['sat_pzs']
 
 
+def create_corot_background(systems,syst,n=5000):
+    """
+    Pull from elliptical background
+    """
+
+    t0 = time.time()
+
+    rand_e_systems = {}
+    rand_e_systems['systems'] = []
+
+    #make n random systems
+    for i in range(n):
+        rand_e_system = {}
+        
+        rand_e_system['MW_px'] = systems[syst]['MW_px'][0]
+        rand_e_system['MW_py'] = systems[syst]['MW_py'][0]
+        rand_e_system['MW_pz'] = systems[syst]['MW_pz'][0]
+
+        rand_e_system['MW_lx'] = systems[syst]['MW_lx'][0]
+        rand_e_system['MW_ly'] = systems[syst]['MW_ly'][0]
+        rand_e_system['MW_lz'] = systems[syst]['MW_lz'][0]
+
+        #define things for elliptical syst
+        ex,ey,ez= rand_elliptical_dist(systems,syst,level=1,niter=2000)
+
+        rand_e_system['sat_pxs'] = np.asarray(ex)
+        rand_e_system['sat_pys'] = np.asarray(ey)
+        rand_e_system['sat_pzs'] = np.asarray(ez)
+
+        #assign random velocities
+
+        rand_e_system['sat_vxs'] = np.asarray([random.uniform(0, 1) for i in range(len(ex))])
+        rand_e_system['sat_vys'] = np.asarray([random.uniform(0, 1) for i in range(len(ex))])
+        rand_e_system['sat_vzs'] = np.asarray([random.uniform(0, 1) for i in range(len(ex))])
+
+
+        rand_e_systems['systems'].append(rand_e_system)
+
+    ell_mean_rms = []
+    ell_corot_frac = []
+    ell_c_to_a = []
+    
+    print(f'Finding best fit planes of {n} random, isotropically distributed systems...')
+    for rand_syst in range(n):
+
+
+        e_best_u1,e_best_u2,e_best_u3,ell_rand_rms = evolutionary_plane_finder(systems=systems,system=rand_e_systems['systems'][rand_syst],n_iter = 200,n_start=25,n_erase=10,n_avg_mutants=5,level=1,rand=True,verbose=False) 
+        ell_mean_rms.append(ell_rand_rms)
+        e_unit_n = get_unit_n(e_best_u1,e_best_u2,e_best_u3)
+    
+
+        #find best fit plane of n random systems
+
+        a,b,c,e_phys_c_to_a = find_physical_extent(u1=e_best_u1,u2=e_best_u2,u3=e_best_u3,systems=rand_e_systems['systems'],system=rand_syst,actual_rms=ell_rand_rms,rand = True,nrms = 2,level=1)
+        ell_c_to_a.append(e_phys_c_to_a)
+
+        e_corot_frac = corotating_frac(systems=rand_e_systems['systems'],syst=rand_syst,unit_n=e_unit_n,actual_rms=ell_rand_rms,rand=True,nrms=2,level=1)
+        ell_corot_frac.append(e_corot_frac)
+
+    t1 = time.time()
+
+    print(f'Took {t1-t0} seconds.')
+
+    return ell_mean_rms,ell_corot_frac,ell_c_to_a
+
+
+
+
+
+
+
 
 def check_isotropy(systems,syst,unit_n,actual_rms,n=2000,corot=False):
 ## check that it's uniformly dist by running n times
@@ -1103,18 +1174,11 @@ def check_isotropy(systems,syst,unit_n,actual_rms,n=2000,corot=False):
 
     
     sph_mean_rms = []
-    sph_corot_frac = []
-    sph_c_to_a = []
-
-
-
     ell_mean_rms = []
-    ell_corot_frac = []
-    ell_c_to_a = []
+
 
     #corot_frac = corotating_frac(systems=systems,syst=syst,unit_n=unit_n,actual_rms=actual_rms,level=1)
-    if corot:
-        print(f'Finding best fit plane of {n} random, isotropically distributed systems...')
+
     for rand_syst in range(n):
 
         #print('SAT VXS',rand_s_systems['systems'][rand_syst]['sat_vxs'])
@@ -1128,27 +1192,11 @@ def check_isotropy(systems,syst,unit_n,actual_rms,n=2000,corot=False):
         e_unit_n = get_unit_n(e_best_u1,e_best_u2,e_best_u3)
     
 
-        if corot:
-            #find best fit plane of n random systems
-            
-            a,b,c,s_phys_c_to_a = find_physical_extent(u1=s_best_u1,u2=s_best_u2,u3=s_best_u3,systems=rand_s_systems['systems'],system = rand_syst,actual_rms=sph_rand_rms,rand = True,nrms = 2,level=1)
-            sph_c_to_a.append(s_phys_c_to_a)
-
-            s_corot_frac = corotating_frac(systems=rand_s_systems['systems'],syst=rand_syst,unit_n=s_unit_n,actual_rms=sph_rand_rms,rand=True,nrms=2,level=1)
-            sph_corot_frac.append(s_corot_frac)
-
-            a,b,c,e_phys_c_to_a = find_physical_extent(u1=e_best_u1,u2=e_best_u2,u3=e_best_u3,systems=rand_e_systems['systems'],system=rand_syst,actual_rms=ell_rand_rms,rand = True,nrms = 2,level=1)
-            ell_c_to_a.append(e_phys_c_to_a)
-
-            e_corot_frac = corotating_frac(systems=rand_e_systems['systems'],syst=rand_syst,unit_n=e_unit_n,actual_rms=ell_rand_rms,rand=True,nrms=2,level=1)
-            ell_corot_frac.append(e_corot_frac)
 
     t1 = time.time()
 
     print(f'Took {t1-t0} seconds.')
 
-    if corot:
-        return sph_mean_rms,ell_mean_rms,sph_corot_frac,sph_c_to_a,ell_corot_frac,ell_c_to_a
     else:
         return sph_mean_rms,ell_mean_rms
 
