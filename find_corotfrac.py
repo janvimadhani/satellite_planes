@@ -16,10 +16,11 @@ corotation_dict['syst_ID'] = []
 corotation_dict['best_rms'] = []
 corotation_dict['phys_c_to_a'] = []
 corotation_dict['corotating_frac'] = []
-corotation_dict['sph_corotating_frac'] = []
+#corotation_dict['sph_corotating_frac'] = []
 corotation_dict['ell_corotating_frac'] = []
-corotation_dict['sph_c_to_a'] = []
+#corotation_dict['sph_c_to_a'] = []
 corotation_dict['ell_c_to_a'] = []
+corotation_dict['ell_rms'] = []
 
 
 
@@ -49,8 +50,10 @@ for syst in range(len(systems)):
     ## check for isotropy n times and find n rms dists
     iso_ell_systs_rms,ell_corot_frac,ell_c_to_a = pf.create_corot_background(systems=systems,syst=syst,n=5000)
 
+    corotation_dict['ell_rms'].append(iso_ell_systs_rms)
     corotation_dict['ell_corotating_frac'].append(ell_corot_frac)
     corotation_dict['ell_c_to_a'].append(ell_c_to_a)
+
 
 #save corotation dictionary to pickle for later analysis
 
