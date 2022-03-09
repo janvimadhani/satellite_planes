@@ -226,9 +226,9 @@ class ReadGalMergerTree:
         nsteps = f.read_record('i')
         nsteps.tolist()
         nbodies = f.read_record('i')
-        aexp = f.read_record('d')
-        omega_t = f.read_record('d')
-        age_univ = f.read_record('d')
+        aexp = f.read_record('f')
+        omega_t = f.read_record('f')
+        age_univ = f.read_record('f')
         ngal_old = nbodies[::2]
         nsubgal_old = nbodies[1::2]
         
