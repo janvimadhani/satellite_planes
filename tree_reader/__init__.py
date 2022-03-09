@@ -226,9 +226,9 @@ class ReadGalMergerTree:
         nsteps = f.read_record('i')
         nsteps.tolist()
         nbodies = f.read_record('i')
-        aexp = f.read_record('d')
-        omega_t = f.read_record('d')
-        age_univ = f.read_record('d')
+        aexp = f.read_record('f')
+        omega_t = f.read_record('f')
+        age_univ = f.read_record('f')
         ngal_old = nbodies[::2]
         nsubgal_old = nbodies[1::2]
         
@@ -287,22 +287,22 @@ class ReadGalMergerTree:
                 gal_dict['nchild'] = nchild
                 gal_dict['nextsub'] = nextsub
                 
-                mass = f.read_record('d') #d for NH
+                mass = f.read_record('f') #d for NH
                 gal_dict['mass'] = mass.tolist()
    
                         
-                macc = f.read_record('d') #d for NH
+                macc = f.read_record('f') #d for NH
                 gal_dict['macc'] = macc.tolist()
                 #print(macc)
                 
-                p = f.read_record('d')
+                p = f.read_record('f')
                 p = p.tolist()
                 py,px,pz = p[0],p[1],p[2]
                 gal_dict['px'] = px
                 gal_dict['py'] = py
                 gal_dict['pz'] = pz
 
-                v = f.read_record('d')
+                v = f.read_record('f')
                 #print('v',v)
                 v = v.tolist()
                 vx,vy,vz = v[0],v[1],v[2]  
@@ -310,7 +310,7 @@ class ReadGalMergerTree:
                 gal_dict['vy'] = vy
                 gal_dict['vz'] = vz
 
-                L = f.read_record('d')
+                L = f.read_record('f')
                 #print('L',L)
                 L = L.tolist()
                 Lx,Ly,Lz = L[0],L[1],L[2]
@@ -318,7 +318,7 @@ class ReadGalMergerTree:
                 gal_dict['Ly'] = Ly
                 gal_dict['Lz'] = Lz
 
-                shape = f.read_record('d')
+                shape = f.read_record('f')
                 #print('shape',shape)
                 shape = shape.tolist()
                 rmax,a,b,c = shape[0],shape[1],shape[2],shape[3]
@@ -327,7 +327,7 @@ class ReadGalMergerTree:
                 gal_dict['b'] = b
                 gal_dict['c'] = c
 
-                energy = f.read_record('d')
+                energy = f.read_record('f')
                 #print('energy',energy)
                 energy = energy.tolist()
                 ek,ep,et = energy[0],energy[1],energy[2]
@@ -335,7 +335,7 @@ class ReadGalMergerTree:
                 gal_dict['ep'] = ep
                 gal_dict['et'] = et
 
-                spin = f.read_record('d')
+                spin = f.read_record('f')
                 #print('spin',spin)
                 gal_dict['spin'] = spin.tolist()
                 
@@ -351,7 +351,7 @@ class ReadGalMergerTree:
                     #print('list_fathers', list_fathers)
                     gal_dict['list_fathers'] = list_fathers
                 
-                    mass_fathers = f.read_record('d')
+                    mass_fathers = f.read_record('f')
                     #print('mass fathers', mass_fathers)
                     gal_dict['mass_fathers'] =  mass_fathers
                 
@@ -366,7 +366,7 @@ class ReadGalMergerTree:
                     #print('list_sons', list_sons)
                     gal_dict['list_sons'] = list_sons
                 
-                virial = f.read_record('d')
+                virial = f.read_record('f')
                 virial = virial.tolist()
                 rvir,mvir,tvir,cvel = virial[0],virial[1],virial[2],virial[3]
                 gal_dict['rvir'] = rvir
@@ -374,7 +374,7 @@ class ReadGalMergerTree:
                 gal_dict['tvir'] = tvir
                 gal_dict['cvel'] = cvel 
 
-                halo_profile = f.read_record('d')
+                halo_profile = f.read_record('f')
                 halo_profile = halo_profile.tolist()
                 rho_0, r_c = halo_profile[0],halo_profile[1]
                 #print('halo profile',halo_profile)
