@@ -230,7 +230,7 @@ class ReadGalMergerTree:
         omega_t = f.read_record('d')
         age_univ = f.read_record('d')
         ngal_old = nbodies[::2]
-        nsubgal_old = nbodies1::2]
+        nsubgal_old = nbodies[1::2]
         
         
         self.merger_tree = {} 
