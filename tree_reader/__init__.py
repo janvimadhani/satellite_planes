@@ -100,7 +100,7 @@ class ReadHaloMergerTree:
                 halo_dict['mass'] = mass.tolist()
                 #print(mass)
                         
-                macc = f.read_record('f') #d for NH
+                macc = f.read_record('d') #d for NH
                 halo_dict['macc'] = macc.tolist()
                 #print(macc)
                 
@@ -291,7 +291,7 @@ class ReadGalMergerTree:
                 gal_dict['mass'] = mass.tolist()
    
                         
-                macc = f.read_record('f') #d for NH
+                macc = f.read_record('d') #d for NH
                 gal_dict['macc'] = macc.tolist()
                 #print(macc)
                 
@@ -382,7 +382,7 @@ class ReadGalMergerTree:
                 gal_dict['r_c'] = r_c
                 
                 self.merger_tree[gal_key].append(gal_dict) 
-            print(f'Done reading halos in time step {ts}.')
+            print(f'Done reading galaxies in time step {ts}.')
                 
                 
             t2 = time.time()
