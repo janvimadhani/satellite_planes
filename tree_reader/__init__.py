@@ -100,7 +100,7 @@ class ReadHaloMergerTree:
                 halo_dict['mass'] = mass.tolist()
                 #print(mass)
                         
-                macc = f.read_record('d') #d for NH
+                macc = f.read_record('f') #d for NH
                 halo_dict['macc'] = macc.tolist()
                 #print(macc)
                 
