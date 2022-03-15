@@ -291,7 +291,7 @@ class ReadGalMergerTree:
                 gal_dict['mass'] = mass.tolist()
    
                         
-                macc = f.read_record('d') #d for NH
+                macc = f.read_record('f') #d for NH
                 gal_dict['macc'] = macc.tolist()
                 #print(macc)
                 
