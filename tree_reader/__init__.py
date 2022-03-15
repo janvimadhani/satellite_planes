@@ -287,15 +287,15 @@ class ReadGalMergerTree:
                 gal_dict['nchild'] = nchild
                 gal_dict['nextsub'] = nextsub
                 
-                mass = f.read_record('f') #d for NH
+                mass = f.read_record('d') #d for NH
                 gal_dict['mass'] = mass.tolist()
    
                         
-                macc = f.read_record('f') #d for NH
+                macc = f.read_record('d') #d for NH
                 gal_dict['macc'] = macc.tolist()
                 #print(macc)
                 
-                p = f.read_record('f')
+                p = f.read_record('d')
                 p = p.tolist()
                 py,px,pz = p[0],p[1],p[2]
                 gal_dict['px'] = px
