@@ -475,6 +475,21 @@ class MWsystems:
             print(f'Writing file to {path} ...')
             with open(path_of_file,'wb') as handle:
                 pickle.dump(self.MWsystems,handle,protocol=pickle.HIGHEST_PROTOCOL)
+
+
+
+def find_father_gals(satIDs,MW_ID, merger_tree, previous_snap_treebrick):
+    """
+    Input: satIDs, list: a list of satellite IDs that you want to find fathers of
+           MW_ID, list: a list of one value of the MW id whose fathers you want to find
+           merger_tree, dict: TreeMaker_gal merger tree dictionary
+           previous_snap_treebrick, dict: galaxies dict of previous snapshot in which the fathers are to be found 
+    Returns: fathers_dict, dict: a dictionary of galaxies that are the fathers of inputted galIDs
+    """
+
+    fathers_dict = {}
+    fathers_dict['galID'] = []
+    fathers_dict['fathers'] = []
                 
 
 
@@ -636,6 +651,10 @@ def find_systs_by_halo_id(haloIDs,haloes_dict,galaxies_dict,rvir_search_thresh=1
     gal_level = [galaxies['galaxies'][i]['level'] for i in range(ngalaxies)]
     gal_level = np.asarray(gal_level)       
 
+    #get IDs
+    gal_IDs = [galaxies['galaxies'][i]['my_number'] for i in range(ngalaxies)]
+    gal_IDs = np.asarray(gal_IDs) 
+
     systems = []
 
     for haloID in haloIDs:
@@ -769,6 +788,7 @@ def find_systs_by_halo_id(haloIDs,haloes_dict,galaxies_dict,rvir_search_thresh=1
                 sat_vz = gal_vz[within_rad]
                 sat_spins = gal_spins[within_rad]
                 sat_levs = gal_level[within_rad]
+                sat_IDs = gal_IDs[within_rad]
                 
 
                 
@@ -813,6 +833,7 @@ def find_systs_by_halo_id(haloIDs,haloes_dict,galaxies_dict,rvir_search_thresh=1
                     system['MW_vy'] = np.zeros((1))
                     system['MW_vz'] = np.zeros((1))
                     system['MW_level'] = np.zeros((1))
+                    system['MW_ID'] = np.zeros((1))
 
                     #add global info
                     system['aexp'] = aexp
@@ -838,6 +859,7 @@ def find_systs_by_halo_id(haloIDs,haloes_dict,galaxies_dict,rvir_search_thresh=1
                     MW_vz = sat_vz[MW_analog_mask]
                     MW_spin = sat_spins[MW_analog_mask]
                     MW_level = sat_levs[MW_analog_mask]
+                    MW_ID = sat_IDs[MW_analog_mask]
                     
                     MW_angmom = np.sqrt(MW_lz**2 + MW_ly**2 + MW_lx**2)
                     MW_iz = np.degrees(np.arccos(MW_lz/MW_angmom))
@@ -858,6 +880,7 @@ def find_systs_by_halo_id(haloIDs,haloes_dict,galaxies_dict,rvir_search_thresh=1
                     system['MW_vy'] = MW_vy
                     system['MW_vz'] = MW_vz
                     system['MW_level'] = MW_level
+                    system['MW_ID'] = MW_ID
                     
                     #remove central galaxy from satellite list
                     sat_pxs = np.delete(sat_pxs,MW_analog_mask)
@@ -873,6 +896,7 @@ def find_systs_by_halo_id(haloIDs,haloes_dict,galaxies_dict,rvir_search_thresh=1
                     sat_vz = np.delete(sat_vz,MW_analog_mask)
                     sat_spins = np.delete(sat_spins,MW_analog_mask)
                     sat_levs = np.delete(sat_levs,MW_analog_mask)
+                    sat_IDs =np.delete(sat_IDs,MW_analog_mask)
                     
                     
                     
@@ -890,6 +914,7 @@ def find_systs_by_halo_id(haloIDs,haloes_dict,galaxies_dict,rvir_search_thresh=1
                     system['sat_rvirs'] = sat_rvirs
                     system['sat_mvirs'] = sat_mvirs
                     system['sat_levels'] = sat_levs
+                    system['sat_IDs'] = sat_IDs
 
                     #add global info
                     system['aexp'] = aexp
