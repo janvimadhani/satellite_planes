@@ -525,7 +525,7 @@ class ReadFilament:
     def __init__(self,file_path=None):
         
         """
-        Make a treebricks dictionary out of file
+        Make a filaments dictionary out of ASCII NDSKL file
         """
         self.file_path = file_path
         self.filament_dict = None
