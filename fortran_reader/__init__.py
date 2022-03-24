@@ -701,7 +701,7 @@ class ReadFilament:
         nb_fil_dat_fields = int(data[fil_dat_idx+1])
         self.filament_dict['nb_fil_fields'] = nb_fil_dat_fields
         self.filament_dict['fil_fields'] = []
-
+        fil_dat_add = fil_dat_idx+2
         for i in range(nb_fil_dat_fields):
             i = 0
             i += fil_dat_add #make sure you are at the right line in the data list 
