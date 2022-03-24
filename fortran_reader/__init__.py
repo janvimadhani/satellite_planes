@@ -577,7 +577,7 @@ class ReadFilament:
         #store all data for critical points in here
         self.filament_dict['critical_points'] = []
 
-        #CPs
+        ##### CPs
         
         add_to_idx = 6 
         for i in range(ncrit):
@@ -619,14 +619,15 @@ class ReadFilament:
             add_to_idx = i + 1
 
 
-        #Filaments
-        #store all data for filaments in here
-        self.filament_dict['filaments'] = []
+        ##### Filaments
 
         fil_idx = i + 1
         nfils = int(data[fil_idx+1])
         self.filament_dict['nfils'] = nfils
         print('nfils,', nfils)
+
+        #store all data for filaments in here
+        self.filament_dict['filaments'] = []
 
         fil_add = fil_idx+2
         for i in range(nfils):
