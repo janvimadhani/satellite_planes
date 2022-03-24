@@ -651,7 +651,7 @@ class ReadFilament:
                 positions = data[i]
                 px,py,pz = convert_to_list(positions)
                 #print('px,py,pz:',px,py,pz)
-                fil_dict['px,py,pz'].append(px,py,pz)
+                fil_dict['px,py,pz'].append([px,py,pz])
             
             #make this to fill out later
             fil_dict['Field Vals'] = []
@@ -679,7 +679,7 @@ class ReadFilament:
             
             cp_dat_add = i + 1
 
-        cp_field_idx = i + 1 
+        cp_field_val_idx = i + 1 
 
         cp_val_add = cp_field_val_idx
         cp_field_vals = []
