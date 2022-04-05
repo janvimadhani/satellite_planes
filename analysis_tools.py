@@ -253,6 +253,7 @@ class MWsystems:
 
         gal_id =  [self.galaxies['galaxies'][i]['my_number'] for i in range(ngalaxies)]
         gal_id = np.asarray(gal_id)
+        gal_id = np.squeeze(gal_id)
 
         systems = []
         for i,val in enumerate(MW_type_gals[0]):
