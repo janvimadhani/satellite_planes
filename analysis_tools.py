@@ -249,7 +249,10 @@ class MWsystems:
 
         #get level
         gal_level = [self.galaxies['galaxies'][i]['level'] for i in range(ngalaxies)]
-        gal_level = np.asarray(gal_level)       
+        gal_level = np.asarray(gal_level)      
+
+        gal_id =  [self.galaxies['galaxies'][i]['my_number'] for i in range(ngalaxies)]
+        gal_id = np.asarray(gal_id)
 
         systems = []
         for i,val in enumerate(MW_type_gals[0]):
@@ -345,6 +348,7 @@ class MWsystems:
                 sat_vz = gal_vz[within_rad]
                 sat_spins = gal_spins[within_rad]
                 sat_levs = gal_level[within_rad]
+                sat_ids = gal_id[within_rad]
                 
 
                 
@@ -373,6 +377,7 @@ class MWsystems:
                     MW_vz = sat_vz[MW_analog_mask]
                     MW_spin = sat_spins[MW_analog_mask]
                     MW_level = sat_levs[MW_analog_mask]
+                    MW_ID = sat_ids[MW_analog_mask]
                     
                     MW_angmom = np.sqrt(MW_lz**2 + MW_ly**2 + MW_lx**2)
                     MW_iz = np.degrees(np.arccos(MW_lz/MW_angmom))
@@ -393,6 +398,7 @@ class MWsystems:
                     system['MW_vy'] = MW_vy
                     system['MW_vz'] = MW_vz
                     system['MW_level'] = MW_level
+                    system['MW_ID'] = MW_ID
                     
                     #remove central galaxy from satellite list
                     sat_pxs = np.delete(sat_pxs,MW_analog_mask)
@@ -478,14 +484,53 @@ class MWsystems:
 
 
 
-def find_father_gals(satIDs,MW_ID, merger_tree, previous_snap_treebrick):
+def find_father_gals(satIDs,MW_ID, gal_merger_tree, previous_snap_treebrick):
     """
-    Input: satIDs, list: a list of satellite IDs that you want to find fathers of
+    Input: satIDs, list: a list of satellite IDs (at ts0) that you want to find fathers of in ts1
            MW_ID, list: a list of one value of the MW id whose fathers you want to find
            merger_tree, dict: TreeMaker_gal merger tree dictionary
            previous_snap_treebrick, dict: galaxies dict of previous snapshot in which the fathers are to be found 
     Returns: fathers_dict, dict: a dictionary of galaxies that are the fathers of inputted galIDs
     """
+    ts0_ngals = gal_merger_tree['ngals'][0]
+
+    #constrain to zoom portion first
+
+    gal_pxs = [gal_merger_tree['gals_ts0'][i]['px'] for i in range(ts0_ngals)]
+    gal_pys = [gal_merger_tree['gals_ts0'][i]['py'] for i in range(ts0_ngals)]
+    gal_pzs= [gal_merger_tree['gals_ts0'][i]['pz'] for i in range(ts0_ngals)]
+    gal_rvirs = [gal_merger_tree['gals_ts0'][i]['rvir'] for i in range(ts0_ngals)]
+    gal_mass = [gal_merger_tree['gals_ts0'][i]['mass'] for i in range(ts0_ngals)]
+    gal_mvir = [gal_merger_tree['gals_ts0'][i]['mvir'] for i in range(ts0_ngals)]
+    gal_ids = [gal_merger_tree['gals_ts0'][i]['my_number'] for i in range(ts0_ngals)]
+
+    gal_pxs = np.asarray(gal_pxs)
+    gal_pys= np.asarray(gal_pys)
+    gal_pzs= np.asarray(gal_pzs)
+    gal_rvirs = np.asarray(gal_rvirs)
+    gal_mass = np.asarray(gal_mass)
+    gal_mvir = np.asarray(gal_mvir)
+    gal_ids = np.asarray(gal_ids)
+
+    #then, constrain to 'zoom portion', which is radius of 20 Mpc
+    r = 10
+    gal_zoom = np.where(((-r < gal_pxs) & (gal_pxs < r )) & ((-r < gal_pys) & (gal_pys < r )) &
+                            ((-r < gal_pzs) & (gal_pzs < r )))
+
+
+
+    gal_pxs = gal_pxs[gal_zoom]
+    gal_pys = gal_pys[gal_zoom]
+    gal_pzs = gal_pzs[gal_zoom]
+    gal_rvirs = gal_rvirs[gal_zoom]
+    gal_mass = gal_mass[gal_zoom]
+    gal_mvir = gal_mvir[gal_zoom]
+    gal_ids = np.squeeze(gal_ids)
+    gal_ids = gal_ids[gal_zoom]
+
+    
+
+    MW_idx= np.where(gal_ids == MW_ID)
 
     fathers_dict = {}
     fathers_dict['galID'] = []
