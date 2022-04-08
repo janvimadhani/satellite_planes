@@ -522,13 +522,12 @@ class ReadDat:
    
     
 class ReadFilament:
-    def __init__(self,file_path=None,verbose=False):
+    def __init__(self,file_path=None):
         
         """
         Make a filaments dictionary out of ASCII NDSKL file
         """
         self.file_path = file_path
-        self.verbose = verbose
         self.filament_dict = None
         self.read_data()
    
@@ -581,12 +580,12 @@ class ReadFilament:
         self.filament_dict['critical_points'] = []
 
         #print header if verbose is true
-        if self.verbose:
-            print('header1,',header1)
-            print('ndims,', ndims)
-            print('Comments,',comments)
-            print('Bounding box,', extent)
-            print('ncrit,', ncrit)
+  
+        print('header1,',header1)
+        print('ndims,', ndims)
+        print('Comments,',comments)
+        print('Bounding box,', extent)
+        print('ncrit,', ncrit)
 
         ##### CPs
         
@@ -636,8 +635,8 @@ class ReadFilament:
         nfils = int(data[fil_idx+1])
         self.filament_dict['nfils'] = nfils
 
-        if self.verbose:
-            print('nfils,', nfils)
+
+        print('nfils,', nfils)
 
         #store all data for filaments in here
         self.filament_dict['filaments'] = []
@@ -678,8 +677,8 @@ class ReadFilament:
 
 
         #Field Data
-        if self.verbose:
-            print('Reading data fields:')
+
+        print('Reading data fields:')
         nb_cp_dat_fields = int(data[cp_dat_idx+1])
         cp_dat_add = cp_dat_idx+2
         self.filament_dict['nb_CP_fields'] = nb_cp_dat_fields
@@ -689,8 +688,8 @@ class ReadFilament:
             i = 0
             i += cp_dat_add #make sure you are at the right line in the data list 
             cp_field_info = data[i]
-            if self.verbose:
-                print('CP field:',cp_field_info)
+
+            print('CP field:',cp_field_info)
             self.filament_dict['CP_fields'].append(cp_field_info)
             
             cp_dat_add = i + 1
@@ -722,8 +721,8 @@ class ReadFilament:
             i = 0
             i += fil_dat_add #make sure you are at the right line in the data list 
             fil_field_info = data[i]
-            if self.verbose:
-                print('Filament field:',fil_field_info)
+
+            print('Filament field:',fil_field_info)
             self.filament_dict['fil_fields'].append(fil_field_info)
             
             fil_dat_add = i + 1
