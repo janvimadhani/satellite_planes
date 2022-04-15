@@ -1199,13 +1199,30 @@ def check_isotropy(systems,syst,unit_n,actual_rms,n=2000,corot=False):
 
     return sph_mean_rms,ell_mean_rms
 
-def save_hist(name_of_plot,best_rms,mean_rms,snapshot,type='spherical',histbins=70):
+def save_hist(name_of_plot,best_rms,mean_rms,snapshot,type='spherical',histbins=70,savedat =True):
     """
     Input:
 
+
     Output:
         saves figure
+        if dat: saves pickle file 
         returns significance 
+    """
+
+    """
+
+        path_of_file = results_dir + name_to_save + '.pickle'
+
+        path = Path(path_of_file)
+
+
+        if path.is_file():
+            if rewrite:
+                print(f'File already exists, rewriting anyway to {path} ...')
+                with open(path_of_file,'wb') as handle:
+                    pickle.dump(self.halosystems,handle,protocol=pickle.HIGHEST_PROTOCOL)
+
     """
 
     n = len(mean_rms)
@@ -1248,15 +1265,41 @@ def save_hist(name_of_plot,best_rms,mean_rms,snapshot,type='spherical',histbins=
     #script_dir = os.path.dirname(__file__)
     #results_dir = os.path.join(script_dir, 'iso_histograms/')
 
+    #create dictionary of output if data is to be saved
+    hist_data = {}
+    hist_data['mean_rms'] = mean_rms
+    hist_data['best_rms'] = best_rms
+
+
     #where it will be saved to 
     if type=='spherical':
         results_dir = '/data78/welker/madhani/iso_histograms/spherical/' + str(snapshot) + '/'
+       
+        if not os.path.isdir(results_dir):
+            os.makedirs(results_dir)
+
+        if savedat:
+            path_of_file = results_dir + name_of_plot + 'dat.pickle'
+
+            path = Path(path_of_file)
+            with open(path_of_file,'wb') as handle:
+                pickle.dump(hist_data,handle,protocol=pickle.HIGHEST_PROTOCOL)
+
     elif type=='elliptical':
         results_dir = '/data78/welker/madhani/iso_histograms/elliptical/' + str(snapshot) + '/'
+
+        if not os.path.isdir(results_dir):
+            os.makedirs(results_dir)
+
+        if savedat:
+            path_of_file = results_dir + name_of_plot + 'dat.pickle'
+
+            path = Path(path_of_file)
+            with open(path_of_file,'wb') as handle:
+                pickle.dump(hist_data,handle,protocol=pickle.HIGHEST_PROTOCOL)
     
 
-    if not os.path.isdir(results_dir):
-        os.makedirs(results_dir)
+
 
     print(f'Saving histogram to:  {results_dir + name_of_plot}')
     plt.savefig(results_dir + name_of_plot)
