@@ -85,18 +85,19 @@ do i=1,narg
    call getarg(i,opt)
    call getarg(i+1,arg)
    select case (opt)
-   case('-inp')
-      read(arg,*) testfile
-      inputfile = TRIM(testfile) 
    case('-tsi')
       read(arg,*) snap
-   case('-out')
-      read(arg,*) testfile
-      output_dir = TRIM(testfile)
 
-           
    end select
 end do
+
+
+call GET_COMMAND_ARGUMENT(2, testfile)
+inputfile = TRIM(testfile) 
+
+call GET_COMMAND_ARGUMENT(6, testfile)
+output_dir = TRIM(testfile)
+
 !----------------------------------------------------------------------------
 
 
