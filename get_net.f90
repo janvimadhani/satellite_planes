@@ -8,7 +8,6 @@ program get_net
 
 
 integer(kind=4)::nrecord
-character(LEN=300)::input_dir,output_dir,outputfile
 character(LEN=1,KIND=C_CHAR),dimension(1:16)::tag
 character(LEN=1,KIND=C_CHAR),dimension(:),pointer::comment => null()
 character(LEN=1,KIND=C_CHAR),dimension(:),pointer::dummy_ext => null()
@@ -86,7 +85,7 @@ do i=1,narg
    select case (opt)
    case('-inp')
       read(arg,*) inputfile  
-   case('-tsi)
+   case('-tsi')
       read(arg,*) snap
    case('-out')
       read(arg,*) output_dir 
@@ -103,7 +102,7 @@ end do
 filename=inputfile !name of the file
  OPEN(unit=1,file=filename,status='old',action='read',form='unformatted',access='stream') !open file
  READ(1) nx,ny,nz  !dimensions of the grid in each direction
- allocate(cube(1:nx,1:ny,1:nx)
+ allocate(cube(1:nx,1:ny,1:nx))
  READ(1) cube       !grid
  close(1)
 
