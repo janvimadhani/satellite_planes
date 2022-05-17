@@ -16,7 +16,14 @@ integer(KIND=C_INT)::ndims,fdims_index,datatype
 integer(KIND=C_INT)::dims(1:20)
 real(KIND=C_DOUBLE)::x0(1:20),delta(1:20)
 !real(kind=4),allocatable::gridg(:,:,:)
-
+integer::nx,ny,nz
+real(kind=4),allocatable::cube(:,:,:)
+character(len=128) :: arg
+character(len=4) ::opt
+integer(kind=4) :: i
+character(len=300) :: inputfile, output_dir
+character(len=10) :: snap
+integer::narg
 
 
 
@@ -58,25 +65,17 @@ call read_input
   write(10) 652
   write(10) nrecord
   !write(10) (((gridg(i,j,k),i=1,nres),j=1,nres),k=1,nres) 
-  write(10) cube
+  write(10) (((cube(i,j,k),i=1,nx),j=1,ny),k=1,nz)
   write(10) nrecord
 
   close(10)
 
-
+ deallocate(cube)
 
 contains
   !*********************************************************************************************************************
 subroutine read_input
-
-  character(len=128) :: arg
-  character(len=4) ::opt
-  integer(kind=4) :: i
-  character(len=300) :: inputfile
-  character(len=10) :: snap
-  integer::narg
-  integer::nx,ny,nz
-  real(kind=4),allocatable::cube(:,:,:)
+  
 
     
 !---------------------------------------------------------------------------read input file
@@ -87,7 +86,7 @@ do i=1,narg
    select case (opt)
    case('-inp')
       read(arg,*) inputfile  
-   case('-ts)
+   case('-tsi)
       read(arg,*) snap
    case('-out')
       read(arg,*) output_dir 
@@ -108,10 +107,12 @@ filename=inputfile !name of the file
  READ(1) cube       !grid
  close(1)
 
- deallocate(cube)
+
 
 
 
 
 return
 end subroutine read_input
+
+end program get_net
