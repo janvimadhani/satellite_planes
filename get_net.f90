@@ -19,9 +19,9 @@ integer::nx,ny,nz
 real(kind=4),allocatable::cube(:,:,:)
 character(len=128) :: arg
 character(len=4) ::opt
-integer(kind=4) :: i
-character(len=300) :: inputfile, output_dir
-character(len=10) :: snap
+integer(kind=4) :: i,j,k
+character(len=300) :: inputfile, output_dir, outputfile
+integer(kind=4) :: snap
 integer::narg
 
 
@@ -53,7 +53,8 @@ call read_input
   !comment=TRIM(comment)
   nrecord=4*nx*ny*nz
 
-  outputfile=TRIM(output_dir)//'snap_'//TRIM(snap)//'_gasgrid'//'.NDnet'
+  call title2(snap,snap0)
+  outputfile=TRIM(output_dir)//'snap_'//TRIM(snap0)//'_gasgrid'//'.NDnet'
   open(unit=10,file=outputfile,form='unformatted',status='unknown',access='stream',action='write')
 
   write(10) 16
@@ -78,7 +79,7 @@ subroutine read_input
 
     
 !---------------------------------------------------------------------------read input file
-narg=iargc()
+narg=IARGC()
 do i=1,narg
    call getarg(i,opt)
    call getarg(i+1,arg)
@@ -99,8 +100,7 @@ end do
 
 
 
-filename=inputfile !name of the file
- OPEN(unit=1,file=filename,status='old',action='read',form='unformatted',access='stream') !open file
+ OPEN(unit=1,file=inputfile,status='old',action='read',form='unformatted',access='stream') !open file
  READ(1) nx,ny,nz  !dimensions of the grid in each direction
  allocate(cube(1:nx,1:ny,1:nx))
  READ(1) cube       !grid
@@ -113,5 +113,37 @@ filename=inputfile !name of the file
 
 return
 end subroutine read_input
+
+
+!***************************************************************************************************************
+  subroutine title2(n,nchar0)
+  
+    implicit none
+
+    integer(kind=4) :: n
+    character*4     :: nchar0
+    character*1     :: nchar1
+    character*2     :: nchar2
+    character*3     :: nchar3
+    character*4     :: nchar4
+
+    
+
+   
+    if(n.ge.1000)then
+       write(nchar4,'(i4)') n
+       nchar0 = nchar4
+    elseif(n.ge.100)then
+       write(nchar3,'(i3)') n
+       nchar0 = '0'//nchar3
+    elseif(n.ge.10)then
+       write(nchar2,'(i2)') n
+       nchar0 = '00'//nchar2
+    else
+       write(nchar1,'(i1)') n
+       nchar0 = '000'//nchar1
+    endif
+
+  end subroutine title2
 
 end program get_net
