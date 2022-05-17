@@ -86,11 +86,14 @@ do i=1,narg
    call getarg(i+1,arg)
    select case (opt)
    case('-inp')
-      read(arg,*) inputfile  
+      read(arg,*) testfile
+      inputfile = TRIM(testfile) 
    case('-tsi')
       read(arg,*) snap
    case('-out')
-      read(arg,*) output_dir 
+      read(arg,*) testfile
+      output_dir = TRIM(testfile)
+
            
    end select
 end do
@@ -101,7 +104,7 @@ end do
 
 
 
- OPEN(unit=1,file=inputfile,status='old',action='read',form='unformatted',access='stream') !open file
+ OPEN(unit=1,file=inputfile,status='old',action='read',form='unformatted') !open file
  READ(1) nx,ny,nz  !dimensions of the grid in each direction
  allocate(cube(1:nx,1:ny,1:nx))
  READ(1) cube       !grid
