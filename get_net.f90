@@ -15,7 +15,7 @@ integer(KIND=C_INT)::ndims,fdims_index,datatype
 integer(KIND=C_INT)::dims(1:20)
 real(KIND=C_DOUBLE)::x0(1:20),delta(1:20)
 !real(kind=4),allocatable::gridg(:,:,:)
-integer::nx,ny,nz
+integer(kind=4)::nx,ny,nz
 real(kind=4),allocatable::cube(:,:,:)
 character(len=128) :: arg
 character(len=4) ::opt
@@ -112,6 +112,9 @@ write(*,*) output_dir
 
  OPEN(unit=1,file=inputfile,status='old',action='read',form='unformatted') !open file
  READ(1) nx,ny,nz  !dimensions of the grid in each direction
+
+ write(*,*) nx, ny, nz
+
  allocate(cube(1:nx,1:ny,1:nx))
  READ(1) cube       !grid
  close(1)
