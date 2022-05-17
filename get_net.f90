@@ -22,7 +22,7 @@ character(len=4) ::opt
 integer(kind=4) :: i,j,k
 character(len=300) :: inputfile, output_dir, outputfile, testfile
 integer(kind=4) :: snap
-character(len=10) :: snap0
+character(len=4) :: snap0
 integer::narg
 
 
