@@ -102,7 +102,9 @@ end do
 
 
 
+write(*,*) inputfile
 
+write(*,*) output_dir
 
  OPEN(unit=1,file=inputfile,status='old',action='read',form='unformatted') !open file
  READ(1) nx,ny,nz  !dimensions of the grid in each direction
