@@ -55,7 +55,7 @@ call read_input
   nrecord=4*nx*ny*nz
 
   call title2(snap,snap0)
-  outputfile=TRIM(output_dir)//'snap_'//TRIM(snap0)//'_gasgrid'//'.NDnet'
+  outputfile=TRIM(output_dir)//'snap_'//TRIM(snap0)//'_gasgrid.NDnet'
   open(unit=10,file=outputfile,form='unformatted',status='unknown',access='stream',action='write')
 
   write(10) 16
