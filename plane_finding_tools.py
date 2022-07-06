@@ -38,7 +38,7 @@ def write_to_pickle(dictionary,snapshot,name_to_save,rewrite=True):
     """
     script_dir = os.path.dirname(__file__)
     #results_dir = os.path.join(script_dir, 'systems/')
-    results_dir = '/data78/welker/madhani/analysis_data/' + str(snapshot) + '/'
+    results_dir = '/data80/madhani/analysis_data/' + str(snapshot) + '/'
     
     #local results dir
     #results_dir = '/Users/JanviMadhani/satellite_planes/systems/'
@@ -911,7 +911,7 @@ def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best,los,unit_n,phys_
     #script_dir = os.path.dirname(__file__)
     
     #results_dir = os.path.join(script_dir, '3Dplots/'+str(snapshot) +'/')
-    results_dir = '/data78/welker/madhani/3Dplots/' + str(snapshot) + '/'
+    results_dir = '/data80/madhani/3Dplots/' + str(snapshot) + '/'
     
 
     if not os.path.isdir(results_dir):
@@ -1322,7 +1322,7 @@ def save_hist(name_of_plot,best_rms,mean_rms,snapshot,type='spherical',histbins=
 
     #where it will be saved to 
     if type=='spherical':
-        results_dir = '/data78/welker/madhani/iso_histograms/spherical/' + str(snapshot) + '/'
+        results_dir = '/data80/madhani/iso_histograms/spherical/' + str(snapshot) + '/'
        
         if not os.path.isdir(results_dir):
             os.makedirs(results_dir)
@@ -1335,7 +1335,7 @@ def save_hist(name_of_plot,best_rms,mean_rms,snapshot,type='spherical',histbins=
                 pickle.dump(hist_data,handle,protocol=pickle.HIGHEST_PROTOCOL)
 
     elif type=='elliptical':
-        results_dir = '/data78/welker/madhani/iso_histograms/elliptical/' + str(snapshot) + '/'
+        results_dir = '/data80/madhani/iso_histograms/elliptical/' + str(snapshot) + '/'
 
         if not os.path.isdir(results_dir):
             os.makedirs(results_dir)
