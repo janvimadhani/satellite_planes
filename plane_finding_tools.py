@@ -65,20 +65,6 @@ def write_to_pickle(dictionary,snapshot,name_to_save,rewrite=True):
         with open(path_of_file,'wb') as handle:
             pickle.dump(dictionary,handle,protocol=pickle.HIGHEST_PROTOCOL)
 
-def dist(x,y,z,normal_vect,d):
-    """
-    distance between a point and a plane defined by a normal vector 
-    
-    """
-    
-    
-    nx, ny, nz = normal_vect[0],normal_vect[1],normal_vect[2]
-    num = np.abs(nx*x + ny*y + nz*z + d)
-    den = np.sqrt(nx**2 + ny**2 + nz**2)
-    
-    dist = num/den
-    
-    return dist
 
 ### Write evolutionary algorithm
 
@@ -491,9 +477,26 @@ def best_plane(systems,system,level=1,n=10,mock=False,rand=False,verbose=False):
         print(f'Best rms = {best_rms}')
     
     return u1_a[best_plane],u2_a[best_plane],u3_a[best_plane],plane_finder['nx'],plane_finder['ny'],plane_finder['nz'],plane_finder['rms_dist'],best_rms,plane_finder['delta_s'],cos_theta_a[best_plane]
-"""      
+"""   
 
-def get_unit_n(u1,u2,u3,):
+
+def dist(x,y,z,normal_vect,d):
+    """
+    distance between a point and a plane defined by a normal vector 
+    
+    """
+    
+    
+    nx, ny, nz = normal_vect[0],normal_vect[1],normal_vect[2]
+    num = np.abs(nx*x + ny*y + nz*z + d)
+    den = np.sqrt(nx**2 + ny**2 + nz**2)
+    
+    dist = num/den
+    
+    return dist
+
+
+def get_normal(u1,u2,u3,):
     cos_theta = 2*u1 - 1   #makes sure cos_phi is bw 0,1
 
     sin_theta = np.sqrt(1-cos_theta**2)
@@ -512,7 +515,53 @@ def get_unit_n(u1,u2,u3,):
     mag_n = np.linalg.norm(n)
     unit_n = n/mag_n
 
-    return unit_n
+    return n,unit_n
+
+def project_on_plane(px,py,pz,unit_n):
+    
+    nx,ny,nz = unit_n[0], unit_n[1], unit_n[2]
+    
+    n = np.array([nx,ny,nz])
+    norm_n = n/np.sqrt(nx**2 + ny**2 + nz**2)
+    mag_n = np.sqrt(nx**2 + ny**2 + nz**2)
+    
+    P = np.array([px,py,pz])
+    
+    proj_vect = np.dot(P,n)*n
+    proj_vect = proj_vect/mag_n**2
+    
+    u = P - proj_vect
+    
+    return u
+
+def project_on_vec(s1,s2,s3,d1,d2,d3):
+    
+    """
+    project vector s on to vector d
+    """
+    S = np.array([s1,s2,s3])
+    D = np.array([d1,d2,d3])
+    
+    mag_d = np.sqrt(d1**2 + d2**2 + d3**2)
+    
+    #proj = np.dot(S,D)*S
+    
+    #proj = proj/mag_d**2
+    
+    proj = np.dot(S,D)
+    proj = proj/mag_d
+    
+    return proj
+
+
+
+def magnitude_vect(vector):
+    v1,v2,v3 = vector[0],vector[1],vector[2]
+    
+    mag = np.sqrt(v1**2+v2**2+v3**2)
+    
+    return mag
+
 
 
 def get_plane(u1,u2,u3,systems,system,mock=False):
@@ -1080,7 +1129,7 @@ def create_corot_background(systems,syst,n=5000):
 
         e_best_u1,e_best_u2,e_best_u3,ell_rand_rms = evolutionary_plane_finder(systems=systems,system=rand_e_systems['systems'][rand_syst],n_iter = 200,n_start=25,n_erase=10,n_avg_mutants=5,level=1,rand=True,verbose=False) 
         ell_mean_rms.append(ell_rand_rms)
-        e_unit_n = get_unit_n(e_best_u1,e_best_u2,e_best_u3)
+        n_,e_unit_n = get_normal(e_best_u1,e_best_u2,e_best_u3)
     
 
         #find best fit plane of n random systems
@@ -1185,11 +1234,11 @@ def check_isotropy(systems,syst,unit_n,actual_rms,n=2000,corot=False):
         
         s_best_u1,s_best_u2,s_best_u3,sph_rand_rms = evolutionary_plane_finder(systems=systems,system=rand_s_systems['systems'][rand_syst],n_iter = 200,n_start=25,n_erase=10,n_avg_mutants=5,level=1,rand=True,verbose=False)
         sph_mean_rms.append(sph_rand_rms)
-        s_unit_n = get_unit_n(s_best_u1,s_best_u2,s_best_u3)
+        n_,s_unit_n = get_normal(s_best_u1,s_best_u2,s_best_u3)
 
         e_best_u1,e_best_u2,e_best_u3,ell_rand_rms = evolutionary_plane_finder(systems=systems,system=rand_e_systems['systems'][rand_syst],n_iter = 200,n_start=25,n_erase=10,n_avg_mutants=5,level=1,rand=True,verbose=False) 
         ell_mean_rms.append(ell_rand_rms)
-        e_unit_n = get_unit_n(e_best_u1,e_best_u2,e_best_u3)
+        n_,e_unit_n = get_normal(e_best_u1,e_best_u2,e_best_u3)
     
 
 
@@ -1368,26 +1417,7 @@ def find_physical_extent(u1,u2,u3,systems,system,actual_rms,rand=False,nrms = 2,
     
     #calc relevant angles 
     
-    cos_theta = 2*u1 - 1   #makes sure cos_phi is bw 0,1
-
-    sin_theta = np.sqrt(1-cos_theta**2)
-    #randomly select sign of arccos 
-
-    if u3 <= 0.5:
-        sin_theta = -1*sin_theta
-
-
-    phi = 2*np.pi*u2  #[-pi,pi]  
-
-    nx = np.cos(phi)*sin_theta
-    ny = np.sin(phi)*sin_theta
-    nz = cos_theta
-    n = np.array([nx,ny,nz])
-    mag_n = np.linalg.norm(n)
-    unit_n = n/mag_n
-    
-    
-    unx, uny, unz = unit_n[0],unit_n[1],unit_n[2]
+    n,unit_n = get_normal(u1,u2,u3)
 
     if rand:
         #calculate distances to best plane, then the extent
@@ -1410,6 +1440,10 @@ def find_physical_extent(u1,u2,u3,systems,system,actual_rms,rand=False,nrms = 2,
     
     distances = []
     sep_vect = []
+    x_dist = []
+    y_dist = []
+    z_dist = []
+    uvecs = []
     #calculate the distance of ALL the sats (needed for shape)
     for k in range(len(systems[system]['sat_pxs'])):
         x,y,z = systems[system]['sat_pxs'][k],systems[system]['sat_pys'][k],systems[system]['sat_pzs'][k]
@@ -1418,10 +1452,34 @@ def find_physical_extent(u1,u2,u3,systems,system,actual_rms,rand=False,nrms = 2,
         s = dist(x,y,z,unit_n,d)
         distances.append(s) 
         sep_vect.append(r)
-        
+
+        #seperation vector
+        R = np.array([rx,ry,rz])
+        mag_r = magnitude_vect(R)
+
+        #projection of sep vector on to plane
+        U = project_on_plane(rx,ry,rz,n)
+        mag_u = magnitude_vect(U)
+
+        uvecs.append(U)
+
+        z_ext = np.sqrt(mag_r**2 - mag_u**2)
+        x_ext = U[0]
+        y_ext = U[1]
+
+        x_dist.append(x_ext)
+        y_dist.append(y_ext)
+        z_dist.append(z_ext)
+
+
         
     distances = np.asarray(distances)
     sep_vect = np.asarray(sep_vect)
+    x_dist = np.asarray(x_dist)
+    y_dist = np.asarray(y_dist)
+    z_dist = np.asarray(z_dist)
+    uvecs = np.asarray(uvecs)
+
     
     #find satellites within n * rms AND right level
     #nrms = the number of rms within which you want to consider satellites as "on-plane"
@@ -1433,8 +1491,23 @@ def find_physical_extent(u1,u2,u3,systems,system,actual_rms,rand=False,nrms = 2,
     
     
     distances = distances[win_rms]
+    sep_vect = sep_vect[win_rms]
+    x_dist = x_dist[win_rms]
+    y_dist = y_dist[win_rms]
+    z_dist = z_dist[win_rms]
+
+    xlen = abs(min(x_dist)-max(x_dist))
+    ylen = abs(min(y_dist)-max(y_dist))
+    zlen = abs(min(z_dist)-max(z_dist))
+
+    c,b,a = np.sort([xlen,ylen,zlen])
+    c_to_a = c/a
+    return(a,b,c,c_to_a)
+
     #print('sat_pxs',systems[system]['sat_pxs'])
     #print('type',type(systems[system]['sat_pxs']))
+    
+    """
     x_win_rms = systems[system]['sat_pxs'][win_rms]
     y_win_rms = systems[system]['sat_pys'][win_rms]
     z_win_rms = systems[system]['sat_pzs'][win_rms]
@@ -1468,11 +1541,11 @@ def find_physical_extent(u1,u2,u3,systems,system,actual_rms,rand=False,nrms = 2,
     
     
 
-        """
+        
         xmin, xmax = np.min(x_win_rms), np.max(x_win_rms)
         ymin, ymax = np.min(y_win_rms), np.max(y_win_rms)
         zmin, zmax = np.min(z_win_rms), np.max(z_win_rms)
-        """
+        
     
         M_to_k = 1000
         x_extent = np.abs(xmax-xmin) * M_to_k
@@ -1493,6 +1566,7 @@ def find_physical_extent(u1,u2,u3,systems,system,actual_rms,rand=False,nrms = 2,
     #can mask out these erroneous vals later
     else:
         return(0,0,0,0)
+    """
 
     
 
@@ -1524,7 +1598,7 @@ def save_outputs(name_of_file,snapshot,systems,syst,inertial,physical,sig_spheri
     syst_analysis['elliptical_significance'] = sig_elliptical 
 
    
-    results_dir = '/data78/welker/madhani/analysis_data/' + str(snapshot) + '/'
+    results_dir = '/data80/madhani/analysis_data/' + str(snapshot) + '/'
     
 
     if not os.path.isdir(results_dir):
