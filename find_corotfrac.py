@@ -15,6 +15,8 @@ corotation_dict = {}
 corotation_dict['syst_ID'] = []
 corotation_dict['best_rms'] = []
 corotation_dict['phys_c_to_a'] = []
+corotation_dict['inertia_mw_c_to_a'] = []
+corotation_dict['inertia_phys_c_to_a'] = []
 corotation_dict['corotating_frac'] = []
 #corotation_dict['sph_corotating_frac'] = []
 corotation_dict['ell_corotating_frac'] = []
@@ -39,10 +41,23 @@ for syst in range(len(systems)):
     corotation_dict['best_rms'].append(best_rms)
 
     ## get physical extent, c_to_a:
-    a,b,c,phys_c_to_a = pf.find_physical_extent(u1=best_u1,u2=best_u2,u3=best_u3,systems=systems,system=syst,actual_rms=best_rms,nrms = 2,level=1)
-    phys_ext = [a,b,c,phys_c_to_a]
+    phys_c_to_a = pf.find_physical_extent(u1=best_u1,u2=best_u2,u3=best_u3,systems=systems,system=syst,actual_rms=best_rms,nrms = 2,level=1)
     corotation_dict['phys_c_to_a'].append(phys_c_to_a)
-    
+
+    ## get inertia tensor
+    # mass weighted 
+    inertia_tensor_massw = pf.find_inertia_tensor(syst=syst,mass=True)
+    axes_ratios_massw = pf.find_axes_ratios(inertia_tensor_massw)
+    corotation_dict['inertia_mw_c_to_a'].append(axes_ratios_massw)
+
+    # just physical 
+    inertia_tensor_phys = pf.find_inertia_tensor(syst=syst,mass=False)
+    axes_ratios_phys = pf.find_axes_ratios(inertia_tensor_phys)
+    corotation_dict['inertia_phys_c_to_a'].append(axes_ratios_phys)
+
+    #reduced inertia tensor, Chisari+ 15 
+
+
     corot_frac = pf.corotating_frac(systems=systems,syst=syst,unit_n=unit_n,actual_rms=best_rms,nrms=1,level=1)
     
     corotation_dict['corotating_frac'].append(corot_frac)

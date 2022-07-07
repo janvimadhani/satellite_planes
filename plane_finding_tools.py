@@ -1362,26 +1362,38 @@ def save_hist(name_of_plot,best_rms,mean_rms,snapshot,type='spherical',histbins=
 ######################################
 
 
-def find_inertia_tensor(syst,level=1):
+def find_inertia_tensor(syst,level=1,mass=True):
     """
     Input: dictionary, syst
            integer, level: what level sats you're looking at the inertia tensor of
     Returns: 3x3 array, inertia tensor 
     """
+
+    x0,y0,z0 = syst['MW_px'], syst['MW_py'], syst['MW_pz']
     level_sats = np.where(syst['sat_levels'] == level)
     nsats = len(level_sats[0]) 
     sat_ms = syst['sat_mvirs'][level_sats]
-    sat_ms /= 10e8
-    sat_xs = syst['sat_pxs'][level_sats]
-    sat_ys = syst['sat_pys'][level_sats]
-    sat_zs = syst['sat_pzs'][level_sats]
+    sat_xs = syst['sat_pxs'][level_sats] - x0
+    sat_ys = syst['sat_pys'][level_sats] - y0
+    sat_zs = syst['sat_pzs'][level_sats] - z0
 
-    Ixx = np.sum([(sat_ys[i]**2 + sat_zs[i]**2) * sat_ms[i] for i in range(nsats)])
-    Iyy = np.sum([(sat_xs[i]**2 + sat_zs[i]**2) * sat_ms[i] for i in range(nsats)])
-    Izz = np.sum([(sat_xs[i]**2 + sat_ys[i]**2) * sat_ms[i] for i in range(nsats)])
-    Ixy = np.sum([(sat_xs[i] * sat_ys[i]) * sat_ms[i] for i in range(nsats)])
-    Ixz = np.sum([(sat_xs[i] * sat_zs[i]) * sat_ms[i] for i in range(nsats)])
-    Iyz = np.sum([(sat_ys[i] * sat_zs[i]) * sat_ms[i] for i in range(nsats)])
+    M = np.sum([sat_ms[i] for i in range(nsats)])
+
+    if mass:
+        Ixx = np.sum([(sat_ys[i]**2 + sat_zs[i]**2) * (sat_ms[i])/M for i in range(nsats)])
+        Iyy = np.sum([(sat_xs[i]**2 + sat_zs[i]**2) * (sat_ms[i])/M for i in range(nsats)])
+        Izz = np.sum([(sat_xs[i]**2 + sat_ys[i]**2) * (sat_ms[i])/M for i in range(nsats)])
+        Ixy = np.sum([(sat_xs[i] * sat_ys[i]) * (sat_ms[i])/M for i in range(nsats)])
+        Ixz = np.sum([(sat_xs[i] * sat_zs[i]) * (sat_ms[i])/M for i in range(nsats)])
+        Iyz = np.sum([(sat_ys[i] * sat_zs[i]) * (sat_ms[i])/M for i in range(nsats)])
+
+    else:
+        Ixx = np.sum([(sat_ys[i]**2 + sat_zs[i]**2)  for i in range(nsats)])
+        Iyy = np.sum([(sat_xs[i]**2 + sat_zs[i]**2)  for i in range(nsats)])
+        Izz = np.sum([(sat_xs[i]**2 + sat_ys[i]**2)  for i in range(nsats)])
+        Ixy = np.sum([(sat_xs[i] * sat_ys[i]) for i in range(nsats)])
+        Ixz = np.sum([(sat_xs[i] * sat_zs[i]) for i in range(nsats)])
+        Iyz = np.sum([(sat_ys[i] * sat_zs[i]) for i in range(nsats)]) 
     
     Iyx = Ixy
     Izx = Ixz
@@ -1403,7 +1415,12 @@ def find_axes_ratios(I):
 
     lam3,lam2,lam1 = np.sort([lam1,lam2,lam3])
     
-    c_to_a = np.sqrt(lam3 + lam2 - lam1) / np.sqrt(lam1 + lam2 - lam3)
+    a = (5) * np.sqrt(lam1 + lam2  - lam3)
+    b = (5) * np.sqrt(lam1 + lam3 - lam2)
+    c = (5) * np.sqrt(lam3 + lam2 - lam1)
+    
+    
+    c_to_a = c/a
     
     return float(c_to_a)
 
@@ -1502,71 +1519,11 @@ def find_physical_extent(u1,u2,u3,systems,system,actual_rms,rand=False,nrms = 2,
 
     c,b,a = np.sort([xlen,ylen,zlen])
     c_to_a = c/a
-    return(a,b,c,c_to_a)
+    return(c_to_a)
 
-    #print('sat_pxs',systems[system]['sat_pxs'])
-    #print('type',type(systems[system]['sat_pxs']))
-    
-    """
-    x_win_rms = systems[system]['sat_pxs'][win_rms]
-    y_win_rms = systems[system]['sat_pys'][win_rms]
-    z_win_rms = systems[system]['sat_pzs'][win_rms]
-    sep_vect = sep_vect[win_rms]
-    
-    xdists = []
-    ydists = []
-    
-    
-    #Now use similar triangles, using the separation vector's projection on the plane (the satellite's hypotenuse)
-    #and the hypotenuse of the normal vector's projection on the plane, ie. the unit nx and ny vector's hyp
-    
-    u_n_hyp = np.sqrt(unx**2 + uny**2)
-    
-    #projection of sep vectors on plane
-    a1 = np.sqrt(sep_vect**2 - distances**2)
-    
-    #x extents
-    a2 = unx * (a1/u_n_hyp)  
-    
-    #y extents 
-    
-    a3 = uny * (a1/u_n_hyp) 
 
-    #put in a clause to catch instances where there is no array
-    
-    if len(a2) > 1:
-        xmin, xmax = np.min(a2), np.max(a2)
-        ymin, ymax = np.min(a3), np.max(a3)
-        zmin, zmax = np.min(distances), np.max(distances)  
-    
     
 
-        
-        xmin, xmax = np.min(x_win_rms), np.max(x_win_rms)
-        ymin, ymax = np.min(y_win_rms), np.max(y_win_rms)
-        zmin, zmax = np.min(z_win_rms), np.max(z_win_rms)
-        
-    
-        M_to_k = 1000
-        x_extent = np.abs(xmax-xmin) * M_to_k
-        y_extent = np.abs(ymax-ymin) * M_to_k
-        z_extent = np.abs(zmax-zmin) * M_to_k
-
-        
-
-        #print(xmin,xmax,ymin,ymax,zmin,zmax)
-        #print(x_extent,y_extent,z_extent)
-        
-        extents = [x_extent,y_extent,z_extent]
-        extents = sorted(extents)
-        c,b,a = extents[0], extents[1], extents[2]
-        c_to_a = c/a
-        return(a,b,c,c_to_a)
-    
-    #can mask out these erroneous vals later
-    else:
-        return(0,0,0,0)
-    """
 
     
 
