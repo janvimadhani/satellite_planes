@@ -46,12 +46,12 @@ for syst in range(len(systems)):
 
     ## get inertia tensor
     # mass weighted 
-    inertia_tensor_massw = pf.find_inertia_tensor(syst=syst,mass=True)
+    inertia_tensor_massw = pf.find_inertia_tensor(systems= systems, syst=syst,mass=True)
     axes_ratios_massw = pf.find_axes_ratios(inertia_tensor_massw)
     corotation_dict['inertia_mw_c_to_a'].append(axes_ratios_massw)
 
     # just physical 
-    inertia_tensor_phys = pf.find_inertia_tensor(syst=syst,mass=False)
+    inertia_tensor_phys = pf.find_inertia_tensor(systems = systems, syst=syst,mass=False)
     axes_ratios_phys = pf.find_axes_ratios(inertia_tensor_phys)
     corotation_dict['inertia_phys_c_to_a'].append(axes_ratios_phys)
 

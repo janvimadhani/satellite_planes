@@ -1362,20 +1362,20 @@ def save_hist(name_of_plot,best_rms,mean_rms,snapshot,type='spherical',histbins=
 ######################################
 
 
-def find_inertia_tensor(syst,level=1,mass=True):
+def find_inertia_tensor(systems,syst,level=1,mass=True):
     """
     Input: dictionary, syst
            integer, level: what level sats you're looking at the inertia tensor of
     Returns: 3x3 array, inertia tensor 
     """
 
-    x0,y0,z0 = syst['MW_px'], syst['MW_py'], syst['MW_pz']
-    level_sats = np.where(syst['sat_levels'] == level)
+    x0,y0,z0 = systems[syst]['MW_px'], systems[syst]['MW_py'],systems[syst]['MW_pz']
+    level_sats = np.where(systems[syst]['sat_levels'] == level)
     nsats = len(level_sats[0]) 
-    sat_ms = syst['sat_mvirs'][level_sats]
-    sat_xs = syst['sat_pxs'][level_sats] - x0
-    sat_ys = syst['sat_pys'][level_sats] - y0
-    sat_zs = syst['sat_pzs'][level_sats] - z0
+    sat_ms = systems[syst]['sat_mvirs'][level_sats]
+    sat_xs = systems[syst]['sat_pxs'][level_sats] - x0
+    sat_ys = systems[syst]['sat_pys'][level_sats] - y0
+    sat_zs = systems[syst]['sat_pzs'][level_sats] - z0
 
     M = np.sum([sat_ms[i] for i in range(nsats)])
 
