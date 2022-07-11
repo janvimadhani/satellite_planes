@@ -1661,7 +1661,8 @@ def find_physical_extent(u1,u2,u3,systems,system,actual_rms,rand=False,nrms = 2,
 
     c,b,a = np.sort([xlen,ylen,zlen])
     c_to_a = c/a
-    return(a,b,c,c_to_a)
+    plos = uvecs[0]
+    return(a,b,c,c_to_a,plos)
 
 
     
@@ -1689,7 +1690,7 @@ def save_outputs(name_of_file,snapshot,systems,syst,inertial,physical,sig_spheri
     syst_analysis['halo_id'] = halo_id
     syst_analysis['location_of_central'] = location_of_central
     syst_analysis['halo_axes'] = halo_axes
-    syst_analysis['physical_extent: a,b,c,c_to_a'] = physical
+    syst_analysis['physical_extent: a,b,c,c_to_a,u_proj_plane'] = physical
     syst_analysis['inertial_extent: a,b,c,c_to_a'] = inertial
 
     #ONCE YOU ACTUALLY CALCULATE THIS, THIS WILL CHANGE FROM RANDO DEFAULT VAL
