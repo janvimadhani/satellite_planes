@@ -643,7 +643,7 @@ def project_on_los(sat_velocity,plos):
 
 
 
-def corotating_frac(systems,syst,plos,actual_rms, rand=False,nrms=2,level=1):
+def corotating_frac(systems,syst,plos,actual_rms,unit_n,rand=False,nrms=2,level=1):
     """
     find the ratio of corotation for all satellites that are within rms of plane
     Input: systems, dict: systems dictionary
@@ -1274,7 +1274,7 @@ def create_corot_background(systems,syst,n=5000):
 
         #eplos = project_on_plane(n_)
 
-        e_vrots, e_corot_frac = corotating_frac(systems=rand_e_systems['systems'],syst=rand_syst,plos=eplos,actual_rms=ell_rand_rms,rand=True,nrms=2,level=1)
+        e_vrots, e_corot_frac = corotating_frac(systems=rand_e_systems['systems'],syst=rand_syst,plos=eplos,unit_n = e_unit_n,actual_rms=ell_rand_rms,rand=True,nrms=2,level=1)
         ell_corot_frac.append(e_corot_frac)
 
     t1 = time.time()
