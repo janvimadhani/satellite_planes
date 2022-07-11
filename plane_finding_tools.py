@@ -767,7 +767,7 @@ def corotating_frac(systems,syst,plos,actual_rms,unit_n,rand=False,nrms=2,level=
     else:
         corot_frac = 0
 
-    return corot_frac
+    return vrots, corot_frac
 
 
 
