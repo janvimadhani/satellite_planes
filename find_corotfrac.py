@@ -58,7 +58,7 @@ for syst in range(len(systems)):
     #reduced inertia tensor, Chisari+ 15 
 
 
-    vrot,corot_frac = pf.corotating_frac(systems=systems,syst=syst,unit_n=unit_n,actual_rms=best_rms,nrms=1,level=1)
+    vrot,corot_frac = pf.corotating_frac(systems=systems,syst=syst, actual_rms=best_rms,nrms=1,level=1)
     
     corotation_dict['corotating_frac'].append(corot_frac)
 

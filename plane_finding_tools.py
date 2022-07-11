@@ -643,7 +643,7 @@ def project_on_los(sat_velocity,plos):
 
 
 
-def corotating_frac(systems,syst,plos,rand=False,nrms=2,level=1):
+def corotating_frac(systems,syst,plos,actual_rms, rand=False,nrms=2,level=1):
     """
     find the ratio of corotation for all satellites that are within rms of plane
     Input: systems, dict: systems dictionary
