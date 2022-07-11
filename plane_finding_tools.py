@@ -1269,10 +1269,10 @@ def create_corot_background(systems,syst,n=5000):
 
         #find best fit plane of n random systems
 
-        ea,eb,ec,e_phys_c_to_a = find_physical_extent(u1=e_best_u1,u2=e_best_u2,u3=e_best_u3,systems=rand_e_systems['systems'],system=rand_syst,actual_rms=ell_rand_rms,rand = True,nrms = 2,level=1)
+        ea,eb,ec,e_phys_c_to_a,eplos = find_physical_extent(u1=e_best_u1,u2=e_best_u2,u3=e_best_u3,systems=rand_e_systems['systems'],system=rand_syst,actual_rms=ell_rand_rms,rand = True,nrms = 2,level=1)
         ell_c_to_a.append(e_phys_c_to_a)
 
-        eplos = project_on_plane(n_)
+        #eplos = project_on_plane(n_)
 
         e_vrots, e_corot_frac = corotating_frac(systems=rand_e_systems['systems'],syst=rand_syst,plos=eplos,actual_rms=ell_rand_rms,rand=True,nrms=2,level=1)
         ell_corot_frac.append(e_corot_frac)

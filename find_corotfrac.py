@@ -41,7 +41,7 @@ for syst in range(len(systems)):
     corotation_dict['best_rms'].append(best_rms)
 
     ## get physical extent, c_to_a:
-    phys_c_to_a = pf.find_physical_extent(u1=best_u1,u2=best_u2,u3=best_u3,systems=systems,system=syst,actual_rms=best_rms,nrms = 2,level=1)
+    pa,pb,pc,phys_c_to_a,plane_los = pf.find_physical_extent(u1=best_u1,u2=best_u2,u3=best_u3,systems=systems,system=syst,actual_rms=best_rms,nrms = 2,level=1)
     corotation_dict['phys_c_to_a'].append(phys_c_to_a)
 
     ## get inertia tensor
@@ -58,7 +58,7 @@ for syst in range(len(systems)):
     #reduced inertia tensor, Chisari+ 15 
 
 
-    vrot,corot_frac = pf.corotating_frac(systems=systems,syst=syst, actual_rms=best_rms,nrms=1,level=1)
+    vrot,corot_frac = pf.corotating_frac(systems=systems,syst=syst, plos=plane_los, actual_rms=best_rms,nrms=1,level=1)
     
     corotation_dict['corotating_frac'].append(corot_frac)
 
