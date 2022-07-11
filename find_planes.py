@@ -45,13 +45,13 @@ for syst in range(len(systems)):
     i_c_to_a = pf.find_axes_ratios(I)
 
     inertia = [v1,v2,v3,i_c_to_a]
-
-    name_of_3dplot = 'system_' + str(name_of_syst) +'.png'
-    pf.save_3Dplot(name_of_3dplot,systems=systems,syst=syst,snapshot=snapshot,xx=xx,yy=yy,z_best=z_best,los=v2,unit_n=unit_n,phys_ext = phys_ext, inertia=inertia)
     
-    corot_frac = pf.corotating_frac(systems=systems,syst=syst,unit_n=unit_n,actual_rms =best_rms,nrms=1,level=1)
+    vrots,corot_frac = pf.corotating_frac(systems=systems,syst=syst,unit_n=unit_n,actual_rms =best_rms,nrms=1,level=1)
     
     corotation_dict['corotating_frac'].append(corot_frac)
+
+    name_of_3dplot = 'system_' + str(name_of_syst) +'.png'
+    pf.save_3Dplot(name_of_3dplot,systems=systems,syst=syst,snapshot=snapshot,xx=xx,yy=yy,z_best=z_best,los=v2,unit_n=unit_n,vrots = vrot,phys_ext = phys_ext, inertia=inertia)
 
     #####################
     # ISOTROPY ANALYSIS #

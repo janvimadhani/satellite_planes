@@ -642,7 +642,136 @@ def project_on_los(sat_velocity,plos):
     return projection
 
 
-def corotating_frac(systems,syst,unit_n,actual_rms,rand=False,nrms=2,level=1):
+
+def corotating_frac(systems,syst,plos,rand=False,nrms=2,level=1):
+    """
+    find the ratio of corotation for all satellites that are within rms of plane
+    Input: systems, dict: systems dictionary
+           syst, int: index of relevant system
+           plos, arr: [x,y,z] vector of the line of sight you want to project the velocity on
+           nrms, int: within how many rms you want to inspect corotation
+           level, int: what level satellites you want to consider
+
+    """
+
+
+    def get_vrot(satvx,satvy,satvz,plos):
+        v = np.array([satvx,satvy,satvz])
+        v = v.flatten()
+        vrot = project_on_los(v,plos)
+        
+        return vrot
+
+    if rand:
+        x0 = systems[syst]['MW_px']
+        y0 = systems[syst]['MW_py']
+        z0 = systems[syst]['MW_pz']
+
+
+    else:
+        x0 = systems[syst]['MW_px'][0]
+        y0 = systems[syst]['MW_py'][0]
+        z0 = systems[syst]['MW_pz'][0]
+
+        mvx = systems[syst]['MW_vx']
+        mvy = systems[syst]['MW_vy']
+        mvz = systems[syst]['MW_vz']
+
+    gal_center = np.array([x0,y0,z0])
+
+    d = np.dot(-gal_center,unit_n)
+
+    distances = []
+    sep_vect = []
+
+    #calculate the distance of ALL the sats (needed for shape)
+    for k in range(len(systems[syst]['sat_pxs'])):
+        x,y,z = systems[syst]['sat_pxs'][k],systems[syst]['sat_pys'][k],systems[syst]['sat_pzs'][k]
+        rx,ry,rz = x-x0,y-y0,z-z0
+        r = np.sqrt(rx**2 + ry**2 + rz**2)
+        sep_vect.append(np.array([rx,ry,rz]))
+        s = dist(x,y,z,unit_n,d)
+        distances.append(s) 
+
+           
+    distances = np.asarray(distances)
+    sep_vect = np.asarray(sep_vect)
+    
+    #find satellites within n * rms AND right level
+    #nrms = the number of rms within which you want to consider satellites as "on-plane"
+    if rand:
+        win_rms = np.where(distances <= nrms * actual_rms)
+    
+    else:
+        win_rms = np.where((distances <= nrms * actual_rms) & (systems[syst]['sat_levels'] == level))
+    
+    nsats = len(win_rms[0])
+
+    vrots = []
+    #calculate rotational velocity around plos
+    for k in range(nsats):
+        r = sep_vect[win_rms][k]
+        vx,vy,vz = systems[syst]['sat_vxs'][win_rms][k],systems[syst]['sat_vys'][win_rms][k],systems[syst]['sat_vzs'][win_rms][k]
+        
+        if rand:
+            if vx > 0.5:
+                vx = 1
+            else:
+                vx = -1
+            if vy > 0.5:
+                vy = 1
+            else:
+                vy = -1
+            if vz > 0.5:
+                vz = 1
+            else:
+                vz = -1
+
+            vrot = get_vrot(vx,vy,vz,plos)
+            vrots.append(vrot)
+        
+        else:
+            vx -= mvx
+            vy -= mvy
+            vz -= mvz
+            vrot = get_vrot(vx,vy,vz,plos)
+            vrots.append(vrot)
+
+    pos = 0
+    neg = 0
+
+    for v in vrots:
+        if v > 0:
+            pos +=1
+        elif v < 0:
+            neg += 1
+        else:
+            print('Check velocities, something off!')
+
+    ntot = len(vrots)
+    if ntot != 0:
+        Rpos = pos/ntot
+        Rneg = neg/ntot
+    else:
+        corot_frac = 0
+        print(f'Not enough satellites within {nrms} rms of plane.')
+
+    if Rpos > Rneg:
+        corot_frac = Rpos
+    elif Rneg > Rpos:
+        corot_frac = Rneg
+    
+    else:
+        corot_frac = 0
+
+    return corot_frac
+
+
+
+
+
+
+def old_corotating_frac(systems,syst,unit_n,actual_rms,rand=False,nrms=2,level=1):
     """
     find the ratio of corotation for all satellites that are within rms of plane
     Input: systems, dict: systems dictionary
@@ -664,6 +793,8 @@ def corotating_frac(systems,syst,unit_n,actual_rms,rand=False,nrms=2,level=1):
 
 
     def get_vrot(satvx,satvy,satvz,r,unit_ez):
+
+        """
         rz = r[2]
         b = (rz*unit_ez)
         b = b.flatten()
@@ -677,6 +808,7 @@ def corotating_frac(systems,syst,unit_n,actual_rms,rand=False,nrms=2,level=1):
         v = np.array([vx,vy,vz])
         
         vrot = np.dot(v,unit_etheta)
+        """
 
         return vrot
     
@@ -749,6 +881,7 @@ def corotating_frac(systems,syst,unit_n,actual_rms,rand=False,nrms=2,level=1):
             vrots.append(vrot)
         
         else:
+            vx -= MW_vx
             vrot = get_vrot(vx,vy,vz,r,unit_ez)
             vrots.append(vrot)
 
@@ -779,14 +912,14 @@ def corotating_frac(systems,syst,unit_n,actual_rms,rand=False,nrms=2,level=1):
     else:
         corot_frac = 0
 
-    return corot_frac
+    return vrots, corot_frac
 
 
 
 
     
 
-def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best,los,unit_n,phys_ext,inertia=None):
+def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best,los,unit_n,vrots,phys_ext,inertia=None):
 
     """
     Input:
@@ -795,7 +928,7 @@ def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best,los,unit_n,phys_
     ## Figure for presentation
     p_a,p_b,p_c,p_c_to_a = phys_ext[0],phys_ext[1],phys_ext[2],phys_ext[3]
 
-    #"""
+    """
     #project sat velocities onto los vector of the plane 
     #project_onto = np.array([unit_n[0],0,0]) #change this vector if you want to project onto a different vector
     project_onto = los 
@@ -812,7 +945,9 @@ def save_3Dplot(name_of_plot,systems,syst,snapshot,xx,yy,z_best,los,unit_n,phys_
         
         projected_v.append(vx[0]) #change this if you're projecting onto some component other than x
     projected_v = np.asarray(projected_v)
-    #"""
+    """
+
+    projected_v = vrots
 
 
     fig = plt.figure(figsize=[8,6])
@@ -1134,10 +1269,12 @@ def create_corot_background(systems,syst,n=5000):
 
         #find best fit plane of n random systems
 
-        e_phys_c_to_a = find_physical_extent(u1=e_best_u1,u2=e_best_u2,u3=e_best_u3,systems=rand_e_systems['systems'],system=rand_syst,actual_rms=ell_rand_rms,rand = True,nrms = 2,level=1)
+        ea,eb,ec,e_phys_c_to_a = find_physical_extent(u1=e_best_u1,u2=e_best_u2,u3=e_best_u3,systems=rand_e_systems['systems'],system=rand_syst,actual_rms=ell_rand_rms,rand = True,nrms = 2,level=1)
         ell_c_to_a.append(e_phys_c_to_a)
 
-        e_corot_frac = corotating_frac(systems=rand_e_systems['systems'],syst=rand_syst,unit_n=e_unit_n,actual_rms=ell_rand_rms,rand=True,nrms=2,level=1)
+        eplos = project_on_plane(n_)
+
+        e_vrots, e_corot_frac = corotating_frac(systems=rand_e_systems['systems'],syst=rand_syst,plos=eplos,actual_rms=ell_rand_rms,rand=True,nrms=2,level=1)
         ell_corot_frac.append(e_corot_frac)
 
     t1 = time.time()
@@ -1154,6 +1291,11 @@ def create_corot_background(systems,syst,n=5000):
 
 
 def check_isotropy(systems,syst,unit_n,actual_rms,n=2000,corot=False):
+    """
+    creates random systems n times, finds the plane of best fit for each iteration, returns a dictionary of each random instance
+    """
+
+
 ## check that it's uniformly dist by running n times
     t0 = time.time()
 
@@ -1519,7 +1661,7 @@ def find_physical_extent(u1,u2,u3,systems,system,actual_rms,rand=False,nrms = 2,
 
     c,b,a = np.sort([xlen,ylen,zlen])
     c_to_a = c/a
-    return(c_to_a)
+    return(a,b,c,c_to_a)
 
 
     
