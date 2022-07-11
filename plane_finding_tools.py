@@ -623,7 +623,7 @@ def get_plane(u1,u2,u3,systems,system,mock=False):
     
     return z,xx,yy,unit_n,los
 
-def project_on_los(sat_velocity,plos):
+def project_on_los(sat_velocity,plos,scalar=False):
     """
     Input: sat_velocity, array: [vx,vy,vz]
            line of sight, array: [nx,0,0] for example
@@ -637,7 +637,10 @@ def project_on_los(sat_velocity,plos):
     mag_los = np.linalg.norm(plos)
     unit_los = plos/mag_los
     
-    projection = (dot/mag_los) * unit_los
+    if scalar:
+        projection = (dot/mag_los)
+    else:
+        projection = (dot/mag_los) * unit_los
     
     return projection
 
@@ -658,7 +661,7 @@ def corotating_frac(systems,syst,plos,actual_rms,unit_n,rand=False,nrms=2,level=
     def get_vrot(satvx,satvy,satvz,plos):
         v = np.array([satvx,satvy,satvz])
         v = v.flatten()
-        vrot = project_on_los(v,plos)
+        vrot = project_on_los(v,plos,scalar=True)
         
         return vrot
 
