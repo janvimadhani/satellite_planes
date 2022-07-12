@@ -1249,6 +1249,8 @@ def create_corot_background(systems,syst,n=5000):
         rand_e_system['sat_pys'] = np.asarray(ey)
         rand_e_system['sat_pzs'] = np.asarray(ez)
 
+        rand_e_system['sat_mvirs'] = system[syst]['sat_mvirs']
+
         #assign random velocities
 
         rand_e_system['sat_vxs'] = np.asarray([random.uniform(0, 1) for i in range(len(ex))])
