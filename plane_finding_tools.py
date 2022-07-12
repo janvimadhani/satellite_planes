@@ -1533,7 +1533,7 @@ def find_inertia_tensor(systems,syst,level=1,mass=True,rand=False):
 
     if rand:
         x0,y0,z0 = systems[syst]['MW_px'], systems[syst]['MW_py'],systems[syst]['MW_pz']
-        nsats = len(systems[system]['sat_vxs'])
+        nsats = len(systems[syst]['sat_vxs'])
         sat_ms = systems[syst]['sat_mvirs']
         sat_xs = systems[syst]['sat_pxs'] - x0
         sat_ys = systems[syst]['sat_pys'] - y0
