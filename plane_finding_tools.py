@@ -1249,7 +1249,7 @@ def create_corot_background(systems,syst,n=5000):
         rand_e_system['sat_pys'] = np.asarray(ey)
         rand_e_system['sat_pzs'] = np.asarray(ez)
 
-        rand_e_system['sat_mvirs'] = system[syst]['sat_mvirs']
+        rand_e_system['sat_mvirs'] = systems[syst]['sat_mvirs']
 
         #assign random velocities
 
