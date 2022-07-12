@@ -652,7 +652,8 @@ def corotating_frac(systems,syst,plos,actual_rms,unit_n,rand=False,nrms=2,level=
     Input: systems, dict: systems dictionary
            syst, int: index of relevant system
            plos, arr: [x,y,z] vector of the line of sight you want to project the velocity on
-           nrms, int: within how many rms you want to inspect corotation
+           nrms, int: within how many rms you want to inspect corotation, set it to like 1000 if you want to make sure you're including
+           everything regardless of the rms requirement. 
            level, int: what level satellites you want to consider
 
     """
@@ -1260,6 +1261,8 @@ def create_corot_background(systems,syst,n=5000):
     ell_mean_rms = []
     ell_corot_frac = []
     ell_c_to_a = []
+    ell_iphys_c_to_a = []
+    ell_imw_c_to_a  = []
     
     print(f'Finding best fit planes of {n} random, isotropically distributed systems...')
     for rand_syst in range(n):
@@ -1280,11 +1283,23 @@ def create_corot_background(systems,syst,n=5000):
         e_vrots, e_corot_frac = corotating_frac(systems=rand_e_systems['systems'],syst=rand_syst,plos=eplos,unit_n = e_unit_n,actual_rms=ell_rand_rms,rand=True,nrms=2,level=1)
         ell_corot_frac.append(e_corot_frac)
 
+        #get inertial extents
+        #mass weighted
+        e_inertia_tensor_massw = find_inertia_tensor(systems=rand_e_systems['systems'],syst=rand_syst,mass=True)
+        e_axes_ratios_massw = find_axes_ratios(e_inertia_tensor_massw)
+        ell_iphys_c_to_a.append(e_axes_ratios_massw)
+
+        #non mass weighted
+        e_inertia_tensor_phys = find_inertia_tensor(systems=rand_e_systems['systems'],syst=rand_syst,mass=False)
+        e_axes_ratios_phys = find_axes_ratios(e_inertia_tensor_phys)
+        ell_imw_c_to_a.append(e_axes_ratios_phy)
+
+
     t1 = time.time()
 
     print(f'Took {t1-t0} seconds.')
 
-    return ell_mean_rms,ell_corot_frac,ell_c_to_a
+    return ell_mean_rms,ell_corot_frac,ell_c_to_a,ell_iphys_c_to_a,ell_imw_c_to_a
 
 
 

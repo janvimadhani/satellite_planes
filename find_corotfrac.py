@@ -18,12 +18,18 @@ corotation_dict['phys_c_to_a'] = []
 corotation_dict['inertia_mw_c_to_a'] = []
 corotation_dict['inertia_phys_c_to_a'] = []
 corotation_dict['corotating_frac'] = []
-#corotation_dict['sph_corotating_frac'] = []
-corotation_dict['ell_corotating_frac'] = []
-#corotation_dict['sph_c_to_a'] = []
-corotation_dict['ell_c_to_a'] = []
-corotation_dict['ell_rms'] = []
+corotation_dict['vrots'] = []
 
+corotation_dict['corotating_frac_win_rms'] = []
+corotation_dict['vrots_win_rms'] = []
+
+#background things
+
+corotation_dict['ell_rms'] = []
+corotation_dict['ell_c_to_a'] = []
+corotation_dict['ell_corotating_frac'] = []
+corotation_dict['ell_inertia_mw_c_to_a'] = []
+corotation_dict['ell_inertia_phys_c_to_a'] = ; 
 
 
 
@@ -57,18 +63,24 @@ for syst in range(len(systems)):
 
     #reduced inertia tensor, Chisari+ 15 
 
-
-    vrot,corot_frac = pf.corotating_frac(systems=systems,syst=syst, plos=plane_los, unit_n = unit_n,actual_rms=best_rms,nrms=1,level=1)
-    
+    #ALL satellites in the system 
+    vrots,corot_frac = pf.corotating_frac(systems=systems,syst=syst, plos=plane_los, unit_n = unit_n,actual_rms=best_rms,nrms=1000,level=1)
+    corotation_dict['vrots'].append(vrots)
     corotation_dict['corotating_frac'].append(corot_frac)
 
+
+    vrots_wrms,corot_frac_wrms = pf.corotating_frac(systems=systems,syst=syst, plos=plane_los, unit_n = unit_n,actual_rms=best_rms,nrms=1,level=1)
+    corotation_dict['vrots_win_rms'].append(vrots_wrms)
+    corotation_dict['corotating_frac_win_rms'].append(corot_frac_wrms)
+
     ## check for isotropy n times and find n rms dists
-    iso_ell_systs_rms,ell_corot_frac,ell_c_to_a = pf.create_corot_background(systems=systems,syst=syst,n=5000)
+    iso_ell_systs_rms,ell_corot_frac,ell_c_to_a,ell_iphys_c_to_a,ell_imw_c_to_a = pf.create_corot_background(systems=systems,syst=syst,n=5000)
 
     corotation_dict['ell_rms'].append(iso_ell_systs_rms)
     corotation_dict['ell_corotating_frac'].append(ell_corot_frac)
     corotation_dict['ell_c_to_a'].append(ell_c_to_a)
-
+    corotation_dict['ell_inertia_mw_c_to_a'].append(ell_imw_c_to_a)
+    corotation_dict['ell_inertia_phys_c_to_a'].append(ell_iphys_c_to_a)
 
 #save corotation dictionary to pickle for later analysis
 
