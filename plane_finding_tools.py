@@ -1294,7 +1294,7 @@ def create_corot_background(systems,syst,n=5000):
         #non mass weighted
         e_inertia_tensor_phys = find_inertia_tensor(systems=rand_e_systems['systems'],syst=rand_syst,mass=False,rand=True)
         e_axes_ratios_phys = find_axes_ratios(e_inertia_tensor_phys)
-        ell_imw_c_to_a.append(e_axes_ratios_phy)
+        ell_imw_c_to_a.append(e_axes_ratios_phys)
 
 
     t1 = time.time()
