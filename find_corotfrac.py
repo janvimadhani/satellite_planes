@@ -29,7 +29,7 @@ corotation_dict['ell_rms'] = []
 corotation_dict['ell_c_to_a'] = []
 corotation_dict['ell_corotating_frac'] = []
 corotation_dict['ell_inertia_mw_c_to_a'] = []
-corotation_dict['ell_inertia_phys_c_to_a'] = ; 
+corotation_dict['ell_inertia_phys_c_to_a'] = []
 
 
 
