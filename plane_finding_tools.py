@@ -1262,9 +1262,11 @@ def create_corot_background(systems,syst,n=5000):
 
     ell_mean_rms = []
     ell_corot_frac = []
+    ell_corot_frac_win_rms = []
     ell_c_to_a = []
     ell_iphys_c_to_a = []
     ell_imw_c_to_a  = []
+    
     
     print(f'Finding best fit planes of {n} random, isotropically distributed systems...')
     for rand_syst in range(n):
@@ -1282,8 +1284,14 @@ def create_corot_background(systems,syst,n=5000):
 
         #eplos = project_on_plane(n_)
 
-        e_vrots, e_corot_frac = corotating_frac(systems=rand_e_systems['systems'],syst=rand_syst,plos=eplos,unit_n = e_unit_n,actual_rms=ell_rand_rms,rand=True,nrms=2,level=1)
+
+        #NO rms requirement
+        e_vrots, e_corot_frac = corotating_frac(systems=rand_e_systems['systems'],syst=rand_syst,plos=eplos,unit_n = e_unit_n,actual_rms=ell_rand_rms,rand=True,nrms=1000,level=1)
         ell_corot_frac.append(e_corot_frac)
+
+        #within rms
+        e_vrots_win_rms, e_corot_frac_win_rms = corotating_frac(systems=rand_e_systems['systems'],syst=rand_syst,plos=eplos,unit_n = e_unit_n,actual_rms=ell_rand_rms,rand=True,nrms=1,level=1)
+        ell_corot_frac_win_rms.append(e_corot_frac_win_rms)
 
         #get inertial extents
         #mass weighted
@@ -1301,7 +1309,7 @@ def create_corot_background(systems,syst,n=5000):
 
     print(f'Took {t1-t0} seconds.')
 
-    return ell_mean_rms,ell_corot_frac,ell_c_to_a,ell_iphys_c_to_a,ell_imw_c_to_a
+    return ell_mean_rms,ell_corot_frac,ell_corot_frac_win_rms,ell_c_to_a,ell_iphys_c_to_a,ell_imw_c_to_a
 
 
 

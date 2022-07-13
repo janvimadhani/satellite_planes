@@ -28,6 +28,7 @@ corotation_dict['vrots_win_rms'] = []
 corotation_dict['ell_rms'] = []
 corotation_dict['ell_c_to_a'] = []
 corotation_dict['ell_corotating_frac'] = []
+corotation_dict['ell_corot_frac_win_rms'] = []
 corotation_dict['ell_inertia_mw_c_to_a'] = []
 corotation_dict['ell_inertia_phys_c_to_a'] = []
 
@@ -74,10 +75,11 @@ for syst in range(len(systems)):
     corotation_dict['corotating_frac_win_rms'].append(corot_frac_wrms)
 
     ## check for isotropy n times and find n rms dists
-    iso_ell_systs_rms,ell_corot_frac,ell_c_to_a,ell_iphys_c_to_a,ell_imw_c_to_a = pf.create_corot_background(systems=systems,syst=syst,n=5000)
+    iso_ell_systs_rms,ell_corot_frac,ell_corot_frac_win_rms,ell_c_to_a,ell_iphys_c_to_a,ell_imw_c_to_a = pf.create_corot_background(systems=systems,syst=syst,n=5000)
 
     corotation_dict['ell_rms'].append(iso_ell_systs_rms)
     corotation_dict['ell_corotating_frac'].append(ell_corot_frac)
+    corotation_dict['ell_corot_frac_win_rms'].append(ell_corot_frac_win_rms)
     corotation_dict['ell_c_to_a'].append(ell_c_to_a)
     corotation_dict['ell_inertia_mw_c_to_a'].append(ell_imw_c_to_a)
     corotation_dict['ell_inertia_phys_c_to_a'].append(ell_iphys_c_to_a)
