@@ -730,7 +730,7 @@ def corotating_frac(systems,syst,plos,actual_rms,unit_n,rand=False,nrms=2,level=
         U = project_on_plane(rx,ry,rz,unit_n)
         unit_u = unit_vector(U)
         unit_los = unit_vector(plos)
-        lorr = left_or_right(unit_los,unit_n,unit_u)
+        lorr = l_or_r(unit_los,unit_n,unit_u)
         
         left_or_right.append(lorr)
 
