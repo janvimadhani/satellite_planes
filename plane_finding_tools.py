@@ -554,7 +554,7 @@ def project_on_vec(s1,s2,s3,d1,d2,d3):
     return proj
 
 def unit_vector(vector):
-    mag_v = magnitude_vector(vector)
+    mag_v = magnitude_vect(vector)
     unit_v = vector/mag_v
 
     return unit_v
