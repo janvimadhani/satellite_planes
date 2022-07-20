@@ -553,6 +553,11 @@ def project_on_vec(s1,s2,s3,d1,d2,d3):
     
     return proj
 
+def unit_vector(vector):
+    mag_v = magnitude_vector(vector)
+    unit_v = vector/mag_v
+
+    return unit_v
 
 
 def magnitude_vect(vector):
@@ -666,6 +671,28 @@ def corotating_frac(systems,syst,plos,actual_rms,unit_n,rand=False,nrms=2,level=
         
         return vrot
 
+
+    def l_or_r(unit_los,unit_n,unit_u):
+        """
+        unit_los X unit_n = unit_p (creates a basis for the plane)
+        project the separation vector onto the plane = unit_u
+        then project unit_u on to unit_p (unit_u • p)
+        if it's positive, call it +1
+        if it's negative, call it -1
+        """
+
+        unit_p = np.cross(unit_los,unit_n)
+
+        proj_u_on_p = np.dot(unit_u,unit_p)
+
+        if proj_u_on_p > 0 :
+            return 1
+        else:
+            return -1 
+
+
+
+
     if rand:
         x0 = systems[syst]['MW_px']
         y0 = systems[syst]['MW_py']
@@ -687,6 +714,7 @@ def corotating_frac(systems,syst,plos,actual_rms,unit_n,rand=False,nrms=2,level=
 
     distances = []
     sep_vect = []
+    left_or_right  = [] #is the satellite on the left of the los or the right 
 
     #calculate the distance of ALL the sats (needed for shape)
     for k in range(len(systems[syst]['sat_pxs'])):
@@ -697,9 +725,19 @@ def corotating_frac(systems,syst,plos,actual_rms,unit_n,rand=False,nrms=2,level=
         s = dist(x,y,z,unit_n,d)
         distances.append(s) 
 
+
+        #projection of sep vector on to plane
+        U = project_on_plane(rx,ry,rz,unit_n)
+        unit_u = unit_vector(U)
+        unit_los = unit_vector(plos)
+        lorr = left_or_right(unit_los,unit_n,unit_u)
+        
+        left_or_right.append(lorr)
+
            
     distances = np.asarray(distances)
     sep_vect = np.asarray(sep_vect)
+    left_or_right = np.asarray(left_or_right)
     
     #find satellites within n * rms AND right level
     #nrms = the number of rms within which you want to consider satellites as "on-plane"
@@ -740,22 +778,34 @@ def corotating_frac(systems,syst,plos,actual_rms,unit_n,rand=False,nrms=2,level=
             vz -= mvz
             vrot = get_vrot(vx,vy,vz,plos)
             vrots.append(vrot)
+    
+    left_or_right = left_or_right[win_rms]
 
-    pos = 0
-    neg = 0
+    #if it's on the right side of the plane and velocity is positive etc.
+    R_pos = 0
+    L_pos = 0
+    R_neg = 0
+    L_neg = 0
 
-    for v in vrots:
-        if v > 0:
-            pos +=1
-        elif v < 0:
-            neg += 1
+    for i in range(nsats):
+        if (vrots[i] > 0) & (left_or_right[i] > 0):
+            R_pos += 1
+        
+        elif (vrots[i] <  0) & (left_or_right[i] < 0):
+            L_neg += 1
+        
+        elif (vrots[i] <  0) & (left_or_right[i] > 0):
+            R_neg += 1
+
+        elif (vrots[i] > 0) & (left_or_right[i] < 0):
+            L_pos += 1
         else:
             print('Check velocities, something off!')
 
     ntot = len(vrots)
     if ntot != 0:
-        Rpos = pos/ntot
-        Rneg = neg/ntot
+        Rpos = (R_pos + L_neg)/ntot
+        Rneg = (R_neg + L_pos)/ntot
     else:
         corot_frac = 0
         print(f'Not enough satellites within {nrms} rms of plane.')
@@ -849,6 +899,7 @@ def old_corotating_frac(systems,syst,unit_n,actual_rms,rand=False,nrms=2,level=1
            
     distances = np.asarray(distances)
     sep_vect = np.asarray(sep_vect)
+    left_or_right = np.asarray(left_or_right)
     
     #find satellites within n * rms AND right level
     #nrms = the number of rms within which you want to consider satellites as "on-plane"
@@ -888,22 +939,31 @@ def old_corotating_frac(systems,syst,unit_n,actual_rms,rand=False,nrms=2,level=1
             vx -= MW_vx
             vrot = get_vrot(vx,vy,vz,r,unit_ez)
             vrots.append(vrot)
+    #if it's on the right side of the plane and velocity is positive etc.
+    R_pos = 0
+    L_pos = 0
+    R_neg = 0
+    L_neg = 0
 
-    pos = 0
-    neg = 0
+    for i in range(nsats):
+        if (vrots[i] > 0) & (left_or_right[i] > 0):
+            R_pos += 1
+        
+        elif (vrots[i] <  0) & (left_or_right[i] < 0):
+            L_neg += 1
+        
+        elif (vrots[i] <  0) & (left_or_right[i] > 0):
+            R_neg += 1
 
-    for v in vrots:
-        if v > 0:
-            pos +=1
-        elif v < 0:
-            neg += 1
+        elif (vrots[i] > 0) & (left_or_right[i] < 0):
+            L_pos += 1
         else:
             print('Check velocities, something off!')
 
     ntot = len(vrots)
     if ntot != 0:
-        Rpos = pos/ntot
-        Rneg = neg/ntot
+        Rpos = (R_pos + L_neg)/ntot
+        Rneg = (R_neg + L_pos)/ntot
     else:
         corot_frac = 0
         print(f'Not enough satellites within {nrms} rms of plane.')

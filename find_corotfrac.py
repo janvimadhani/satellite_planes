@@ -65,7 +65,7 @@ for syst in range(len(systems)):
     #reduced inertia tensor, Chisari+ 15 
 
     #ALL satellites in the system 
-    vrots,corot_frac = pf.corotating_frac(systems=systems,syst=syst, plos=plane_los, unit_n = unit_n,actual_rms=best_rms,nrms=1000,level=1)
+    vrots,corot_frac = pf.corotating_frac(systems=systems,syst=syst, plos=plane_los, unit_n = unit_n, actual_rms=best_rms,nrms=1000,level=1)
     corotation_dict['vrots'].append(vrots)
     corotation_dict['corotating_frac'].append(corot_frac)
 
