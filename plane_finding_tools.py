@@ -557,7 +557,7 @@ def unit_vector(vector):
     mag_v = magnitude_vect(vector)
     unit_v = vector/mag_v
 
-    return unit_v
+    return np.array(unit_v)
 
 
 def magnitude_vect(vector):
