@@ -17,6 +17,7 @@ corotation_dict['best_rms'] = []
 corotation_dict['phys_c_to_a'] = []
 corotation_dict['inertia_mw_c_to_a'] = []
 corotation_dict['inertia_phys_c_to_a'] = []
+corotation_dict['los'] = []
 corotation_dict['corotating_frac'] = []
 corotation_dict['vrots'] = []
 
@@ -66,6 +67,7 @@ for syst in range(len(systems)):
 
     #ALL satellites in the system 
     vrots,corot_frac = pf.corotating_frac(systems=systems,syst=syst, plos=plane_los, unit_n = unit_n, actual_rms=best_rms,nrms=1000,level=1)
+    corotation_dict['los'].append(plane_los)
     corotation_dict['vrots'].append(vrots)
     corotation_dict['corotating_frac'].append(corot_frac)
 

@@ -788,174 +788,21 @@ def corotating_frac(systems,syst,plos,actual_rms,unit_n,rand=False,nrms=2,level=
     L_neg = 0
 
     for i in range(nsats):
+        #print(f'satellite {i+1} is:')
         if (vrots[i] > 0) & (left_or_right[i] > 0):
+            #print('Moving towards you on the right')
             R_pos += 1
         
         elif (vrots[i] <  0) & (left_or_right[i] < 0):
+            #print('Moving away from you on the left')
             L_neg += 1
         
         elif (vrots[i] <  0) & (left_or_right[i] > 0):
+            #print('Moving away from you on the right')
             R_neg += 1
 
         elif (vrots[i] > 0) & (left_or_right[i] < 0):
-            L_pos += 1
-        else:
-            print('Check velocities, something off!')
-
-    ntot = len(vrots)
-    if ntot != 0:
-        Rpos = (R_pos + L_neg)/ntot
-        Rneg = (R_neg + L_pos)/ntot
-    else:
-        corot_frac = 0
-        print(f'Not enough satellites within {nrms} rms of plane.')
-
-    if Rpos > Rneg:
-        corot_frac = Rpos
-    elif Rneg > Rpos:
-        corot_frac = Rneg
-    
-    else:
-        corot_frac = 0
-
-    return vrots, corot_frac
-
-
-
-
-
-
-def old_corotating_frac(systems,syst,unit_n,actual_rms,rand=False,nrms=2,level=1):
-    """
-    find the ratio of corotation for all satellites that are within rms of plane
-    Input: systems, dict: systems dictionary
-           syst, int: index of relevant system
-           rms, int: within how many rms you want to inspect corotation
-           level, int: what level satellites you want to consider
-
-    """
-
-
-
-    Lx = systems[syst]['MW_lx']
-    Ly = systems[syst]['MW_ly']
-    Lz = systems[syst]['MW_lz']
-    L = np.array([Lx,Ly,Lz])
-    L_mag = np.linalg.norm(L)
-    unit_ez = L/L_mag
-    unit_ez = unit_ez.reshape(3,)
-
-
-    def get_vrot(satvx,satvy,satvz,r,unit_ez):
-
-        """
-        rz = r[2]
-        b = (rz*unit_ez)
-        b = b.flatten()
-        a = (r - b)
-        unit_er = a/np.linalg.norm(a)
-
-        unit_etheta = np.cross(unit_ez,unit_er)
-        vx = satvx
-        vy = satvy
-        vz = satvz
-        v = np.array([vx,vy,vz])
-        
-        vrot = np.dot(v,unit_etheta)
-        """
-
-        return vrot
-    
-    if rand:
-        x0 = systems[syst]['MW_px']
-        y0 = systems[syst]['MW_py']
-        z0 = systems[syst]['MW_pz']
-    else:
-        x0 = systems[syst]['MW_px'][0]
-        y0 = systems[syst]['MW_py'][0]
-        z0 = systems[syst]['MW_pz'][0]
-
-    gal_center = np.array([x0,y0,z0])
-
-    d = np.dot(-gal_center,unit_n)
-
-
-
-    #level_sats = np.where(systems[syst]['sat_levels'] == level)
-    #nsats = len(level_sats[0]) 
-
-    distances = []
-    sep_vect = []
-
-    #calculate the distance of ALL the sats (needed for shape)
-    for k in range(len(systems[syst]['sat_pxs'])):
-        x,y,z = systems[syst]['sat_pxs'][k],systems[syst]['sat_pys'][k],systems[syst]['sat_pzs'][k]
-        rx,ry,rz = x-x0,y-y0,z-z0
-        r = np.sqrt(rx**2 + ry**2 + rz**2)
-        sep_vect.append(np.array([rx,ry,rz]))
-        s = dist(x,y,z,unit_n,d)
-        distances.append(s) 
-
-           
-    distances = np.asarray(distances)
-    sep_vect = np.asarray(sep_vect)
-    left_or_right = np.asarray(left_or_right)
-    
-    #find satellites within n * rms AND right level
-    #nrms = the number of rms within which you want to consider satellites as "on-plane"
-    if rand:
-        win_rms = np.where(distances <= nrms * actual_rms)
-    
-    else:
-        win_rms = np.where((distances <= nrms * actual_rms) & (systems[syst]['sat_levels'] == level))
-    
-    nsats = len(win_rms[0])
-    
-
-    vrots = []
-    #calculate rotational velocity around which axis?
-    for k in range(nsats):
-        r = sep_vect[win_rms][k]
-        vx,vy,vz = systems[syst]['sat_vxs'][win_rms][k],systems[syst]['sat_vys'][win_rms][k],systems[syst]['sat_vzs'][win_rms][k]
-        
-        if rand:
-            if vx > 0.5:
-                vx = 1
-            else:
-                vx = -1
-            if vy > 0.5:
-                vy = 1
-            else:
-                vy = -1
-            if vz > 0.5:
-                vz = 1
-            else:
-                vz = -1
-
-            vrot = get_vrot(vx,vy,vz,r,unit_ez)
-            vrots.append(vrot)
-        
-        else:
-            vx -= MW_vx
-            vrot = get_vrot(vx,vy,vz,r,unit_ez)
-            vrots.append(vrot)
-    #if it's on the right side of the plane and velocity is positive etc.
-    R_pos = 0
-    L_pos = 0
-    R_neg = 0
-    L_neg = 0
-
-    for i in range(nsats):
-        if (vrots[i] > 0) & (left_or_right[i] > 0):
-            R_pos += 1
-        
-        elif (vrots[i] <  0) & (left_or_right[i] < 0):
-            L_neg += 1
-        
-        elif (vrots[i] <  0) & (left_or_right[i] > 0):
-            R_neg += 1
-
-        elif (vrots[i] > 0) & (left_or_right[i] < 0):
+            #print('Moving towards you on the left')
             L_pos += 1
         else:
             print('Check velocities, something off!')
